@@ -1,48 +1,16 @@
-import { useState, useRef, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useAccount, useDisconnect, useBalance } from 'wagmi';
-import { openWalletModal } from '../../store/uiSlice';
-import { wallets } from '../WalletModal';
+import { useState, useRef } from 'react';
 import { shortAddress } from '../../utils/format';
-
-import { disconnected } from '../../store/phantomSlice';
+import { walletLogos } from '../walletLogos'
+import { useWalletModal } from '../../hooks/useWalletModal';
+import { useWalletWithRedirects } from '../../hooks/useWalletWithRedirects';
 
 export default function StoreAction() {
-  const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
-  const { address, isConnected, connector } = useAccount();
-  const { disconnect } = useDisconnect();
-  const { data: balance, isLoading, isError } = useBalance({
-    address: address,
-  });
-  const { 
-    address: phantomAddress,
-    isConnected: isPhantomConnected, 
-    balance: phantomBalance, 
-    isBalanceLoading: isPhantomLoading 
-  } = useSelector(state => state.phantom);
 
-  // Close menu when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        //setMenuOpen(false);
-      }
-    }
-    if (menuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [menuOpen]);
+  const { publicKey, wallet, connected, disconnect } = useWalletWithRedirects();
 
-  const getWalletIcon = () => {
-    let wallet = wallets.find(wallet => wallet.key.toLowerCase() === connector?.name.toLowerCase())
-    if (!wallet && isPhantomConnected) {
-      wallet = wallets.find(wallet => wallet.key.toLowerCase() === 'phantom')
-    }
-    return wallet ? <img src={wallet.img} alt={wallet.name} className="w-6 h-6" /> : <i className="fas fa-wallet"></i>;
-  }
+  const { openWalletModal } = useWalletModal();
 
   return (
     <div className="flex items-center space-x-4">
@@ -66,37 +34,29 @@ export default function StoreAction() {
             ref={menuRef}
             className="absolute right-0 mt-2 w-50 bg-white border border-gray-200 rounded-lg shadow-lg z-50 p-4"
           >
-            {(isConnected || isPhantomConnected) ? (
+            {connected ? (
               <>
                 <div className="mb-2 flex items-center justify-center space-x-2">
                   {/* Wallet avatar */}
                   <span className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 border border-gray-300">
-                    {getWalletIcon()}
+                    {wallet && wallet.adapter 
+                      ? <img src={walletLogos[wallet.adapter.name]} /> 
+                      : <i className="fas fa-wallet text-gray-600"></i>
+                    }
                   </span>
                   <div>
                     <div className="font-semibold text-gray-700">
-                      {connector?.name || isPhantomConnected && 'Phantom' || 'Wallet'}
+                      {wallet && wallet.adapter && wallet.adapter.name || 'Wallet'}
                     </div>
                     <div className="text-xs text-gray-500 break-all">
-                      {isPhantomConnected ? shortAddress(phantomAddress) : shortAddress(address)}
+                      {shortAddress(publicKey)}
                     </div>
                   </div>
-                  {/*<div className="font-semibold text-gray-700 ml-2">
-                    {isPhantomConnected
-                      ? (isPhantomLoading ? 'Loading...' : phantomBalance?.toFixed(2) + ' SOL')
-                      : (isLoading ? 'Loading...' : isError ? 'Error' : `${balance?.formatted} ${balance?.symbol}`)
-                    }
-                  </div>*/}
                 </div>
                 <button
                   className="w-full py-2 mt-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
                   onClick={() => {
-                    if (isPhantomConnected) {
-                      dispatch(disconnected());
-                    }
-                    if (connector) {
-                      disconnect();
-                    }
+                    disconnect();
                     setMenuOpen(false);
                   }}
                 >
@@ -107,9 +67,9 @@ export default function StoreAction() {
               <>
                 <div className="text-gray-600 mb-2">Not connected</div>
                 <button
-                  className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                  className="w-full py-2 bg-[#42677D] text-white rounded hover:bg-[#355263] transition"
                   onClick={() => {
-                    dispatch(openWalletModal());
+                    openWalletModal();
                     setMenuOpen(false);
                   }}
                 >

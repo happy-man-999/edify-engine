@@ -28,6 +28,11 @@ const GlobalStyles = () => (
     .world-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
     .email-input { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
     .email-input.show { max-height: 100px; transition: max-height 0.3s ease-in; }
+    @keyframes modalFadeIn { 
+      from { opacity: 0; transform: scale(0.9) translateY(-20px); } 
+      to { opacity: 1; transform: scale(1) translateY(0); } 
+    }
+    .animate-modalFadeIn { animation: modalFadeIn 0.3s ease-out; }
   `}</style>
 );
 

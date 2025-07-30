@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { useWriteContract, useAccount } from "wagmi";
-import { parseEther } from "viem";
 import StoreGlobalStyles from "../components/store/StoreGlobalStyles"
 import StoreHeader from "../components/store/StoreHeader";
 import StoreTabs from "../components/store/StoreTabs";
@@ -16,10 +14,8 @@ const Store = () => {
   const [cartCount, setCartCount] = useState(3);
   const [currency, setCurrency] = useState("USD");
   const [activeTab, setActiveTab] = useState("Featured");
-  const { writeContract, status, data, error } = useWriteContract();
-  const { isConnected } = useAccount();
-  const { isConnected: isPhantomConnected } = useSelector(state => state.phantom);
-console.log(status, data, error)
+  /*const { writeContract, status, data, error } = useWriteContract();
+console.log(status, data, error)*/
   const handleAddToCart = (item) => {
     setCartCount(c => c + 1);
     showNotification("Item added to cart");
@@ -39,7 +35,7 @@ console.log(status, data, error)
       functionName: 'setItemPrice',
       args: ['item', parseEther('0.00005')],
     })*/
-    if (isPhantomConnected) {
+    /*if (isPhantomConnected) {
       sendSOLWithReference(import.meta.env.VITE_OWNER_SOLNANA_ADDRESS, 0.005, "order-id-12345");
     }
     else if (isConnected) {
@@ -50,7 +46,7 @@ console.log(status, data, error)
         args: ['item'],
         value: parseEther('0.002')
       })
-    }
+    }*/
   }
 
   // Tab content

@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  walletModalOpen: false,
   errorModal: { open: false, message: '' },
   yesNoModal: {
     open: false,
@@ -10,14 +9,19 @@ const initialState = {
     reject: null,
   },
   notification: null,
+  loadingSpinner: {
+    isVisible: false,
+    message: 'Loading...',
+  },
+  walletModal: {
+    isOpen: false,
+  },
 };
 
 const uiSlice = createSlice({
   name: 'ui',
   initialState,
   reducers: {
-    openWalletModal(state) { state.walletModalOpen = true; },
-    closeWalletModal(state) { state.walletModalOpen = false; },
     showErrorModal(state, action) { state.errorModal = { open: true, message: action.payload }; },
     closeErrorModal(state) { state.errorModal = { open: false, message: '' }; },
     showYesNoModal(state, action) {
@@ -33,18 +37,42 @@ const uiSlice = createSlice({
     },
     showNotification(state, action) { state.notification = action.payload; },
     clearNotification(state) { state.notification = null; },
+    showLoadingSpinner(state, action) { 
+      state.loadingSpinner = { 
+        isVisible: true, 
+        message: action.payload || 'Loading...' 
+      }; 
+    },
+    hideLoadingSpinner(state) { 
+      state.loadingSpinner = { 
+        isVisible: false, 
+        message: 'Loading...' 
+      }; 
+    },
+    showWalletModal(state) { 
+      state.walletModal = { 
+        isOpen: true 
+      }; 
+    },
+    hideWalletModal(state) { 
+      state.walletModal = { 
+        isOpen: false 
+      }; 
+    },
   },
 });
 
 export const {
-  openWalletModal,
-  closeWalletModal,
   showErrorModal,
   closeErrorModal,
   showYesNoModal,
   closeYesNoModal,
   showNotification,
   clearNotification,
+  showLoadingSpinner,
+  hideLoadingSpinner,
+  showWalletModal,
+  hideWalletModal,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;
