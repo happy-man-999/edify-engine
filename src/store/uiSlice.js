@@ -5,8 +5,7 @@ const initialState = {
   yesNoModal: {
     open: false,
     message: '',
-    resolve: null,
-    reject: null,
+    modalId: '',
   },
   notification: null,
   loadingSpinner: {
@@ -28,12 +27,11 @@ const uiSlice = createSlice({
       state.yesNoModal = {
         open: true,
         message: action.payload.message,
-        resolve: action.payload.resolve,
-        reject: action.payload.reject,
+        modalId: action.payload.modalId,
       };
     },
     closeYesNoModal(state) {
-      state.yesNoModal = { open: false, message: '', resolve: null, reject: null };
+      state.yesNoModal = { open: false, message: '', modalId: '' };
     },
     showNotification(state, action) { state.notification = action.payload; },
     clearNotification(state) { state.notification = null; },

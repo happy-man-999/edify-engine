@@ -1,30 +1,65 @@
 import { Transaction, SystemProgram, PublicKey, Connection, TransactionInstruction } from '@solana/web3.js';
-import { createMemoInstruction } from '@solana/spl-memo';
 
 export const sendSOLWithReference = async (recipient, amountSol, reference) => {
-  const connection = new Connection('https://api.devnet.solana.com');
-  const sender = window.solana.publicKey;
-  const lamports = amountSol * 1e9;
+  try {
+    // Validate inputs
+    if (!recipient || !amountSol || !reference) {
+      throw new Error('Missing required parameters');
+    }
 
-  const transaction = new Transaction().add(
-    SystemProgram.transfer({
-      fromPubkey: sender,
-      toPubkey: new PublicKey(recipient),
-      lamports,
-    }),
-    new TransactionInstruction({
-      keys: [],
-      programId: new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'),
-      data: Buffer.from(reference),
-    })
-  );
+    if (amountSol <= 0) {
+      throw new Error('Amount must be greater than 0');
+    }
 
-  transaction.feePayer = sender;
-  transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+    // Check if wallet is available
+    if (!window.solana || !window.solana.publicKey) {
+      throw new Error('Wallet not connected');
+    }
 
-  const signed = await window.solana.signTransaction(transaction);
-  const signature = await connection.sendRawTransaction(signed.serialize());
-  await connection.confirmTransaction(signature, 'confirmed');
+    const connection = new Connection('https://api.devnet.solana.com');
+    const sender = window.solana.publicKey;
+    const lamports = amountSol * 1e9;
 
-  return signature;
+    // Validate recipient address
+    let recipientPubkey;
+    try {
+      recipientPubkey = new PublicKey(recipient);
+    } catch (error) {
+      throw new Error('Invalid recipient address');
+    }
+
+    const transaction = new Transaction().add(
+      SystemProgram.transfer({
+        fromPubkey: sender,
+        toPubkey: recipientPubkey,
+        lamports,
+      }),
+      new TransactionInstruction({
+        keys: [],
+        programId: new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'),
+        data: Buffer.from(reference),
+      })
+    );
+
+    transaction.feePayer = sender;
+    transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+
+    // Sign the transaction
+    const signed = await window.solana.signTransaction(transaction);
+    
+    // Send the transaction
+    const signature = await connection.sendRawTransaction(signed.serialize());
+    
+    // Wait for confirmation
+    const confirmation = await connection.confirmTransaction(signature, 'confirmed');
+    
+    if (confirmation.value.err) {
+      throw new Error('Transaction failed to confirm');
+    }
+
+    return signature;
+  } catch (error) {
+    console.error('SOL payment error:', error);
+    throw new Error(`Payment failed: ${error.message}`);
+  }
 };

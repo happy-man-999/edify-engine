@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import StoreGlobalStyles from "../components/store/StoreGlobalStyles"
 import StoreHeader from "../components/store/StoreHeader";
 import StoreTabs from "../components/store/StoreTabs";
@@ -7,47 +6,77 @@ import StoreCategories from "../components/store/StoreCategories";
 import FeaturedSection from "../components/store/FeaturedSection";
 import AppsSection from "../components/store/AppsSection";
 import BundlesSection from "../components/store/BundlesSection";
-import EthereumContractABI from "../utils/abis/EthereumContract.json"
 import { sendSOLWithReference } from "../utils/paySolana";
+import { useLoadingSpinner } from "../hooks/useLoadingSpinner";
+import { useErrorModal } from "../hooks/useErrorModal";
+import { useYesNoModal } from "../hooks/useYesNoModal";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { useDispatch } from "react-redux";
+import { showNotification } from "../store/uiSlice";
 
 const Store = () => {
   const [cartCount, setCartCount] = useState(3);
   const [currency, setCurrency] = useState("USD");
   const [activeTab, setActiveTab] = useState("Featured");
-  /*const { writeContract, status, data, error } = useWriteContract();
-console.log(status, data, error)*/
+  
+  const dispatch = useDispatch();
+  const { connected, publicKey } = useWallet();
+  const { showSpinner, hideSpinner } = useLoadingSpinner();
+  const { showError } = useErrorModal();
+  const { showModal } = useYesNoModal();
+  
   const handleAddToCart = (item) => {
     setCartCount(c => c + 1);
-    showNotification("Item added to cart");
+    dispatch(showNotification("Item added to cart"));
   };
 
   const handleCurrencyToggle = () => {
     setCurrency(c => c === "USD" ? "BTC" : "USD");
   };
-  const handleCryptoPay = () => {
-    /*sendTransaction({ 
-      to: import.meta.env.VITE_OWNER_ETHEREUM_ADDRESS, 
-      value: parseEther('0.00005')
-    })*//*
-    writeContract({
-      address: import.meta.env.VITE_SMART_CONTRACT_ADDRESS,
-      abi: EthereumContractABI.abi,
-      functionName: 'setItemPrice',
-      args: ['item', parseEther('0.00005')],
-    })*/
-    /*if (isPhantomConnected) {
-      sendSOLWithReference(import.meta.env.VITE_OWNER_SOLNANA_ADDRESS, 0.005, "order-id-12345");
+
+  const handleCryptoPay = async (item) => {
+    // Check if wallet is connected
+    if (!connected || !publicKey) {
+      showError("Please connect your wallet first");
+      return;
     }
-    else if (isConnected) {
-      writeContract({
-        address: import.meta.env.VITE_SMART_CONTRACT_ADDRESS,
-        abi: EthereumContractABI.abi,
-        functionName: 'purchase',
-        args: ['item'],
-        value: parseEther('0.002')
-      })
-    }*/
-  }
+
+    // Show confirmation modal
+    const confirmed = await showModal(`Confirm payment of 0.005 SOL for ${item?.name || 'this item'}?`);
+
+    if (!confirmed) {
+      return; // User cancelled
+    }
+
+    try {
+      // Show loading spinner
+      showSpinner("Processing payment...");
+
+      // Generate a unique order ID
+      const orderId = `order-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Send the payment
+      const signature = await sendSOLWithReference(
+        import.meta.env.VITE_OWNER_SOLNANA_ADDRESS, 
+        0.005, 
+        orderId
+      );
+
+      console.log(signature);
+
+      // Hide spinner and show success
+      hideSpinner();
+      dispatch(showNotification(`Payment successful! Transaction: ${signature.slice(0, 8)}...`));
+      
+      // Update cart count (remove item from cart)
+      setCartCount(c => Math.max(0, c - 1));
+      
+    } catch (error) {
+      hideSpinner();
+      console.error('Payment failed:', error);
+      showError(`Payment failed: ${error.message}`);
+    }
+  };
 
   // Tab content
   let tabContent = null;
