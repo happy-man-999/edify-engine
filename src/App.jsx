@@ -13,6 +13,7 @@ import Store from './pages/Store';
 import Signup from './pages/Signup';
 import Signin from './pages/Signin';
 import SignupSuccess from './pages/SignupSuccess';
+import AuthCallback from './pages/AuthCallback';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -35,6 +36,7 @@ import {
   clearNotification,
 } from './store/uiSlice';
 import YesNoModal from './components/YesNoModal';
+import { AuthProvider } from './contexts/AuthContext';
 import './App.css';
 
 function App() {
@@ -62,7 +64,8 @@ function App() {
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           <Router>
-            <MainLayout>
+            <AuthProvider>
+              <MainLayout>
               <Routes>
                 <Route path="/" element={<Navbar />} />
                 <Route path="/store" element={<Navbar />} />
@@ -73,6 +76,7 @@ function App() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/signin" element={<Signin />} />
                 <Route path="/signup-success" element={<SignupSuccess />} />
+                <Route path="/auth-callback" element={<AuthCallback />} />
               </Routes>
 
               <Routes>
@@ -85,6 +89,7 @@ function App() {
               <YesNoModal />
               <CustomWalletModal />
             </MainLayout>
+            </AuthProvider>
           </Router>
         </WalletModalProvider>
       </WalletProvider>

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import GlobalStyles from '../components/GlobalStyles';
 
 const Signin = () => {
   const navigate = useNavigate();
+  const { signin, initiateGoogleAuth } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -45,18 +47,23 @@ const Signin = () => {
     setIsLoading(true);
     
     try {
-      // TODO: Implement actual signin logic here
-      // For now, we'll simulate a successful signin
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const result = await signin(formData);
       
-      // Redirect to homepage after successful signin
-      navigate('/');
+      if (result.success) {
+        navigate('/');
+      } else {
+        setErrors({ general: result.error });
+      }
     } catch (error) {
       console.error('Signin failed:', error);
-      setErrors({ general: 'Invalid email or password. Please try again.' });
+      setErrors({ general: 'An unexpected error occurred. Please try again.' });
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleGoogleSignin = () => {
+    initiateGoogleAuth();
   };
 
   return (
@@ -140,6 +147,24 @@ const Signin = () => {
                 )}
               </button>
             </div>
+            
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">Or continue with</span>
+              </div>
+            </div>
+            
+            <button
+              type="button"
+              onClick={handleGoogleSignin}
+              className="w-full bg-white border border-gray-300 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center justify-center"
+            >
+              <i className="fab fa-google mr-2 text-red-500"></i>
+              Sign in with Google
+            </button>
           </form>
           
           <div className="mt-8 pt-6 border-t border-gray-200">

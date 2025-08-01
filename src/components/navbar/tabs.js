@@ -2,7 +2,7 @@ export const homepageTabs = [
   { title: "Dashboard", href: "#" },
   { title: "Explore", href: "#" },
   { title: "Store", href: "/store" },
-  { title: "Login", href: "#" },
+  { title: "Sign In", href: "/signin" },
 ]
 export const storeTabs = [
   { title: "Dashboard", href: "#" },

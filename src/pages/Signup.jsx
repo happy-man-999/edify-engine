@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { initializeStripe, createCheckoutSession, redirectToCheckout } from '../utils/stripe';
 import {
   WelcomeStep,
@@ -14,6 +15,7 @@ import GlobalStyles from '../components/GlobalStyles';
 
 const Signup = () => {
   const navigate = useNavigate();
+  const { signup } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -118,6 +120,20 @@ const Signup = () => {
   const handlePayment = async () => {
     try {
       setIsProcessingPayment(true);
+      
+      // First, create the user account
+      const signupData = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password
+      };
+      
+      const signupResult = await signup(signupData);
+      
+      if (!signupResult.success) {
+        throw new Error(signupResult.error);
+      }
       
       // Create checkout session for $47.00 (4700 cents)
       const sessionId = await createCheckoutSession(4700);
