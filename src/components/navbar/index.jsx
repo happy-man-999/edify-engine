@@ -1,22 +1,30 @@
 import React from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
 import { homepageTabs, storeTabs } from './tabs';
 import HomepageAction from './HomepageAction'
 import StoreAction from './StoreAction'
 
-const routeWithTabs = (path, tabs) => (
-  <Route 
-    path={path}
-    element={<>
+const NavbarTabs = () => {
+  const location = useLocation();
+  
+  const tabs = location.pathname === '/store' ? storeTabs : homepageTabs;
+  
+  return (
+    <>
       {tabs.map((tab, id) => (
         <Link key={id} to={tab.href} className="hover:text-[#42677D] transition">
           {tab.title}
         </Link>
       ))}
-    </>}
-  >
-  </Route>
-)
+    </>
+  );
+};
+
+const NavbarAction = () => {
+  const location = useLocation();
+  
+  return location.pathname === '/store' ? <StoreAction /> : <HomepageAction />;
+};
 
 const Navbar = () => (
   <nav className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-sm">
@@ -27,16 +35,10 @@ const Navbar = () => (
         </video>
       </a>
       <div className="hidden md:flex space-x-6">
-        <Routes>
-          {routeWithTabs("/", homepageTabs)}
-          {routeWithTabs("/store", storeTabs)}
-        </Routes>
+        <NavbarTabs />
       </div>
       <div className="flex-1" />
-      <Routes>
-        <Route path="/" element={<HomepageAction />} />
-        <Route path="/store" element={<StoreAction />} />
-      </Routes>
+      <NavbarAction />
     </div>
   </nav>
 );

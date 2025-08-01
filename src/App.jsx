@@ -10,6 +10,9 @@ import LoadingSpinner from './components/LoadingSpinner';
 import CustomWalletModal from './components/CustomWalletModal';
 import Homepage from './pages/Homepage';
 import Store from './pages/Store';
+import Signup from './pages/Signup';
+import Signin from './pages/Signin';
+import SignupSuccess from './pages/SignupSuccess';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -60,10 +63,16 @@ function App() {
         <WalletModalProvider>
           <Router>
             <MainLayout>
-              <Navbar />
+              <Routes>
+                <Route path="/" element={<Navbar />} />
+                <Route path="/store" element={<Navbar />} />
+              </Routes>
               <Routes>
                 <Route path="/" element={<Homepage />} />
                 <Route path="/store" element={<Store />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/signin" element={<Signin />} />
+                <Route path="/signup-success" element={<SignupSuccess />} />
               </Routes>
 
               <Routes>
