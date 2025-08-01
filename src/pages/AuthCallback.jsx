@@ -6,20 +6,48 @@ import LoadingSpinner from '../components/LoadingSpinner';
 const AuthCallback = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { signin } = useAuth();
+  const { signin, checkSignupProgress } = useAuth();
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const token = searchParams.get('token');
     
+    console.log('AuthCallback: Token received:', !!token);
+    
     if (token) {
-      // Store the token and redirect to homepage
-      localStorage.setItem('token', token);
-      window.location.href = '/';
+      const handleAuth = async () => {
+        try {
+          console.log('AuthCallback: Storing token and checking progress...');
+          
+          // Store the token
+          localStorage.setItem('token', token);
+          
+          // Check signup progress
+          const progressData = await checkSignupProgress();
+          console.log('AuthCallback: Progress data:', progressData);
+          
+          if (progressData && progressData.shouldRedirectToSignup) {
+            console.log('AuthCallback: Redirecting to signup');
+            // User hasn't completed signup, redirect to signup
+            navigate('/signup');
+          } else {
+            console.log('AuthCallback: Redirecting to homepage');
+            // User has completed signup or no progress found, redirect to homepage
+            navigate('/');
+          }
+        } catch (error) {
+          console.error('Auth callback error:', error);
+          // On error, redirect to homepage as fallback
+          navigate('/');
+        }
+      };
+      
+      handleAuth();
     } else {
+      console.log('AuthCallback: No token received');
       setError('Authentication failed. No token received.');
     }
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, checkSignupProgress]);
 
   if (error) {
     return (

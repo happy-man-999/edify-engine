@@ -5,7 +5,23 @@ let stripe = null;
 export const initializeStripe = async () => {
   try {
     const { loadStripe } = await import('@stripe/stripe-js');
-    stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+    const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+    
+    if (!stripePublicKey) {
+      console.log('Stripe public key not found, using mock mode');
+      // For development, create a mock stripe object
+      stripe = {
+        redirectToCheckout: async ({ sessionId }) => {
+          console.log('Mock Stripe redirect to checkout with session:', sessionId);
+          // Simulate redirect to success page
+          window.location.href = `/signup-success?session_id=${sessionId}`;
+          return { error: null };
+        }
+      };
+      return true;
+    }
+    
+    stripe = await loadStripe(stripePublicKey);
     console.log("Stripe Initialized: ", stripe)
     return true;
   } catch (error) {
@@ -51,7 +67,7 @@ export const createCheckoutSession = async (amount, currency = 'usd') => {
       body: JSON.stringify({
         amount,
         currency,
-        success_url: `${window.location.origin}/signup-success`,
+        success_url: `${window.location.origin}/signup-success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${window.location.origin}/signup`,
       }),
     });

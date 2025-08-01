@@ -1,7 +1,90 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const SignupSuccess = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { checkSignupProgress } = useAuth();
+  const [isProcessing, setIsProcessing] = useState(true);
+
+  useEffect(() => {
+    const handlePaymentSuccess = async () => {
+      try {
+        console.log('SignupSuccess: Checking URL parameters...');
+        console.log('SignupSuccess: All search params:', Object.fromEntries(searchParams.entries()));
+        
+        // Check if this is a payment success redirect
+        const sessionId = searchParams.get('session_id');
+        const paymentIntent = searchParams.get('payment_intent');
+        
+        console.log('SignupSuccess: sessionId:', sessionId);
+        console.log('SignupSuccess: paymentIntent:', paymentIntent);
+        
+        if (sessionId || paymentIntent) {
+          console.log('Payment success detected, updating payment status...');
+          
+          // Call the payment-success endpoint to update payment status
+          const token = localStorage.getItem('token');
+          const response = await fetch('/api/stripe/payment-success', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              sessionId: sessionId || paymentIntent,
+              amount: 4700
+            })
+          });
+          
+          if (response.ok) {
+            console.log('Payment status updated successfully via /payment-success endpoint');
+          } else {
+            console.error('Failed to update payment status:', response.status);
+          }
+        } else {
+          console.log('No payment parameters found, checking if signup is already complete...');
+        }
+        
+        // Check signup completion
+        const progressData = await checkSignupProgress();
+        console.log('SignupSuccess: Progress data:', progressData);
+        
+        if (progressData && progressData.isCompleted) {
+          console.log('Signup completed successfully, user can access the platform');
+          setIsProcessing(false);
+        } else {
+          console.log('Signup not completed, redirecting to signup');
+          //navigate('/signup');
+        }
+      } catch (error) {
+        console.error('Error handling payment success:', error);
+        //navigate('/signup');
+      }
+    };
+
+    handlePaymentSuccess();
+  }, [searchParams, checkSignupProgress, navigate]);
+
+  if (isProcessing) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="max-w-md mx-auto text-center">
+          <div className="bg-white rounded-lg shadow-sm p-8">
+            <div className="mb-6">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+              </div>
+              <h1 className="text-xl font-semibold text-gray-900 mb-2">Processing Payment</h1>
+              <p className="text-gray-600">Please wait while we complete your signup...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="max-w-md mx-auto text-center">

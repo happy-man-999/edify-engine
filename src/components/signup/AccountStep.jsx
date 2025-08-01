@@ -1,16 +1,49 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useSearchParams } from 'react-router-dom';
 
 const AccountStep = ({ formData, errors, onInputChange, onNext }) => {
-  const { initiateGoogleAuth } = useAuth();
+  const { initiateGoogleAuth, user, isAuthenticated } = useAuth();
+  const [searchParams] = useSearchParams();
   
+  // Check if user completed Google auth and came back to signup
+  useEffect(() => {
+    const googleAuthCompleted = searchParams.get('googleAuthCompleted');
+    const token = searchParams.get('token');
+    
+    if (googleAuthCompleted === 'true' && token && isAuthenticated && user) {
+      // Auto-fill the form with Google user data
+      onInputChange('firstName', user.firstName || '');
+      onInputChange('lastName', user.lastName || '');
+      onInputChange('email', user.email || '');
+      
+      // Skip password fields since user is authenticated via Google
+      // Continue to next step
+      setTimeout(() => {
+        onNext();
+      }, 100);
+    }
+  }, [searchParams, isAuthenticated, user, onInputChange, onNext]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onNext();
   };
 
   const handleGoogleSignIn = () => {
-    initiateGoogleAuth();
+    // Store signup state in localStorage to resume after Google auth
+    localStorage.setItem('signupInProgress', 'true');
+    localStorage.setItem('signupStep', '2'); // Account step
+    localStorage.setItem('signupFormData', JSON.stringify(formData));
+    
+    // Redirect to Google auth with special parameter
+    const currentUrl = window.location.href;
+    const googleAuthUrl = '/api/auth/google?from=signup';
+    
+    // Store the return URL
+    localStorage.setItem('signupReturnUrl', currentUrl);
+    
+    window.location.href = googleAuthUrl;
   };
 
   return (
@@ -91,33 +124,38 @@ const AccountStep = ({ formData, errors, onInputChange, onNext }) => {
           {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
         </div>
         
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-          <input
-            type="password"
-            value={formData.password}
-            onChange={(e) => onInputChange('password', e.target.value)}
-            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#42677D] transition-colors ${
-              errors.password ? 'border-red-500' : 'border-gray-300'
-            }`}
-            placeholder="Create a strong password"
-          />
-          {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
-          <input
-            type="password"
-            value={formData.passwordConfirmation}
-            onChange={(e) => onInputChange('passwordConfirmation', e.target.value)}
-            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#42677D] transition-colors ${
-              errors.passwordConfirmation ? 'border-red-500' : 'border-gray-300'
-            }`}
-            placeholder="Confirm your password"
-          />
-          {errors.passwordConfirmation && <p className="text-red-500 text-sm mt-1">{errors.passwordConfirmation}</p>}
-        </div>
+        {/* Only show password fields if not using Google auth */}
+        {formData.password !== 'google-auth' && (
+          <>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+              <input
+                type="password"
+                value={formData.password}
+                onChange={(e) => onInputChange('password', e.target.value)}
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#42677D] transition-colors ${
+                  errors.password ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="Create a strong password"
+              />
+              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+              <input
+                type="password"
+                value={formData.passwordConfirmation}
+                onChange={(e) => onInputChange('passwordConfirmation', e.target.value)}
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#42677D] transition-colors ${
+                  errors.passwordConfirmation ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="Confirm your password"
+              />
+              {errors.passwordConfirmation && <p className="text-red-500 text-sm mt-1">{errors.passwordConfirmation}</p>}
+            </div>
+          </>
+        )}
         
         <div className="pt-4">
           <button

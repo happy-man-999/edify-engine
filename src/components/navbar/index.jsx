@@ -3,11 +3,18 @@ import { Routes, Route, Link, useLocation } from "react-router-dom";
 import { homepageTabs, storeTabs } from './tabs';
 import HomepageAction from './HomepageAction'
 import StoreAction from './StoreAction'
+import { useAuth } from '../../contexts/AuthContext';
 
 const NavbarTabs = () => {
   const location = useLocation();
+  const { isAuthenticated } = useAuth();
   
-  const tabs = location.pathname === '/store' ? storeTabs : homepageTabs;
+  let tabs = location.pathname === '/store' ? storeTabs : homepageTabs;
+  
+  // Filter out "Sign In" tab if user is authenticated
+  if (isAuthenticated) {
+    tabs = tabs.filter(tab => tab.title !== "Sign In");
+  }
   
   return (
     <>

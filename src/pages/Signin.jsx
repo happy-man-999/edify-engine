@@ -5,7 +5,7 @@ import GlobalStyles from '../components/GlobalStyles';
 
 const Signin = () => {
   const navigate = useNavigate();
-  const { signin, initiateGoogleAuth } = useAuth();
+  const { signin, initiateGoogleAuth, checkSignupProgress } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -50,7 +50,16 @@ const Signin = () => {
       const result = await signin(formData);
       
       if (result.success) {
-        navigate('/');
+        // Check signup progress after successful signin
+        const progressData = await checkSignupProgress();
+        
+        if (progressData && progressData.shouldRedirectToSignup) {
+          // User hasn't completed signup, redirect to signup
+          navigate('/signup');
+        } else {
+          // User has completed signup, redirect to homepage
+          navigate('/');
+        }
       } else {
         setErrors({ general: result.error });
       }
