@@ -14,6 +14,7 @@ import Signup from './pages/Signup';
 import Signin from './pages/Signin';
 import SignupSuccess from './pages/SignupSuccess';
 import AuthCallback from './pages/AuthCallback';
+import Admin from './pages/Admin';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -36,7 +37,7 @@ import {
   clearNotification,
 } from './store/uiSlice';
 import YesNoModal from './components/YesNoModal';
-import { AuthProvider } from './contexts/AuthContext';
+
 import './App.css';
 
 function App() {
@@ -64,32 +65,31 @@ function App() {
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           <Router>
-            <AuthProvider>
-              <MainLayout>
-              <Routes>
-                <Route path="/" element={<Navbar />} />
-                <Route path="/store" element={<Navbar />} />
-              </Routes>
-              <Routes>
-                <Route path="/" element={<Homepage />} />
-                <Route path="/store" element={<Store />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/signin" element={<Signin />} />
-                <Route path="/signup-success" element={<SignupSuccess />} />
-                <Route path="/auth-callback" element={<AuthCallback />} />
-              </Routes>
+            <MainLayout>
+            <Routes>
+              <Route path="/" element={<Navbar />} />
+              <Route path="/store" element={<Navbar />} />
+            </Routes>
+            <Routes>
+              <Route path="/" element={<Homepage />} />
+              <Route path="/store" element={<Store />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/signin" element={<Signin />} />
+              <Route path="/signup-success" element={<SignupSuccess />} />
+              <Route path="/auth-callback" element={<AuthCallback />} />
+              <Route path="/admin" element={<Admin />} />
+            </Routes>
 
-              <Routes>
-                <Route path="/" element={<Footer />} />
-                <Route path="/store" element={<StoreFooter />} />
-              </Routes>
-              <LoadingSpinner />
-              {notification && <Notification message={notification} onClose={() => dispatch(clearNotification())} />}
-              <ErrorModal open={errorModal.open} message={errorModal.message} onClose={() => dispatch(closeErrorModal())} />
-              <YesNoModal />
-              <CustomWalletModal />
-            </MainLayout>
-            </AuthProvider>
+            <Routes>
+              <Route path="/" element={<Footer />} />
+              <Route path="/store" element={<StoreFooter />} />
+            </Routes>
+            <LoadingSpinner />
+            {notification && <Notification message={notification} onClose={() => dispatch(clearNotification())} />}
+            <ErrorModal open={errorModal.open} message={errorModal.message} onClose={() => dispatch(closeErrorModal())} />
+            <YesNoModal />
+            <CustomWalletModal />
+          </MainLayout>
           </Router>
         </WalletModalProvider>
       </WalletProvider>

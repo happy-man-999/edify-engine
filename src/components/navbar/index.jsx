@@ -3,7 +3,7 @@ import { Routes, Route, Link, useLocation } from "react-router-dom";
 import { homepageTabs, storeTabs } from './tabs';
 import HomepageAction from './HomepageAction'
 import StoreAction from './StoreAction'
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 
 const NavbarTabs = () => {
   const location = useLocation();

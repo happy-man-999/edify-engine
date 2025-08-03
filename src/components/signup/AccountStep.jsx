@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import { useSearchParams } from 'react-router-dom';
 
 const AccountStep = ({ formData, errors, onInputChange, onNext }) => {

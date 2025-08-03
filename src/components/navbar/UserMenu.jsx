@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import { useWalletWithRedirects } from '../../hooks/useWalletWithRedirects';
 import { useWalletModal } from '../../hooks/useWalletModal';
 import { shortAddress } from '../../utils/format';

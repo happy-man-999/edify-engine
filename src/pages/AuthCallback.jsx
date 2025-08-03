@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const AuthCallback = () => {
@@ -45,7 +45,7 @@ const AuthCallback = () => {
       console.log('AuthCallback: No token received');
       setError('Authentication failed. No token received.');
     }
-  }, [searchParams, navigate, handleGoogleAuthCompletion, checkSignupProgress]);
+  }, [searchParams]);
 
   if (error) {
     return (

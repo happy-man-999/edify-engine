@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 const SignupSuccess = () => {
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const SignupSuccess = () => {
     };
 
     handlePaymentSuccess();
-  }, [searchParams, checkSignupProgress, navigate]);
+  }, [searchParams]);
 
   if (isProcessing) {
     return (
