@@ -62,8 +62,6 @@ const Store = () => {
         orderId
       );
 
-      console.log(signature);
-
       // Hide spinner and show success
       hideSpinner();
       dispatch(showNotification(`Payment successful! Transaction: ${signature.slice(0, 8)}...`));

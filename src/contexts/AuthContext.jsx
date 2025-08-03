@@ -149,10 +149,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const initiateGoogleAuth = () => {
-    window.location.href = '/auth/google';
-  };
-
   const handleGoogleAuthCompletion = useCallback(async (token) => {
     try {
       setToken(token);
@@ -185,14 +181,10 @@ export const AuthProvider = ({ children }) => {
   const checkSignupProgress = async () => {
     try {
       const currentToken = localStorage.getItem('token');
-      console.log('checkSignupProgress: Token available:', !!currentToken);
       
       if (!currentToken) {
-        console.log('No token available for signup progress check');
         return null;
       }
-
-      console.log('checkSignupProgress: Making API request to:', '/api/signup-progress/progress');
       
       const response = await fetch('/api/signup-progress/progress', {
         headers: {
@@ -201,18 +193,14 @@ export const AuthProvider = ({ children }) => {
         }
       });
 
-      console.log('checkSignupProgress: Response status:', response.status);
-
       if (response.ok) {
         const data = await response.json();
-        console.log('checkSignupProgress: Response data:', data);
         setSignupProgress(data.progress);
         setHasCompletedSignup(data.isCompleted);
         return data;
       } else {
-        console.log('checkSignupProgress: Response not ok, status:', response.status);
         const errorText = await response.text();
-        console.log('checkSignupProgress: Error response:', errorText);
+        console.error('checkSignupProgress: Response not ok, status:', response.status, 'Error:', errorText);
       }
     } catch (error) {
       console.error('Check signup progress error:', error);
@@ -222,15 +210,11 @@ export const AuthProvider = ({ children }) => {
   const saveSignupProgress = async (step, data) => {
     try {
       const currentToken = localStorage.getItem('token');
-      console.log('saveSignupProgress: Token available:', !!currentToken);
-      console.log('saveSignupProgress: Step:', step, 'Data:', data);
       
       if (!currentToken) {
         throw new Error('No token available for saving signup progress');
       }
 
-      console.log('saveSignupProgress: Making API request to:', '/api/signup-progress/progress');
-      
       const response = await fetch('/api/signup-progress/progress', {
         method: 'POST',
         headers: {
@@ -240,18 +224,14 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ step, data })
       });
 
-      console.log('saveSignupProgress: Response status:', response.status);
-
       if (response.ok) {
         const result = await response.json();
-        console.log('saveSignupProgress: Success response:', result);
         setSignupProgress(result.progress);
         setHasCompletedSignup(result.isCompleted);
         return result;
       } else {
-        console.log('saveSignupProgress: Response not ok, status:', response.status);
         const errorText = await response.text();
-        console.log('saveSignupProgress: Error response:', errorText);
+        console.error('saveSignupProgress: Response not ok, status:', response.status, 'Error:', errorText);
         throw new Error(`Failed to save progress: ${response.status} - ${errorText}`);
       }
     } catch (error) {
@@ -268,7 +248,6 @@ export const AuthProvider = ({ children }) => {
     signin,
     signout,
     updateProfile,
-    initiateGoogleAuth,
     handleGoogleAuthCompletion,
     checkSignupProgress,
     saveSignupProgress,

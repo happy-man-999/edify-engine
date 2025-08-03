@@ -88,8 +88,6 @@ const Signup = () => {
       // Set current step to the next incomplete step
       const nextStep = Math.min(signupProgress.currentStep + 1, totalSteps);
       setCurrentStep(nextStep);
-      
-      console.log('Loaded existing signup progress:', signupProgress);
     }
   }, [signupProgress, isAuthenticated, totalSteps]);
 
@@ -123,12 +121,6 @@ const Signup = () => {
           // Clean up URL parameters
           window.history.replaceState({}, document.title, '/signup');
           
-          console.log('Google auth completed, moved to step 3, form data:', {
-            firstName: googleUser.firstName,
-            lastName: googleUser.lastName,
-            email: googleUser.email
-          });
-          
           // Save the account info to progress
           try {
             await saveSignupProgress(2, {
@@ -137,7 +129,6 @@ const Signup = () => {
               email: googleUser.email || '',
               isGoogleAuth: true
             });
-            console.log('Saved Google auth progress');
           } catch (error) {
             console.error('Failed to save Google auth progress:', error);
           }
@@ -152,8 +143,7 @@ const Signup = () => {
 
   const validateStep = (step) => {
     const newErrors = {};
-    console.log('Validating step:', step, 'with form data:', formData);
-
+    
     switch (step) {
       case 2:
         if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
@@ -176,7 +166,6 @@ const Signup = () => {
         }
         break;
       case 3:
-        console.log('Validating step 3, useCases:', formData.useCases);
         if (formData.useCases.length === 0) {
           newErrors.useCases = 'Please select at least one option';
         }
@@ -204,50 +193,45 @@ const Signup = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = async () => {
-    console.log('handleNext called for step:', currentStep);
-    console.log('Current form data:', formData);
-    
+  const handleNext = async () => {    
     if (validateStep(currentStep)) {
-      console.log('Validation passed, saving progress and moving to next step');
-      
-              try {
-          // Save progress for current step
-          if (currentStep >= 2 && currentStep <= 6) {
-            let stepData = {};
-            
-            switch (currentStep) {
-              case 2:
-                stepData = {
-                  firstName: formData.firstName,
-                  lastName: formData.lastName,
-                  email: formData.email,
-                  isGoogleAuth: formData.password === 'google-auth'
-                };
-                break;
-              case 3:
-                stepData = { useCases: formData.useCases };
-                break;
-              case 4:
-                stepData = { isPersistent: formData.isPersistent };
-                break;
-              case 5:
-                stepData = { accessMethod: formData.accessMethod };
-                break;
-              case 6:
-                stepData = { customizationLevel: formData.customizationLevel };
-                break;
-            }
-            
-            await saveSignupProgress(currentStep, stepData);
+      try {
+        // Save progress for current step
+        if (currentStep >= 2 && currentStep <= 6) {
+          let stepData = {};
+          
+          switch (currentStep) {
+            case 2:
+              stepData = {
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                email: formData.email,
+                isGoogleAuth: formData.password === 'google-auth'
+              };
+              break;
+            case 3:
+              stepData = { useCases: formData.useCases };
+              break;
+            case 4:
+              stepData = { isPersistent: formData.isPersistent };
+              break;
+            case 5:
+              stepData = { accessMethod: formData.accessMethod };
+              break;
+            case 6:
+              stepData = { customizationLevel: formData.customizationLevel };
+              break;
           }
           
-          setCurrentStep(prev => Math.min(prev + 1, totalSteps));
-        } catch (error) {
-          console.error('Failed to save progress:', error);
-          // Still move to next step even if save fails
-          setCurrentStep(prev => Math.min(prev + 1, totalSteps));
+          await saveSignupProgress(currentStep, stepData);
         }
+        
+        setCurrentStep(prev => Math.min(prev + 1, totalSteps));
+      } catch (error) {
+        console.error('Failed to save progress:', error);
+        // Still move to next step even if save fails
+        setCurrentStep(prev => Math.min(prev + 1, totalSteps));
+      }
     } else {
       console.log('Validation failed, errors:', errors);
     }

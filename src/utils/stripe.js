@@ -12,7 +12,6 @@ export const initializeStripe = async () => {
       // For development, create a mock stripe object
       stripe = {
         redirectToCheckout: async ({ sessionId }) => {
-          console.log('Mock Stripe redirect to checkout with session:', sessionId);
           // Simulate redirect to success page
           window.location.href = `/signup-success?session_id=${sessionId}`;
           return { error: null };
@@ -22,7 +21,6 @@ export const initializeStripe = async () => {
     }
     
     stripe = await loadStripe(stripePublicKey);
-    console.log("Stripe Initialized: ", stripe)
     return true;
   } catch (error) {
     console.error('Failed to initialize Stripe:', error);
@@ -110,7 +108,6 @@ export const redirectToCheckout = async (sessionId) => {
 export const processPayment = async (clientSecret, paymentMethod) => {
   try {
     // For development, simulate successful payment
-    console.log('Payment processing placeholder - simulating success');
     return { success: true };
   } catch (error) {
     console.error('Payment processing error:', error);

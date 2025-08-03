@@ -5,7 +5,7 @@ import GlobalStyles from '../components/GlobalStyles';
 
 const Signin = () => {
   const navigate = useNavigate();
-  const { signin, initiateGoogleAuth, checkSignupProgress } = useAuth();
+  const { signin, checkSignupProgress } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -72,7 +72,8 @@ const Signin = () => {
   };
 
   const handleGoogleSignin = () => {
-    initiateGoogleAuth();
+    const googleAuthUrl = '/api/auth/google';
+    window.location.href = googleAuthUrl;
   };
 
   return (

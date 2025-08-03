@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useSearchParams } from 'react-router-dom';
 
 const AccountStep = ({ formData, errors, onInputChange, onNext }) => {
-  const { initiateGoogleAuth, user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [searchParams] = useSearchParams();
   
   // Check if user completed Google auth and came back to signup

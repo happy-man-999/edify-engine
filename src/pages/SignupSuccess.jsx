@@ -10,20 +10,12 @@ const SignupSuccess = () => {
 
   useEffect(() => {
     const handlePaymentSuccess = async () => {
-      try {
-        console.log('SignupSuccess: Checking URL parameters...');
-        console.log('SignupSuccess: All search params:', Object.fromEntries(searchParams.entries()));
-        
+      try {        
         // Check if this is a payment success redirect
         const sessionId = searchParams.get('session_id');
         const paymentIntent = searchParams.get('payment_intent');
         
-        console.log('SignupSuccess: sessionId:', sessionId);
-        console.log('SignupSuccess: paymentIntent:', paymentIntent);
-        
-        if (sessionId || paymentIntent) {
-          console.log('Payment success detected, updating payment status...');
-          
+        if (sessionId || paymentIntent) {          
           // Call the payment-success endpoint to update payment status
           const token = localStorage.getItem('token');
           const response = await fetch('/api/stripe/payment-success', {
@@ -49,10 +41,8 @@ const SignupSuccess = () => {
         
         // Check signup completion
         const progressData = await checkSignupProgress();
-        console.log('SignupSuccess: Progress data:', progressData);
         
         if (progressData && progressData.isCompleted) {
-          console.log('Signup completed successfully, user can access the platform');
           setIsProcessing(false);
         } else {
           console.log('Signup not completed, redirecting to signup');

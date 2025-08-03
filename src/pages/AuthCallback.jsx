@@ -6,32 +6,30 @@ import LoadingSpinner from '../components/LoadingSpinner';
 const AuthCallback = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { signin, checkSignupProgress } = useAuth();
+  const { handleGoogleAuthCompletion, checkSignupProgress } = useAuth();
   const [error, setError] = useState(null);
+  
 
   useEffect(() => {
     const token = searchParams.get('token');
     
-    console.log('AuthCallback: Token received:', !!token);
-    
     if (token) {
       const handleAuth = async () => {
-        try {
-          console.log('AuthCallback: Storing token and checking progress...');
+        try {          
+          // Complete Google authentication and update user state
+          const authResult = await handleGoogleAuthCompletion(token);
           
-          // Store the token
-          localStorage.setItem('token', token);
+          if (!authResult.success) {
+            throw new Error(authResult.error || 'Authentication failed');
+          }
           
           // Check signup progress
           const progressData = await checkSignupProgress();
-          console.log('AuthCallback: Progress data:', progressData);
           
           if (progressData && progressData.shouldRedirectToSignup) {
-            console.log('AuthCallback: Redirecting to signup');
             // User hasn't completed signup, redirect to signup
             navigate('/signup');
           } else {
-            console.log('AuthCallback: Redirecting to homepage');
             // User has completed signup or no progress found, redirect to homepage
             navigate('/');
           }
@@ -47,7 +45,7 @@ const AuthCallback = () => {
       console.log('AuthCallback: No token received');
       setError('Authentication failed. No token received.');
     }
-  }, [searchParams, navigate, checkSignupProgress]);
+  }, [searchParams, navigate, handleGoogleAuthCompletion, checkSignupProgress]);
 
   if (error) {
     return (
