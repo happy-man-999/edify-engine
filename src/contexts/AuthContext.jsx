@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
     const checkAuth = async () => {
       if (token) {
         try {
-          const response = await fetch('/auth/profile', {
+          const response = await fetch('/api/auth/profile', {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (userData) => {
     try {
-      const response = await fetch('/auth/signup', {
+      const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }) => {
 
   const signin = async (credentials) => {
     try {
-      const response = await fetch('/auth/signin', {
+      const response = await fetch('/api/auth/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }) => {
   const signout = async () => {
     try {
       if (token) {
-        await fetch('/auth/signout', {
+        await fetch('/api/auth/signout', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -127,7 +127,7 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = async (profileData) => {
     try {
-      const response = await fetch('/auth/profile', {
+      const response = await fetch('/api/auth/profile', {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -158,7 +158,7 @@ export const AuthProvider = ({ children }) => {
       setToken(token);
       localStorage.setItem('token', token);
       
-      const response = await fetch('/auth/profile', {
+      const response = await fetch('/api/auth/profile', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -192,9 +192,9 @@ export const AuthProvider = ({ children }) => {
         return null;
       }
 
-      console.log('checkSignupProgress: Making API request to:', '/signup-progress/progress');
+      console.log('checkSignupProgress: Making API request to:', '/api/signup-progress/progress');
       
-      const response = await fetch('/signup-progress/progress', {
+      const response = await fetch('/api/signup-progress/progress', {
         headers: {
           'Authorization': `Bearer ${currentToken}`,
           'Content-Type': 'application/json'
@@ -229,9 +229,9 @@ export const AuthProvider = ({ children }) => {
         throw new Error('No token available for saving signup progress');
       }
 
-      console.log('saveSignupProgress: Making API request to:', '/signup-progress/progress');
+      console.log('saveSignupProgress: Making API request to:', '/api/signup-progress/progress');
       
-      const response = await fetch('/signup-progress/progress', {
+      const response = await fetch('/api/signup-progress/progress', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${currentToken}`,
