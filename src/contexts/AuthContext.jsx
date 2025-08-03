@@ -19,14 +19,12 @@ export const AuthProvider = ({ children }) => {
   const [hasCompletedSignup, setHasCompletedSignup] = useState(false);
   const navigate = useNavigate();
 
-  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-
   // Check if user is authenticated on app load
   useEffect(() => {
     const checkAuth = async () => {
       if (token) {
         try {
-          const response = await fetch(`${API_BASE_URL}/auth/profile`, {
+          const response = await fetch('/auth/profile', {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
@@ -54,11 +52,11 @@ export const AuthProvider = ({ children }) => {
     };
 
     checkAuth();
-  }, [token, API_BASE_URL]);
+  }, [token]);
 
   const signup = async (userData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/signup`, {
+      const response = await fetch('/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -83,7 +81,7 @@ export const AuthProvider = ({ children }) => {
 
   const signin = async (credentials) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/signin`, {
+      const response = await fetch('/auth/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -109,7 +107,7 @@ export const AuthProvider = ({ children }) => {
   const signout = async () => {
     try {
       if (token) {
-        await fetch(`${API_BASE_URL}/auth/signout`, {
+        await fetch('/auth/signout', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -129,7 +127,7 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = async (profileData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/profile`, {
+      const response = await fetch('/auth/profile', {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -152,7 +150,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const initiateGoogleAuth = () => {
-    window.location.href = `${API_BASE_URL}/auth/google`;
+    window.location.href = '/auth/google';
   };
 
   const handleGoogleAuthCompletion = useCallback(async (token) => {
@@ -160,7 +158,7 @@ export const AuthProvider = ({ children }) => {
       setToken(token);
       localStorage.setItem('token', token);
       
-      const response = await fetch(`${API_BASE_URL}/auth/profile`, {
+      const response = await fetch('/auth/profile', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -182,7 +180,7 @@ export const AuthProvider = ({ children }) => {
       console.error('Google auth completion error:', error);
       return { success: false, error: error.message };
     }
-  }, [API_BASE_URL]);
+  }, []);
 
   const checkSignupProgress = async () => {
     try {
@@ -194,9 +192,9 @@ export const AuthProvider = ({ children }) => {
         return null;
       }
 
-      console.log('checkSignupProgress: Making API request to:', `${API_BASE_URL}/signup-progress/progress`);
+      console.log('checkSignupProgress: Making API request to:', '/signup-progress/progress');
       
-      const response = await fetch(`${API_BASE_URL}/signup-progress/progress`, {
+      const response = await fetch('/signup-progress/progress', {
         headers: {
           'Authorization': `Bearer ${currentToken}`,
           'Content-Type': 'application/json'
@@ -231,9 +229,9 @@ export const AuthProvider = ({ children }) => {
         throw new Error('No token available for saving signup progress');
       }
 
-      console.log('saveSignupProgress: Making API request to:', `${API_BASE_URL}/signup-progress/progress`);
+      console.log('saveSignupProgress: Making API request to:', '/signup-progress/progress');
       
-      const response = await fetch(`${API_BASE_URL}/signup-progress/progress`, {
+      const response = await fetch('/signup-progress/progress', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${currentToken}`,
