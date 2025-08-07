@@ -146,24 +146,6 @@ const Signup = () => {
     
     switch (step) {
       case 2:
-        if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
-        if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
-        if (!formData.email.trim()) {
-          newErrors.email = 'Email is required';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-          newErrors.email = 'Email is invalid';
-        }
-        // Skip password validation for Google auth users
-        if (formData.password !== 'google-auth') {
-          if (!formData.password) {
-            newErrors.password = 'Password is required';
-          } else if (formData.password.length < 8) {
-            newErrors.password = 'Password must be at least 8 characters';
-          }
-          if (formData.password !== formData.passwordConfirmation) {
-            newErrors.passwordConfirmation = 'Passwords do not match';
-          }
-        }
         break;
       case 3:
         if (formData.useCases.length === 0) {
@@ -269,39 +251,9 @@ const Signup = () => {
       if (!stripeInitialized) {
         throw new Error('Failed to initialize Stripe');
       }
-      
-      // For Google auth users, they're already authenticated, so skip signup
-      if (formData.password === 'google-auth' && isAuthenticated) {
-        // User is already authenticated via Google, proceed directly to payment
-        const sessionId = await createCheckoutSession(4700);
-        await redirectToCheckout(sessionId);
-      } else {
-        // Regular signup flow
-        const signupData = {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          password: formData.password
-        };
-        
-        const signupResult = await signup(signupData);
-        
-        if (!signupResult.success) {
-          throw new Error(signupResult.error);
-        }
-        
-        // Create checkout session for $47.00 (4700 cents)
-        const sessionId = await createCheckoutSession(4700);
-        
-        // Save payment progress
-        await saveSignupProgress(7, {
-          stripeSessionId: sessionId,
-          amount: 4700
-        });
-        
-        // Redirect to Stripe Checkout
-        await redirectToCheckout(sessionId);
-      }
+
+      const sessionId = await createCheckoutSession(4700);
+      await redirectToCheckout(sessionId);
       
       // Note: User will be redirected to Stripe, then back to success page
       // The success page will be reached via the success_url in the checkout session
@@ -325,6 +277,7 @@ const Signup = () => {
             errors={errors}
             onInputChange={handleInputChange}
             onNext={handleNext}
+            setErrors={setErrors}
           />
         );
       case 3:

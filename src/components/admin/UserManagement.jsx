@@ -1,79 +1,86 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { 
+  fetchUsers, 
+  updateUserRole, 
+  deleteUser, 
+  updateUser,
+  createUser,
+  setFilters, 
+  setSort,
+  setPagination,
+  clearError 
+} from '../../store/userManagementSlice';
+import { showNotification } from '../../store/uiSlice';
+import { useYesNoModal } from '../../hooks/useYesNoModal';
+import { useErrorModal } from '../../hooks/useErrorModal';
+import UserDetailsModal from './UserDetailsModal';
+import UserEditModal from './UserEditModal';
+import AddUserModal from './AddUserModal';
 
 const UserManagement = () => {
+  const dispatch = useDispatch();
+  const { 
+    users, 
+    loading, 
+    error, 
+    filters, 
+    sort,
+    pagination 
+  } = useSelector(state => state.userManagement);
+  const { user: currentUser } = useSelector(state => state.auth);
+  const { showModal } = useYesNoModal();
+  const { showError } = useErrorModal();
+
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterPayment, setFilterPayment] = useState('all');
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [sortBy, setSortBy] = useState('createdAt');
-  const [sortOrder, setSortOrder] = useState('desc');
+  const [filterRole, setFilterRole] = useState('all');
+  const [pageSize, setPageSize] = useState(10);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isUserDetailsModalOpen, setIsUserDetailsModalOpen] = useState(false);
+  const [isUserEditModalOpen, setIsUserEditModalOpen] = useState(false);
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
 
-  // Mock data - replace with actual API calls
-  const mockUsers = [
-    {
-      id: 1,
-      name: 'John Doe',
-      email: 'john@example.com',
-      createdAt: '2024-01-15T10:30:00Z',
-      paymentMethod: 'Stripe',
-      stripeCustomerId: 'cus_123456789',
-      solanaWallet: null,
-      dropletId: 'droplet-123',
-      dropletIp: '192.168.1.100',
-      status: 'active',
-      isAdmin: false
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      email: 'jane@example.com',
-      createdAt: '2024-01-10T14:20:00Z',
-      paymentMethod: 'Solana',
-      stripeCustomerId: null,
-      solanaWallet: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
-      dropletId: 'droplet-456',
-      dropletIp: '192.168.1.101',
-      status: 'active',
-      isAdmin: true
-    },
-    {
-      id: 3,
-      name: 'Bob Wilson',
-      email: 'bob@example.com',
-      createdAt: '2024-01-05T09:15:00Z',
-      paymentMethod: 'Stripe',
-      stripeCustomerId: 'cus_987654321',
-      solanaWallet: null,
-      dropletId: null,
-      dropletIp: null,
-      status: 'inactive',
-      isAdmin: false
-    }
-  ];
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
 
-  const filteredUsers = mockUsers.filter(user => {
-    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesPayment = filterPayment === 'all' || user.paymentMethod === filterPayment;
-    const matchesStatus = filterStatus === 'all' || user.status === filterStatus;
-    
-    return matchesSearch && matchesPayment && matchesStatus;
-  });
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
-  const sortedUsers = [...filteredUsers].sort((a, b) => {
-    let aValue = a[sortBy];
-    let bValue = b[sortBy];
-    
-    if (sortBy === 'createdAt') {
-      aValue = new Date(aValue);
-      bValue = new Date(bValue);
+  // Fetch users with current filters and pagination
+  const fetchUsersWithParams = () => {
+    const params = {
+      page: pagination.page,
+      limit: pagination.limit,
+      search: searchTerm,
+      role: filterRole !== 'all' ? filterRole : '',
+      status: filters.status !== 'all' ? filters.status : '',
+      sortBy: sort.field,
+      sortOrder: sort.order
+    };
+    dispatch(fetchUsers(params));
+  };
+
+  // Fetch users on component mount
+  useEffect(() => {
+    fetchUsersWithParams();
+  }, [dispatch]);
+
+  // Refetch when pagination, filters, or sort changes
+  useEffect(() => {
+    fetchUsersWithParams();
+  }, [pagination.page, pagination.limit, searchTerm, filterRole, filters.status, sort.field, sort.order]);
+
+  // Handle error notifications
+  useEffect(() => {
+    if (error) {
+      showError(error);
+      dispatch(clearError());
     }
-    
-    if (sortOrder === 'asc') {
-      return aValue > bValue ? 1 : -1;
-    } else {
-      return aValue < bValue ? 1 : -1;
-    }
-  });
+  }, [error, dispatch]);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -85,6 +92,137 @@ const UserManagement = () => {
     });
   };
 
+  // Handle role update
+  const handleRoleUpdate = async (userId, newRole) => {
+    try {
+      await dispatch(updateUserRole({ userId, role: newRole })).unwrap();
+      dispatch(showNotification('User role updated successfully'));
+      // Refetch users to get updated data
+      fetchUsersWithParams();
+    } catch (error) {
+      showError(error || 'Failed to update user role' );
+    }
+  };
+
+  // Handle user deletion
+  const handleDeleteUser = async (userId) => {
+    const confirmed = await showModal('Are you sure you want to delete this user? This action cannot be undone.');
+    
+    if (confirmed) {
+      try {
+        await dispatch(deleteUser(userId)).unwrap();
+        dispatch(showNotification('User deleted successfully'));
+        // Refetch users to get updated data
+        fetchUsersWithParams();
+      } catch (error) {
+        showError(error || 'Failed to delete user');
+      }
+    }
+  };
+
+  // Handle user details modal
+  const handleViewUserDetails = (user) => {
+    setSelectedUser(user);
+    setIsUserDetailsModalOpen(true);
+  };
+
+  const handleCloseUserDetailsModal = () => {
+    setIsUserDetailsModalOpen(false);
+    setSelectedUser(null);
+  };
+
+  // Handle user edit modal
+  const handleEditUser = (user) => {
+    setSelectedUser(user);
+    setIsUserEditModalOpen(true);
+  };
+
+  const handleCloseUserEditModal = () => {
+    setIsUserEditModalOpen(false);
+    setSelectedUser(null);
+  };
+
+  const handleSaveUser = async (userId, userData) => {
+    try {
+      await dispatch(updateUser({ userId, userData })).unwrap();
+      dispatch(showNotification('User updated successfully'));
+      // Refetch users to get updated data
+      fetchUsersWithParams();
+    } catch (error) {
+      showError(error || 'Failed to update user');
+    }
+  };
+
+  // Handle add user modal
+  const handleAddUser = () => {
+    setIsAddUserModalOpen(true);
+  };
+
+  const handleCloseAddUserModal = () => {
+    setIsAddUserModalOpen(false);
+  };
+
+  const handleCreateUser = async (userData) => {
+    try {
+      await dispatch(createUser(userData)).unwrap();
+      dispatch(showNotification('User created successfully'));
+      // Refetch users to get updated data
+      fetchUsersWithParams();
+    } catch (error) {
+      showError(error || 'Failed to create user');
+    }
+  };
+
+  // Handle sort change
+  const handleSortChange = (value) => {
+    const [field, order] = value.split('-');
+    dispatch(setSort({ field, order }));
+  };
+
+  // Handle page size change
+  const handlePageSizeChange = (newPageSize) => {
+    setPageSize(newPageSize);
+    dispatch(setPagination({ page: 1, limit: newPageSize }));
+  };
+
+  // Handle page change
+  const handlePageChange = (newPage) => {
+    dispatch(setPagination({ page: newPage }));
+  };
+
+  // Generate page numbers for pagination
+  const generatePageNumbers = () => {
+    const pages = [];
+    const totalPagesCount = pagination.pages;
+    const currentPageNumber = pagination.page;
+    
+    // Always show first page
+    pages.push(1);
+    
+    // Show pages around current page
+    const start = Math.max(2, currentPageNumber - 2);
+    const end = Math.min(totalPagesCount - 1, currentPageNumber + 2);
+    
+    if (start > 2) {
+      pages.push('...');
+    }
+    
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    
+    if (end < totalPagesCount - 1) {
+      pages.push('...');
+    }
+    
+    // Always show last page if there's more than one page
+    if (totalPagesCount > 1) {
+      pages.push(totalPagesCount);
+    }
+    
+    return pages;
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -94,11 +232,18 @@ const UserManagement = () => {
           <p className="text-sm text-gray-600">Manage all registered users and their accounts</p>
         </div>
         <div className="flex space-x-3">
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-            <i className="fas fa-download mr-2"></i>
-            Export CSV
+          <button 
+            onClick={() => fetchUsersWithParams()}
+            disabled={loading}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <i className={`fas fa-sync-alt mr-2 ${loading ? 'animate-spin' : ''}`}></i>
+            Refresh
           </button>
-          <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+          <button 
+            onClick={handleAddUser}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          >
             <i className="fas fa-plus mr-2"></i>
             Add User
           </button>
@@ -122,19 +267,19 @@ const UserManagement = () => {
             />
           </div>
 
-          {/* Payment Method Filter */}
+          {/* Role Filter */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Payment Method
+              Role
             </label>
             <select
-              value={filterPayment}
-              onChange={(e) => setFilterPayment(e.target.value)}
+              value={filterRole}
+              onChange={(e) => setFilterRole(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="all">All Methods</option>
-              <option value="Stripe">Stripe</option>
-              <option value="Solana">Solana</option>
+              <option value="all">All Roles</option>
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
             </select>
           </div>
 
@@ -144,13 +289,14 @@ const UserManagement = () => {
               Status
             </label>
             <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
+              value={filters.status}
+              onChange={(e) => dispatch(setFilters({ status: e.target.value }))}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="all">All Status</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
+              <option value="all">All</option>
+              <option value="verified">Verified</option>
+              <option value="unverified">Unverified</option>
+              <option value="blocked">Blocked</option>
             </select>
           </div>
 
@@ -160,18 +306,16 @@ const UserManagement = () => {
               Sort By
             </label>
             <select
-              value={`${sortBy}-${sortOrder}`}
-              onChange={(e) => {
-                const [field, order] = e.target.value.split('-');
-                setSortBy(field);
-                setSortOrder(order);
-              }}
+              value={`${sort.field}-${sort.order}`}
+              onChange={(e) => handleSortChange(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="createdAt-desc">Sign-up Date (Newest)</option>
               <option value="createdAt-asc">Sign-up Date (Oldest)</option>
-              <option value="name-asc">Name (A-Z)</option>
-              <option value="name-desc">Name (Z-A)</option>
+              <option value="firstName-asc">First Name (A-Z)</option>
+              <option value="firstName-desc">First Name (Z-A)</option>
+              <option value="lastName-asc">Last Name (A-Z)</option>
+              <option value="lastName-desc">Last Name (Z-A)</option>
               <option value="email-asc">Email (A-Z)</option>
               <option value="email-desc">Email (Z-A)</option>
             </select>
@@ -183,7 +327,7 @@ const UserManagement = () => {
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-medium text-gray-900">
-            Users ({sortedUsers.length})
+            Users ({pagination.total || users.length})
           </h3>
         </div>
         
@@ -198,13 +342,13 @@ const UserManagement = () => {
                   Sign-up Date
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Payment Method
+                  Role
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Droplet Info
+                  Email Status
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
+                  Last Login
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
@@ -212,92 +356,236 @@ const UserManagement = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {sortedUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10">
-                        <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
-                          <span className="text-sm font-medium text-gray-700">
-                            {user.name.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
-                          {user.name}
-                          {user.isAdmin && (
-                            <span className="ml-2 px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">
-                              Admin
-                            </span>
-                          )}
-                        </div>
-                        <div className="text-sm text-gray-500">{user.email}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {formatDate(user.createdAt)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        user.paymentMethod === 'Stripe' 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-purple-100 text-purple-800'
-                      }`}>
-                        {user.paymentMethod}
-                      </span>
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1">
-                      {user.paymentMethod === 'Stripe' && user.stripeCustomerId && (
-                        <div>ID: {user.stripeCustomerId}</div>
-                      )}
-                      {user.paymentMethod === 'Solana' && user.solanaWallet && (
-                        <div className="truncate max-w-xs">
-                          {user.solanaWallet.substring(0, 8)}...{user.solanaWallet.substring(user.solanaWallet.length - 8)}
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {user.dropletId ? (
-                      <div>
-                        <div className="font-medium">{user.dropletId}</div>
-                        <div className="text-gray-500">{user.dropletIp}</div>
-                      </div>
-                    ) : (
-                      <span className="text-gray-400">No droplet</span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      user.status === 'active' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {user.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex space-x-2">
-                      <button className="text-blue-600 hover:text-blue-900">
-                        <i className="fas fa-eye"></i>
-                      </button>
-                      <button className="text-green-600 hover:text-green-900">
-                        <i className="fas fa-edit"></i>
-                      </button>
-                      <button className="text-red-600 hover:text-red-900">
-                        <i className="fas fa-trash"></i>
-                      </button>
+              {loading ? (
+                <tr>
+                  <td colSpan="6" className="px-6 py-4 text-center">
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                      <span className="ml-2 text-gray-600">Loading users...</span>
                     </div>
                   </td>
                 </tr>
-              ))}
+              ) : users.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
+                    No users found
+                  </td>
+                </tr>
+              ) : (
+                users.map((user) => (
+                  <tr key={user._id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10">
+                          {user.avatar ? (
+                            <img 
+                              src={user.avatar} 
+                              alt={`${user.firstName} ${user.lastName}`}
+                              className="h-10 w-10 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                              <span className="text-sm font-medium text-gray-700">
+                                {user.firstName?.charAt(0).toUpperCase() || user.email.charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900">
+                            {user.firstName} {user.lastName}
+                            {user.role === 'admin' && (
+                              <span className="ml-2 px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">
+                                Admin
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-sm text-gray-500">{user.email}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {formatDate(user.createdAt)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          user.role === 'admin' 
+                            ? 'bg-red-100 text-red-800' 
+                            : 'bg-blue-100 text-blue-800'
+                        }`}>
+                          {user.role}
+                        </span>
+                      </div>
+                      {user.role === 'admin' && (
+                        <button
+                          onClick={() => handleRoleUpdate(user._id, 'user')}
+                          disabled={currentUser?._id === user._id}
+                          className="text-xs text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {currentUser?._id === user._id ? 'Cannot change own role' : 'Make User'}
+                        </button>
+                      )}
+                      {user.role === 'user' && (
+                        <button
+                          onClick={() => handleRoleUpdate(user._id, 'admin')}
+                          className="text-xs text-gray-500 hover:text-gray-700"
+                        >
+                          Make Admin
+                        </button>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        user.isEmailVerified 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {user.isEmailVerified ? 'Verified' : 'Unverified'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {user.lastLogin ? formatDate(user.lastLogin) : 'Never'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex space-x-2">
+                        <button 
+                          onClick={() => handleViewUserDetails(user)}
+                          className="text-blue-600 hover:text-blue-900"
+                          title="View Details"
+                        >
+                          <i className="fas fa-eye"></i>
+                        </button>
+                        <button 
+                          onClick={() => handleEditUser(user)}
+                          className="text-green-600 hover:text-green-900"
+                          title="Edit User"
+                        >
+                          <i className="fas fa-edit"></i>
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteUser(user._id)}
+                          disabled={currentUser?._id === user._id}
+                          className="text-red-600 hover:text-red-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                          title={currentUser?._id === user._id ? 'Cannot delete own account' : 'Delete User'}
+                        >
+                          <i className="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
+
+        <div className="px-6 py-4 flex items-center justify-between border-t border-gray-200 sm:px-6">
+          <div className="flex-1 flex justify-between sm:hidden">
+            <button
+              onClick={() => handlePageChange(pagination.page - 1)}
+              disabled={pagination.page === 1}
+              className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => handlePageChange(pagination.page + 1)}
+              disabled={pagination.page === pagination.pages}
+              className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+            </button>
+          </div>
+          <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="text-sm text-gray-700">
+                <label htmlFor="page-size" className="mr-2 text-sm font-medium text-gray-700">
+                  Show
+                </label>
+                <select
+                  id="page-size"
+                  value={pagination.limit}
+                  onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+                  className="border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                >
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                </select>
+                <span className="ml-2 text-sm font-medium text-gray-700">
+                  per page
+                </span>
+              </div>
+              <div className="text-sm text-gray-700">
+                Showing {((pagination.page - 1) * pagination.limit) + 1} to {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} results
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => handlePageChange(pagination.page - 1)}
+                disabled={pagination.page === 1}
+                className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="sr-only">Previous</span>
+                <i className="fas fa-chevron-left"></i>
+              </button>
+              
+              {/* Page numbers */}
+              <div className="flex items-center space-x-1">
+                {generatePageNumbers().map((page, index) => (
+                  <button
+                    key={index}
+                    onClick={() => typeof page === 'number' ? handlePageChange(page) : null}
+                    disabled={page === '...'}
+                    className={`relative inline-flex items-center px-3 py-2 border text-sm font-medium ${
+                      page === pagination.page
+                        ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                        : page === '...'
+                        ? 'border-gray-300 bg-white text-gray-500 cursor-default'
+                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
+              
+              <button
+                onClick={() => handlePageChange(pagination.page + 1)}
+                disabled={pagination.page === pagination.pages}
+                className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="sr-only">Next</span>
+                <i className="fas fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* User Details Modal */}
+      <UserDetailsModal
+        open={isUserDetailsModalOpen}
+        user={selectedUser}
+        onClose={handleCloseUserDetailsModal}
+        onEdit={handleEditUser}
+      />
+
+      {/* User Edit Modal */}
+      <UserEditModal
+        open={isUserEditModalOpen}
+        user={selectedUser}
+        onClose={handleCloseUserEditModal}
+        onSave={handleSaveUser}
+      />
+
+      {/* Add User Modal */}
+      <AddUserModal
+        open={isAddUserModalOpen}
+        onClose={handleCloseAddUserModal}
+        onSave={handleCreateUser}
+      />
     </div>
   );
 };

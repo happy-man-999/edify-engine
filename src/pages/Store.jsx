@@ -13,6 +13,7 @@ import { useYesNoModal } from "../hooks/useYesNoModal";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useDispatch } from "react-redux";
 import { showNotification } from "../store/uiSlice";
+import { useAuth } from "../hooks/useAuth";
 
 const Store = () => {
   const [cartCount, setCartCount] = useState(3);
@@ -24,6 +25,7 @@ const Store = () => {
   const { showSpinner, hideSpinner } = useLoadingSpinner();
   const { showError } = useErrorModal();
   const { showModal } = useYesNoModal();
+  const { user, isAuthenticated } = useAuth();
   
   const handleAddToCart = (item) => {
     setCartCount(c => c + 1);
@@ -41,6 +43,11 @@ const Store = () => {
       return;
     }
 
+    if (!isAuthenticated) {
+      showError("Please login to pay");
+      return;
+    }
+
     // Show confirmation modal
     const confirmed = await showModal(`Confirm payment of 0.005 SOL for ${item?.name || 'this item'}?`);
 
@@ -53,13 +60,13 @@ const Store = () => {
       showSpinner("Processing payment...");
 
       // Generate a unique order ID
-      const orderId = `order-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const payInfo = `${user._id}-68932d2eba7b06bdb92e2978`;
       
       // Send the payment
       const signature = await sendSOLWithReference(
         import.meta.env.VITE_OWNER_SOLNANA_ADDRESS, 
         0.005, 
-        orderId
+        payInfo
       );
 
       // Hide spinner and show success

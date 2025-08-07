@@ -1,75 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDroplets } from '../../hooks/useDroplets';
+import LoadingSpinner from '../LoadingSpinner';
+import { shortAddress } from '../../utils/format';
+import DropletDetailsModal from './DropletDetailsModal';
+import DropletFilterModal from './DropletFilterModal';
 
 const DropletManagement = () => {
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterProject, setFilterProject] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [selectedDroplet, setSelectedDroplet] = useState(null);
+  const [isDropletDetailsModalOpen, setIsDropletDetailsModalOpen] = useState(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [advancedFilters, setAdvancedFilters] = useState({});
 
-  // Mock data - replace with actual API calls
-  const mockDroplets = [
-    {
-      id: 'droplet-123',
-      name: 'edify-server-001',
-      ip: '192.168.1.100',
-      createdAt: '2024-01-15T10:30:00Z',
-      project: 'Edify Engine',
-      status: 'live',
-      linkedUser: 'John Doe',
-      userId: 1,
-      region: 'nyc1',
-      size: 's-1vcpu-1gb',
-      cost: 5.00
-    },
-    {
-      id: 'droplet-456',
-      name: 'edify-server-002',
-      ip: '192.168.1.101',
-      createdAt: '2024-01-10T14:20:00Z',
-      project: 'Edify Engine',
-      status: 'provisioning',
-      linkedUser: 'Jane Smith',
-      userId: 2,
-      region: 'nyc1',
-      size: 's-1vcpu-1gb',
-      cost: 5.00
-    },
-    {
-      id: 'droplet-789',
-      name: 'edify-server-003',
-      ip: '192.168.1.102',
-      createdAt: '2024-01-05T09:15:00Z',
-      project: 'Edify Engine',
-      status: 'terminated',
-      linkedUser: 'Bob Wilson',
-      userId: 3,
-      region: 'nyc1',
-      size: 's-1vcpu-1gb',
-      cost: 0.00
-    },
-    {
-      id: 'droplet-101',
-      name: 'edify-server-004',
-      ip: '192.168.1.103',
-      createdAt: '2024-01-20T16:45:00Z',
-      project: 'Edify Engine',
-      status: 'error',
-      linkedUser: 'Alice Johnson',
-      userId: 4,
-      region: 'nyc1',
-      size: 's-1vcpu-1gb',
-      cost: 5.00
+  const {
+    droplets,
+    stats,
+    pagination,
+    loading,
+    statsLoading,
+    error,
+    loadDroplets,
+    loadDropletStats,
+    syncDroplet,
+    restartDroplet,
+    terminateDroplet,
+    reprovisionDroplet,
+    deleteDroplet,
+    clearError
+  } = useDroplets();
+
+  // Load initial data
+  useEffect(() => {
+    loadDroplets({ page: currentPage, limit: pageSize });
+    loadDropletStats();
+  }, []);
+
+  // Load data when filters change
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      const filters = {
+        page: currentPage,
+        limit: pageSize,
+        search: searchTerm,
+        status: filterStatus !== 'all' ? filterStatus : '',
+        sortBy: 'createdAt',
+        sortOrder: 'desc',
+        ...advancedFilters
+      };
+      loadDroplets(filters);
+    }, 500); // Debounce search for 500ms
+
+    return () => clearTimeout(timeoutId);
+  }, [currentPage, pageSize, searchTerm, filterStatus, filterProject, advancedFilters]);
+
+  // Clear error after 5 seconds
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        clearError();
+      }, 5000);
+      return () => clearTimeout(timer);
     }
-  ];
-
-  const filteredDroplets = mockDroplets.filter(droplet => {
-    const matchesSearch = droplet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         droplet.ip.includes(searchTerm) ||
-                         droplet.linkedUser.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = filterStatus === 'all' || droplet.status === filterStatus;
-    const matchesProject = filterProject === 'all' || droplet.project === filterProject;
-    
-    return matchesSearch && matchesStatus && matchesProject;
-  });
+  }, [error, clearError]);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -83,22 +79,113 @@ const DropletManagement = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'live':
+      case 'active':
         return 'bg-green-100 text-green-800';
-      case 'provisioning':
+      case 'new':
         return 'bg-yellow-100 text-yellow-800';
-      case 'terminated':
+      case 'off':
         return 'bg-gray-100 text-gray-800';
-      case 'error':
+      case 'archive':
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const handleAction = (action, dropletId) => {
-    console.log(`${action} droplet: ${dropletId}`);
-    // Implement actual API calls here
+  // Handle page size change
+  const handlePageSizeChange = (newPageSize) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1);
+    loadDroplets({ page: 1, limit: newPageSize });
+  };
+
+  // Handle page change
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    loadDroplets({ page: newPage, limit: pageSize });
+  };
+
+  // Generate page numbers for pagination
+  const generatePageNumbers = () => {
+    const pages = [];
+    const totalPagesCount = pagination.pages;
+    const currentPageNumber = pagination.page;
+    
+    // Always show first page
+    pages.push(1);
+    
+    // Show pages around current page
+    const start = Math.max(2, currentPageNumber - 2);
+    const end = Math.min(totalPagesCount - 1, currentPageNumber + 2);
+    
+    if (start > 2) {
+      pages.push('...');
+    }
+    
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    
+    if (end < totalPagesCount - 1) {
+      pages.push('...');
+    }
+    
+    // Always show last page if there's more than one page
+    if (totalPagesCount > 1) {
+      pages.push(totalPagesCount);
+    }
+    
+    return pages;
+  };
+
+  // Filter modal handlers
+  const handleOpenFilterModal = () => {
+    setIsFilterModalOpen(true);
+  };
+
+  const handleCloseFilterModal = () => {
+    setIsFilterModalOpen(false);
+  };
+
+  const handleApplyFilters = (filters) => {
+    setAdvancedFilters(filters);
+    setCurrentPage(1); // Reset to first page when applying filters
+  };
+
+  const handleAction = async (action, dropletId) => {
+    try {
+      switch (action) {
+        case 'sync':
+          await syncDroplet(dropletId);
+          break;
+        case 'view':
+          // Find the droplet by ID and open the details modal
+          const droplet = droplets.find(d => d.id === dropletId);
+          if (droplet) {
+            setSelectedDroplet(droplet);
+            setIsDropletDetailsModalOpen(true);
+          }
+          break;
+        case 'restart':
+          await restartDroplet(dropletId);
+          break;
+        case 'terminate':
+          await terminateDroplet(dropletId);
+          break;
+        case 'reprovision':
+          await reprovisionDroplet(dropletId);
+          break;
+        case 'delete':
+          if (window.confirm('Are you sure you want to delete this droplet? This action cannot be undone.')) {
+            await deleteDroplet(dropletId);
+          }
+          break;
+        default:
+          console.log(`Unknown action: ${action} for droplet: ${dropletId}`);
+      }
+    } catch (error) {
+      console.error(`Error performing action ${action} on droplet ${dropletId}:`, error);
+    }
   };
 
   return (
@@ -110,6 +197,17 @@ const DropletManagement = () => {
           <p className="text-sm text-gray-600">Manage all provisioned droplets and their status</p>
         </div>
         <div className="flex space-x-3">
+          <button 
+            onClick={() => {
+              loadDroplets({ page: currentPage, limit: pageSize });
+              loadDropletStats();
+            }}
+            disabled={loading || statsLoading}
+            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <i className="fas fa-sync mr-2"></i>
+            Refresh
+          </button>
           <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
             <i className="fas fa-download mr-2"></i>
             Export CSV
@@ -122,7 +220,7 @@ const DropletManagement = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
@@ -132,7 +230,9 @@ const DropletManagement = () => {
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-500">Total Droplets</p>
-              <p className="text-2xl font-semibold text-gray-900">{mockDroplets.length}</p>
+              <p className="text-2xl font-semibold text-gray-900">
+                {statsLoading ? <LoadingSpinner size="sm" /> : stats.totalDroplets}
+              </p>
             </div>
           </div>
         </div>
@@ -145,9 +245,9 @@ const DropletManagement = () => {
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Live</p>
+              <p className="text-sm font-medium text-gray-500">Active</p>
               <p className="text-2xl font-semibold text-gray-900">
-                {mockDroplets.filter(d => d.status === 'live').length}
+                {statsLoading ? <LoadingSpinner size="sm" /> : stats.activeDroplets}
               </p>
             </div>
           </div>
@@ -161,9 +261,9 @@ const DropletManagement = () => {
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Provisioning</p>
+              <p className="text-sm font-medium text-gray-500">New</p>
               <p className="text-2xl font-semibold text-gray-900">
-                {mockDroplets.filter(d => d.status === 'provisioning').length}
+                {statsLoading ? <LoadingSpinner size="sm" /> : stats.newDroplets}
               </p>
             </div>
           </div>
@@ -177,9 +277,25 @@ const DropletManagement = () => {
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Errors</p>
+              <p className="text-sm font-medium text-gray-500">Off</p>
               <p className="text-2xl font-semibold text-gray-900">
-                {mockDroplets.filter(d => d.status === 'error').length}
+                {statsLoading ? <LoadingSpinner size="sm" /> : stats.offDroplets}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                <i className="fas fa-dollar-sign text-blue-600"></i>
+              </div>
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-500">Monthly Cost</p>
+              <p className="text-2xl font-semibold text-gray-900">
+                {statsLoading ? <LoadingSpinner size="sm" /> : `$${stats.totalMonthlyCost}`}
               </p>
             </div>
           </div>
@@ -214,10 +330,10 @@ const DropletManagement = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Status</option>
-              <option value="live">Live</option>
-              <option value="provisioning">Provisioning</option>
-              <option value="terminated">Terminated</option>
-              <option value="error">Error</option>
+              <option value="active">Active</option>
+              <option value="new">New</option>
+              <option value="off">Off</option>
+              <option value="archive">Archive</option>
             </select>
           </div>
 
@@ -238,7 +354,10 @@ const DropletManagement = () => {
 
           {/* Actions */}
           <div className="flex items-end">
-            <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
+            <button 
+              onClick={handleOpenFilterModal}
+              className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+            >
               <i className="fas fa-filter mr-2"></i>
               Apply Filters
             </button>
@@ -250,110 +369,240 @@ const DropletManagement = () => {
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-medium text-gray-900">
-            Droplets ({filteredDroplets.length})
+            Droplets ({loading ? '...' : pagination.total})
           </h3>
         </div>
         
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Droplet Info
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Created At
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Linked User
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Cost
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredDroplets.map((droplet) => (
-                <tr key={droplet.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div>
-                      <div className="text-sm font-medium text-gray-900">{droplet.name}</div>
-                      <div className="text-sm text-gray-500">{droplet.ip}</div>
-                      <div className="text-xs text-gray-400">{droplet.size} • {droplet.region}</div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {formatDate(droplet.createdAt)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{droplet.linkedUser}</div>
-                    <div className="text-xs text-gray-500">ID: {droplet.userId}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(droplet.status)}`}>
-                      {droplet.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ${droplet.cost.toFixed(2)}/month
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex space-x-2">
-                      <button 
-                        onClick={() => handleAction('view', droplet.id)}
-                        className="text-blue-600 hover:text-blue-900"
-                        title="View Details"
-                      >
-                        <i className="fas fa-eye"></i>
-                      </button>
-                      {droplet.status === 'live' && (
-                        <>
-                          <button 
-                            onClick={() => handleAction('restart', droplet.id)}
-                            className="text-yellow-600 hover:text-yellow-900"
-                            title="Restart"
-                          >
-                            <i className="fas fa-redo"></i>
-                          </button>
-                          <button 
-                            onClick={() => handleAction('terminate', droplet.id)}
-                            className="text-red-600 hover:text-red-900"
-                            title="Terminate"
-                          >
-                            <i className="fas fa-stop"></i>
-                          </button>
-                        </>
-                      )}
-                      {droplet.status === 'error' && (
+        {loading ? (
+          <div className="flex justify-center items-center py-12">
+            <LoadingSpinner />
+          </div>
+        ) : error ? (
+          <div className="px-6 py-4 text-center">
+            <div className="text-red-600 bg-red-50 p-4 rounded-lg">
+              <i className="fas fa-exclamation-triangle mr-2"></i>
+              {error}
+            </div>
+          </div>
+        ) : droplets.length === 0 ? (
+          <div className="px-6 py-8 text-center">
+            <div className="text-gray-500">
+              <i className="fas fa-server text-4xl mb-4"></i>
+              <p className="text-lg font-medium">No droplets found</p>
+              <p className="text-sm">Try adjusting your filters or create a new droplet.</p>
+            </div>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Droplet Info
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Created At
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Linked User
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Cost
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {droplets.map((droplet) => (
+                  <tr key={droplet.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">{droplet.name}</div>
+                        <div className="text-sm text-gray-500">{droplet.ipAddress || 'No IP'}</div>
+                        <div className="text-xs text-gray-400">{droplet.sizeSlug} • {droplet.regionSlug}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {formatDate(droplet.createdAt)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{droplet.user}</div>
+                      <div className="text-xs text-gray-500">Transaction: {shortAddress(droplet.transaction) || 'N/A'}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(droplet.status)}`}>
+                        {droplet.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      ${droplet.priceMonthly ? droplet.priceMonthly.toFixed(2) : '0.00'}/month
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex space-x-2">
                         <button 
-                          onClick={() => handleAction('reprovision', droplet.id)}
+                          onClick={() => handleAction('view', droplet.id)}
+                          className="text-blue-600 hover:text-blue-900"
+                          title="View Details"
+                        >
+                          <i className="fas fa-eye"></i>
+                        </button>
+                        <button 
+                          onClick={() => handleAction('sync', droplet.id)}
                           className="text-green-600 hover:text-green-900"
-                          title="Reprovision"
+                          title="Sync Status"
                         >
                           <i className="fas fa-sync"></i>
                         </button>
-                      )}
-                      <button 
-                        onClick={() => handleAction('delete', droplet.id)}
-                        className="text-red-600 hover:text-red-900"
-                        title="Delete"
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                        {droplet.status === 'active' && (
+                          <>
+                            <button 
+                              onClick={() => handleAction('restart', droplet.id)}
+                              className="text-yellow-600 hover:text-yellow-900"
+                              title="Restart"
+                            >
+                              <i className="fas fa-redo"></i>
+                            </button>
+                            <button 
+                              onClick={() => handleAction('terminate', droplet.id)}
+                              className="text-red-600 hover:text-red-900"
+                              title="Terminate"
+                            >
+                              <i className="fas fa-stop"></i>
+                            </button>
+                          </>
+                        )}
+                        {droplet.status === 'off' && (
+                          <button 
+                            onClick={() => handleAction('reprovision', droplet.id)}
+                            className="text-green-600 hover:text-green-900"
+                            title="Reprovision"
+                          >
+                            <i className="fas fa-play"></i>
+                          </button>
+                        )}
+                        <button 
+                          onClick={() => handleAction('delete', droplet.id)}
+                          className="text-red-600 hover:text-red-900"
+                          title="Delete"
+                        >
+                          <i className="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Pagination */}
+        <div className="px-6 py-4 flex items-center justify-between border-t border-gray-200 sm:px-6">
+          <div className="flex-1 flex justify-between sm:hidden">
+            <button
+              onClick={() => handlePageChange(pagination.page - 1)}
+              disabled={pagination.page === 1}
+              className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => handlePageChange(pagination.page + 1)}
+              disabled={pagination.page === pagination.pages}
+              className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+            </button>
+          </div>
+          <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="text-sm text-gray-700">
+                <label htmlFor="page-size" className="mr-2 text-sm font-medium text-gray-700">
+                  Show
+                </label>
+                <select
+                  id="page-size"
+                  value={pagination.limit}
+                  onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+                  className="border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                >
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                </select>
+                <span className="ml-2 text-sm font-medium text-gray-700">
+                  per page
+                </span>
+              </div>
+              <div className="text-sm text-gray-700">
+                Showing {((pagination.page - 1) * pagination.limit) + 1} to {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} results
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => handlePageChange(pagination.page - 1)}
+                disabled={pagination.page === 1}
+                className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="sr-only">Previous</span>
+                <i className="fas fa-chevron-left"></i>
+              </button>
+              
+              {/* Page numbers */}
+              <div className="flex items-center space-x-1">
+                {generatePageNumbers().map((page, index) => (
+                  <button
+                    key={index}
+                    onClick={() => typeof page === 'number' ? handlePageChange(page) : null}
+                    disabled={page === '...'}
+                    className={`relative inline-flex items-center px-3 py-2 border text-sm font-medium ${
+                      page === pagination.page
+                        ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                        : page === '...'
+                        ? 'border-gray-300 bg-white text-gray-500 cursor-default'
+                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
+              
+              <button
+                onClick={() => handlePageChange(pagination.page + 1)}
+                disabled={pagination.page === pagination.pages}
+                className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="sr-only">Next</span>
+                <i className="fas fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Droplet Details Modal */}
+      <DropletDetailsModal
+        open={isDropletDetailsModalOpen}
+        droplet={selectedDroplet}
+        onClose={() => {
+          setIsDropletDetailsModalOpen(false);
+          setSelectedDroplet(null);
+        }}
+      />
+
+      {/* Droplet Filter Modal */}
+      <DropletFilterModal
+        open={isFilterModalOpen}
+        onClose={handleCloseFilterModal}
+        onApply={handleApplyFilters}
+        currentFilters={advancedFilters}
+      />
     </div>
   );
 };

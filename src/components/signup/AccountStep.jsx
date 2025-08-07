@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useSearchParams } from 'react-router-dom';
 
-const AccountStep = ({ formData, errors, onInputChange, onNext }) => {
-  const { user, isAuthenticated } = useAuth();
+const AccountStep = ({ formData, errors, onInputChange, onNext, setErrors }) => {
+  const { user, isAuthenticated, signupUser } = useAuth();
   const [searchParams] = useSearchParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const [signupError, setSignupError] = useState('');
   
   // Check if user completed Google auth and came back to signup
   useEffect(() => {
@@ -25,9 +27,73 @@ const AccountStep = ({ formData, errors, onInputChange, onNext }) => {
     }
   }, [searchParams, isAuthenticated, user, onInputChange, onNext]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onNext();
+    
+    // Clear any previous errors
+    setSignupError('');
+    
+    // Don't proceed if using Google auth (password is 'google-auth')
+    if (formData.password === 'google-auth') {
+      onNext();
+      return;
+    }
+    
+    // Validation checks
+    const validationErrors = {};
+    
+    if (!formData.firstName?.trim()) {
+      validationErrors.firstName = 'First name is required';
+    }
+    
+    if (!formData.lastName?.trim()) {
+      validationErrors.lastName = 'Last name is required';
+    }
+    
+    if (!formData.email?.trim()) {
+      validationErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      validationErrors.email = 'Please enter a valid email address';
+    }
+    
+    if (!formData.password) {
+      validationErrors.password = 'Password is required';
+    } else if (formData.password.length < 8) {
+      validationErrors.password = 'Password must be at least 8 characters long';
+    }
+    
+    if (!formData.passwordConfirmation) {
+      validationErrors.passwordConfirmation = 'Please confirm your password';
+    } else if (formData.password !== formData.passwordConfirmation) {
+      validationErrors.passwordConfirmation = 'Passwords do not match';
+    }
+    
+    // If there are validation errors, set them and don't proceed
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      const result = await signupUser({
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim(),
+        password: formData.password
+      });
+      
+      if (result.success) {
+        onNext();
+      } else {
+        setSignupError(result.error || 'Signup failed. Please try again.');
+      }
+    } catch (error) {
+      setSignupError(error.message || 'An unexpected error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleGoogleSignIn = () => {
@@ -158,11 +224,31 @@ const AccountStep = ({ formData, errors, onInputChange, onNext }) => {
         )}
         
         <div className="pt-4">
+          {signupError && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-sm">{signupError}</p>
+            </div>
+          )}
           <button
             type="submit"
-            className="w-full bg-[#42677D] hover:bg-[#355263] text-white py-3 px-6 rounded-lg transition-colors font-medium"
+            disabled={isLoading}
+            className={`w-full py-3 px-6 rounded-lg transition-colors font-medium ${
+              isLoading 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-[#42677D] hover:bg-[#355263] text-white'
+            }`}
           >
-            Continue
+            {isLoading ? (
+              <div className="flex items-center justify-center">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Creating Account...
+              </div>
+            ) : (
+              'Continue'
+            )}
           </button>
         </div>
       </form>
