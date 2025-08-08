@@ -1,16 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const SettingsConfigs = () => {
   const [settings, setSettings] = useState({
-    defaultSnapshotId: 'snapshot-123456',
-    defaultDropletPlan: 's-1vcpu-1gb',
+    defaultSnapshotId: 123456,
+    defaultDnsDomain: 'edifyengine.com',
     stripeMode: 'live',
     solanaMode: 'mainnet',
-    defaultDns: 'edifyengine.com',
-    defaultSubdomain: 'app'
+    isTestMode: false
   });
 
-  const [isTestMode, setIsTestMode] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState('');
+
+  // Fetch settings on component mount
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  // Update payment settings when test mode changes
+  useEffect(() => {
+    if (settings.isTestMode) {
+      setSettings(prev => ({
+        ...prev,
+        stripeMode: 'test',
+        solanaMode: 'devnet'
+      }));
+    }
+  }, [settings.isTestMode]);
+
+  const fetchSettings = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/admin/settings', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch settings');
+      }
+
+      const data = await response.json();
+      setSettings(data.settings);
+    } catch (error) {
+      console.error('Error fetching settings:', error);
+      setMessage('Failed to load settings');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSettingChange = (key, value) => {
     setSettings(prev => ({
@@ -19,15 +59,51 @@ const SettingsConfigs = () => {
     }));
   };
 
-  const handleSaveSettings = () => {
-    console.log('Saving settings:', settings);
-    // Implement save logic
+  const handleSaveSettings = async () => {
+    try {
+      setSaving(true);
+      setMessage('');
+
+      const response = await fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(settings)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to save settings');
+      }
+
+      const data = await response.json();
+      setSettings(data.settings);
+      setMessage('Settings saved successfully!');
+      
+      // Clear message after 3 seconds
+      setTimeout(() => setMessage(''), 3000);
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      setMessage(error.message || 'Failed to save settings');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleExportReport = (type) => {
     console.log(`Exporting ${type} report`);
     // Implement export logic
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -40,13 +116,29 @@ const SettingsConfigs = () => {
         <div className="flex space-x-3">
           <button 
             onClick={handleSaveSettings}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            disabled={saving}
+            className={`px-4 py-2 rounded-lg transition-colors ${
+              saving 
+                ? 'bg-gray-400 text-white cursor-not-allowed' 
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
           >
             <i className="fas fa-save mr-2"></i>
-            Save Settings
+            {saving ? 'Saving...' : 'Save Settings'}
           </button>
         </div>
       </div>
+
+      {/* Message */}
+      {message && (
+        <div className={`p-4 rounded-lg ${
+          message.includes('successfully') 
+            ? 'bg-green-50 text-green-800 border border-green-200' 
+            : 'bg-red-50 text-red-800 border border-red-200'
+        }`}>
+          {message}
+        </div>
+      )}
 
       {/* Settings Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -63,29 +155,14 @@ const SettingsConfigs = () => {
                 Default Snapshot ID
               </label>
               <input
-                type="text"
+                type="number"
                 value={settings.defaultSnapshotId}
-                onChange={(e) => handleSettingChange('defaultSnapshotId', e.target.value)}
+                onChange={(e) => handleSettingChange('defaultSnapshotId', parseInt(e.target.value) || 0)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="snapshot-123456"
+                placeholder="123456"
+                min="1"
               />
-              <p className="text-xs text-gray-500 mt-1">Base image snapshot for new droplets</p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Default Droplet Plan
-              </label>
-              <select
-                value={settings.defaultDropletPlan}
-                onChange={(e) => handleSettingChange('defaultDropletPlan', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="s-1vcpu-1gb">s-1vcpu-1gb ($5/month)</option>
-                <option value="s-1vcpu-2gb">s-1vcpu-2gb ($10/month)</option>
-                <option value="s-2vcpu-2gb">s-2vcpu-2gb ($15/month)</option>
-                <option value="s-2vcpu-4gb">s-2vcpu-4gb ($20/month)</option>
-              </select>
+              <p className="text-xs text-gray-500 mt-1">Base image snapshot ID for new droplets</p>
             </div>
 
             <div>
@@ -94,24 +171,12 @@ const SettingsConfigs = () => {
               </label>
               <input
                 type="text"
-                value={settings.defaultDns}
-                onChange={(e) => handleSettingChange('defaultDns', e.target.value)}
+                value={settings.defaultDnsDomain}
+                onChange={(e) => handleSettingChange('defaultDnsDomain', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="edifyengine.com"
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Default Subdomain
-              </label>
-              <input
-                type="text"
-                value={settings.defaultSubdomain}
-                onChange={(e) => handleSettingChange('defaultSubdomain', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="app"
-              />
+              <p className="text-xs text-gray-500 mt-1">Default domain for droplet subdomains</p>
             </div>
           </div>
         </div>
@@ -121,6 +186,12 @@ const SettingsConfigs = () => {
           <h3 className="text-lg font-medium text-gray-900 mb-4">
             <i className="fas fa-credit-card mr-2 text-green-600"></i>
             Payment Settings
+            {settings.isTestMode && (
+              <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                <i className="fas fa-exclamation-triangle mr-1"></i>
+                Test Mode Active
+              </span>
+            )}
           </h3>
           
           <div className="space-y-4">
@@ -129,29 +200,37 @@ const SettingsConfigs = () => {
                 Stripe Mode
               </label>
               <div className="flex items-center space-x-4">
-                <label className="flex items-center">
+                <label className={`flex items-center ${settings.isTestMode ? 'opacity-50 cursor-not-allowed' : ''}`}>
                   <input
                     type="radio"
                     name="stripeMode"
                     value="test"
                     checked={settings.stripeMode === 'test'}
-                    onChange={(e) => handleSettingChange('stripeMode', e.target.value)}
+                    onChange={(e) => !settings.isTestMode && handleSettingChange('stripeMode', e.target.value)}
+                    disabled={settings.isTestMode}
                     className="mr-2"
                   />
-                  <span className="text-sm text-gray-700">Test Mode</span>
+                  <span className={`text-sm ${settings.isTestMode ? 'text-gray-400' : 'text-gray-700'}`}>Test Mode</span>
                 </label>
-                <label className="flex items-center">
+                <label className={`flex items-center ${settings.isTestMode ? 'opacity-50 cursor-not-allowed' : ''}`}>
                   <input
                     type="radio"
                     name="stripeMode"
                     value="live"
                     checked={settings.stripeMode === 'live'}
-                    onChange={(e) => handleSettingChange('stripeMode', e.target.value)}
+                    onChange={(e) => !settings.isTestMode && handleSettingChange('stripeMode', e.target.value)}
+                    disabled={settings.isTestMode}
                     className="mr-2"
                   />
-                  <span className="text-sm text-gray-700">Live Mode</span>
+                  <span className={`text-sm ${settings.isTestMode ? 'text-gray-400' : 'text-gray-700'}`}>Live Mode</span>
                 </label>
               </div>
+              {settings.isTestMode && (
+                <p className="text-xs text-yellow-600 mt-1">
+                  <i className="fas fa-info-circle mr-1"></i>
+                  Payment settings are locked to test mode when test mode is enabled
+                </p>
+              )}
             </div>
 
             <div>
@@ -159,29 +238,37 @@ const SettingsConfigs = () => {
                 Solana Network
               </label>
               <div className="flex items-center space-x-4">
-                <label className="flex items-center">
+                <label className={`flex items-center ${settings.isTestMode ? 'opacity-50 cursor-not-allowed' : ''}`}>
                   <input
                     type="radio"
                     name="solanaMode"
                     value="devnet"
                     checked={settings.solanaMode === 'devnet'}
-                    onChange={(e) => handleSettingChange('solanaMode', e.target.value)}
+                    onChange={(e) => !settings.isTestMode && handleSettingChange('solanaMode', e.target.value)}
+                    disabled={settings.isTestMode}
                     className="mr-2"
                   />
-                  <span className="text-sm text-gray-700">Devnet</span>
+                  <span className={`text-sm ${settings.isTestMode ? 'text-gray-400' : 'text-gray-700'}`}>Devnet</span>
                 </label>
-                <label className="flex items-center">
+                <label className={`flex items-center ${settings.isTestMode ? 'opacity-50 cursor-not-allowed' : ''}`}>
                   <input
                     type="radio"
                     name="solanaMode"
                     value="mainnet"
                     checked={settings.solanaMode === 'mainnet'}
-                    onChange={(e) => handleSettingChange('solanaMode', e.target.value)}
+                    onChange={(e) => !settings.isTestMode && handleSettingChange('solanaMode', e.target.value)}
+                    disabled={settings.isTestMode}
                     className="mr-2"
                   />
-                  <span className="text-sm text-gray-700">Mainnet</span>
+                  <span className={`text-sm ${settings.isTestMode ? 'text-gray-400' : 'text-gray-700'}`}>Mainnet</span>
                 </label>
               </div>
+              {settings.isTestMode && (
+                <p className="text-xs text-yellow-600 mt-1">
+                  <i className="fas fa-info-circle mr-1"></i>
+                  Solana network is locked to devnet when test mode is enabled
+                </p>
+              )}
             </div>
 
             <div className="pt-4">
@@ -191,18 +278,29 @@ const SettingsConfigs = () => {
                   <p className="text-xs text-gray-500">Enable test mode for all operations</p>
                 </div>
                 <button
-                  onClick={() => setIsTestMode(!isTestMode)}
+                  onClick={() => handleSettingChange('isTestMode', !settings.isTestMode)}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    isTestMode ? 'bg-blue-600' : 'bg-gray-200'
+                    settings.isTestMode ? 'bg-blue-600' : 'bg-gray-200'
                   }`}
                 >
                   <span
                     className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      isTestMode ? 'translate-x-6' : 'translate-x-1'
+                      settings.isTestMode ? 'translate-x-6' : 'translate-x-1'
                     }`}
                   />
                 </button>
               </div>
+              {settings.isTestMode && (
+                <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <div className="flex items-start">
+                    <i className="fas fa-exclamation-triangle text-yellow-600 mt-0.5 mr-2"></i>
+                    <div className="text-xs text-yellow-800">
+                      <p className="font-medium">Test Mode Active</p>
+                      <p>All payment settings are automatically set to test mode and cannot be changed while test mode is enabled.</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
