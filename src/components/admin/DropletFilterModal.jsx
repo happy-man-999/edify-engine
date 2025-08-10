@@ -93,17 +93,6 @@ const DropletFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => 
       createdAtTo: '',
       status: 'all'
     });
-  };
-
-  const handleReset = () => {
-    setFilters({
-      sizeSlug: '',
-      regionSlug: '',
-      userId: '',
-      createdAtFrom: '',
-      createdAtTo: '',
-      status: 'all'
-    });
     onApply({});
     onClose();
   };
@@ -243,28 +232,15 @@ const DropletFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => 
           {/* Action Buttons */}
           <div className="mt-6 pt-6 border-t border-gray-200 flex justify-end space-x-3">
             <button
-              onClick={handleReset}
-              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-            >
-              Reset All
-            </button>
-            <button
               onClick={handleClear}
-              className="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors"
-            >
-              Clear Filters
-            </button>
-            <button
-              onClick={onClose}
               className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
             >
-              Cancel
+              Clear All
             </button>
             <button
               onClick={handleApply}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
-              <i className="fas fa-filter mr-2"></i>
               Apply Filters
             </button>
           </div>

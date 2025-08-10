@@ -7,6 +7,7 @@ const LogsStatus = () => {
   const [filterType, setFilterType] = useState('all');
   const [filterLevel, setFilterLevel] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [logs, setLogs] = useState([]);
@@ -31,6 +32,14 @@ const LogsStatus = () => {
 
   const { token } = useSelector(state => state.auth);
 
+  // Debounce searchTerm
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500); // 500ms delay
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
   const fetchLogs = async () => {
     try {
       setLoading(true);
@@ -39,7 +48,7 @@ const LogsStatus = () => {
         limit: pagination.limit,
         level: filterLevel,
         type: filterType,
-        search: searchTerm,
+        search: debouncedSearchTerm,
         startDate: startDate,
         endDate: endDate
       });
@@ -89,7 +98,7 @@ const LogsStatus = () => {
   useEffect(() => {
     fetchLogs();
     fetchStats();
-  }, [filterType, filterLevel, searchTerm, startDate, endDate, pagination.page, pagination.limit]);
+  }, [filterType, filterLevel, debouncedSearchTerm, startDate, endDate, pagination.page, pagination.limit]);
 
   const handleRefresh = () => {
     fetchLogs();
@@ -372,13 +381,20 @@ const LogsStatus = () => {
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Search Logs</label>
-            <input
-              type="text"
-              placeholder="Search log messages..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search log messages..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              {searchTerm !== debouncedSearchTerm && (
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                </div>
+              )}
+            </div>
           </div>
 
           <div>

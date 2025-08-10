@@ -69,7 +69,7 @@ const DropletDetailsModal = ({ open, droplet, onClose, onEdit }) => {
               <h3 className="text-lg font-semibold text-gray-900">
                 {droplet.name}
               </h3>
-              <p className="text-gray-600">Droplet ID: {droplet.dropletId}</p>
+              <p className="text-gray-600">Droplet ID: {droplet.id}</p>
             </div>
           </div>
 
@@ -89,7 +89,7 @@ const DropletDetailsModal = ({ open, droplet, onClose, onEdit }) => {
                 
                 <div>
                   <label className="block text-xs font-medium text-gray-500">Droplet ID</label>
-                  <p className="text-sm text-gray-900 font-mono">{droplet.dropletId}</p>
+                  <p className="text-sm text-gray-900 font-mono">{droplet.id}</p>
                 </div>
                 
                 <div>

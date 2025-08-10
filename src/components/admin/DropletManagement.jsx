@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDroplets } from '../../hooks/useDroplets';
 import LoadingSpinner from '../LoadingSpinner';
 import { shortAddress } from '../../utils/format';
@@ -9,6 +9,7 @@ const DropletManagement = () => {
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterProject, setFilterProject] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [selectedDroplet, setSelectedDroplet] = useState(null);
@@ -33,29 +34,38 @@ const DropletManagement = () => {
     clearError
   } = useDroplets();
 
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
   // Load initial data
   useEffect(() => {
     loadDroplets({ page: currentPage, limit: pageSize });
     loadDropletStats();
   }, []);
 
-  // Load data when filters change
+  // Load data when filters change (excluding search term which is handled separately)
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      const filters = {
-        page: currentPage,
-        limit: pageSize,
-        search: searchTerm,
-        status: filterStatus !== 'all' ? filterStatus : '',
-        sortBy: 'createdAt',
-        sortOrder: 'desc',
-        ...advancedFilters
-      };
-      loadDroplets(filters);
-    }, 500); // Debounce search for 500ms
-
-    return () => clearTimeout(timeoutId);
-  }, [currentPage, pageSize, searchTerm, filterStatus, filterProject, advancedFilters]);
+    const filters = {
+      page: currentPage,
+      limit: pageSize,
+      search: debouncedSearchTerm,
+      status: filterStatus !== 'all' ? filterStatus : '',
+      sortBy: 'createdAt',
+      sortOrder: 'desc',
+      ...advancedFilters
+    };
+    
+    // Debug: Log the filters being sent
+    console.log('Sending filters to API:', filters);
+    
+    loadDroplets(filters);
+  }, [currentPage, pageSize, debouncedSearchTerm, filterStatus, advancedFilters]);
 
   // Clear error after 5 seconds
   useEffect(() => {
@@ -148,6 +158,7 @@ const DropletManagement = () => {
   };
 
   const handleApplyFilters = (filters) => {
+    console.log('Applying advanced filters:', filters);
     setAdvancedFilters(filters);
     setCurrentPage(1); // Reset to first page when applying filters
   };
@@ -310,13 +321,20 @@ const DropletManagement = () => {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Search Droplets
             </label>
-            <input
-              type="text"
-              placeholder="Search by name, IP, or user..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search by name, IP, or user..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              {searchTerm !== debouncedSearchTerm && (
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Status Filter */}
@@ -359,7 +377,7 @@ const DropletManagement = () => {
               className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
             >
               <i className="fas fa-filter mr-2"></i>
-              Apply Filters
+              Advanced Filters
             </button>
           </div>
         </div>

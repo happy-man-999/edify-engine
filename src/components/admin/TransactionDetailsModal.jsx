@@ -145,7 +145,7 @@ const TransactionDetailsModal = ({ open, transaction, onClose }) => {
                         <div className="flex items-center space-x-2">
                           <p className="text-sm text-gray-900 font-mono truncate">{transactionDetails.txHash}</p>
                           <a 
-                            href={`https://solscan.io/tx/${transactionDetails.txHash}`}
+                            href={`https://solscan.io/tx/${transactionDetails.txHash}/?cluster=devnet`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-600 hover:text-blue-800"

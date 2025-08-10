@@ -5,7 +5,7 @@ import GlobalStyles from '../components/GlobalStyles';
 
 const Signin = () => {
   const navigate = useNavigate();
-  const { signin, checkSignupProgress } = useAuth();
+  const { signinUser, checkSignupProgress } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -47,7 +47,7 @@ const Signin = () => {
     setIsLoading(true);
     
     try {
-      const result = await signin(formData);
+      const result = await signinUser(formData);
       
       if (result.success) {
         // Check signup progress after successful signin

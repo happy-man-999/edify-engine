@@ -7,6 +7,7 @@ const PaymentActivity = () => {
   const [filterType, setFilterType] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [transactions, setTransactions] = useState([]);
   const [stats, setStats] = useState({
     totalUSD: '0.00',
@@ -70,7 +71,7 @@ const PaymentActivity = () => {
       const params = new URLSearchParams({
         page: page.toString(),
         limit: limit.toString(),
-        search: searchTerm,
+        search: debouncedSearchTerm,
         paymentMethod: filterType,
         status: filterStatus,
         sortBy: 'date',
@@ -117,12 +118,20 @@ const PaymentActivity = () => {
     }
   }, [token]);
 
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500); // 500ms delay
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
   // Refetch when filters change
   useEffect(() => {
     if (token) {
       fetchTransactions(1, pageSize);
     }
-  }, [searchTerm, filterType, filterStatus, pageSize, advancedFilters]);
+  }, [debouncedSearchTerm, filterType, filterStatus, pageSize, advancedFilters]);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -214,7 +223,15 @@ const PaymentActivity = () => {
       dateTo: '',
       currency: 'all'
     });
+    setSearchTerm('');
+    setDebouncedSearchTerm('');
     closeFilterModal();
+    fetchTransactions(1, pageSize);
+  };
+
+  const clearSearch = () => {
+    setSearchTerm('');
+    setDebouncedSearchTerm('');
     fetchTransactions(1, pageSize);
   };
 
@@ -369,13 +386,20 @@ const PaymentActivity = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
-            <input
-              type="text"
-              placeholder="Search transactions..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search transactions..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              {searchTerm !== debouncedSearchTerm && (
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                </div>
+              )}
+            </div>
           </div>
 
           <div>
@@ -492,7 +516,7 @@ const PaymentActivity = () => {
                       </button>
                       {transaction.txHash && (
                         <a 
-                          href={`https://solscan.io/tx/${transaction.txHash}`}
+                          href={`https://solscan.io/tx/${transaction.txHash}/?cluster=devnet`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-green-600 hover:text-green-900"

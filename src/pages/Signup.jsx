@@ -14,9 +14,8 @@ import {
 import GlobalStyles from '../components/GlobalStyles';
 
 const Signup = () => {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { signup, user, isAuthenticated, handleGoogleAuthCompletion, saveSignupProgress, signupProgress } = useAuth();
+  const { isAuthenticated, handleGoogleAuthCompletion, saveSignupProgress, signupProgress } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -39,6 +38,17 @@ const Signup = () => {
   // Initialize Stripe on component mount
   useEffect(() => {
     initializeStripe();
+
+    // After sign in, not yet completed signup progress.
+    if (isAuthenticated) {
+      if (!signupProgress) {
+        setCurrentStep(3);
+      }
+      else {
+        const nextStep = Math.min(signupProgress.currentStep + 1, totalSteps);
+        setCurrentStep(nextStep);
+      }
+    }
   }, []);
 
 

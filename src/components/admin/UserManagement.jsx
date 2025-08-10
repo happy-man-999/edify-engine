@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
   fetchUsers, 
@@ -33,9 +33,9 @@ const UserManagement = () => {
   const { showError } = useErrorModal();
 
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('all');
   const [pageSize, setPageSize] = useState(10);
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
   const [isUserDetailsModalOpen, setIsUserDetailsModalOpen] = useState(false);
   const [isUserEditModalOpen, setIsUserEditModalOpen] = useState(false);
@@ -45,34 +45,34 @@ const UserManagement = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
-    }, 500);
+    }, 500); // 500ms delay
 
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
   // Fetch users with current filters and pagination
-  const fetchUsersWithParams = () => {
+  const fetchUsersWithParams = useCallback(() => {
     const params = {
       page: pagination.page,
       limit: pagination.limit,
-      search: searchTerm,
+      search: debouncedSearchTerm,
       role: filterRole !== 'all' ? filterRole : '',
       status: filters.status !== 'all' ? filters.status : '',
       sortBy: sort.field,
       sortOrder: sort.order
     };
     dispatch(fetchUsers(params));
-  };
+  }, [dispatch, pagination.page, pagination.limit, debouncedSearchTerm, filterRole, filters.status, sort.field, sort.order]);
 
   // Fetch users on component mount
   useEffect(() => {
     fetchUsersWithParams();
-  }, [dispatch]);
+  }, [fetchUsersWithParams]);
 
   // Refetch when pagination, filters, or sort changes
   useEffect(() => {
     fetchUsersWithParams();
-  }, [pagination.page, pagination.limit, searchTerm, filterRole, filters.status, sort.field, sort.order]);
+  }, [pagination.page, pagination.limit, debouncedSearchTerm, filterRole, filters.status, sort.field, sort.order]);
 
   // Handle error notifications
   useEffect(() => {
@@ -258,13 +258,20 @@ const UserManagement = () => {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Search Users
             </label>
-            <input
-              type="text"
-              placeholder="Search by name or email..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search by name or email..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              {searchTerm !== debouncedSearchTerm && (
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Role Filter */}
@@ -324,12 +331,22 @@ const UserManagement = () => {
       </div>
 
       {/* Users Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white rounded-lg shadow overflow-hidden relative">
         <div className="px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-medium text-gray-900">
             Users ({pagination.total || users.length})
           </h3>
         </div>
+        
+        {/* Loading Overlay */}
+        {loading && (
+          <div className="absolute inset-0 bg-white bg-opacity-30 flex items-center justify-center z-10 pointer-events-none">
+            <div className="bg-white bg-opacity-90 rounded-lg px-6 py-4 shadow-lg flex items-center space-x-3">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <span className="text-gray-700 font-medium">Loading users...</span>
+            </div>
+          </div>
+        )}
         
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
@@ -356,16 +373,7 @@ const UserManagement = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {loading ? (
-                <tr>
-                  <td colSpan="6" className="px-6 py-4 text-center">
-                    <div className="flex items-center justify-center">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                      <span className="ml-2 text-gray-600">Loading users...</span>
-                    </div>
-                  </td>
-                </tr>
-              ) : users.length === 0 ? (
+              {users.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
                     No users found
@@ -373,7 +381,7 @@ const UserManagement = () => {
                 </tr>
               ) : (
                 users.map((user) => (
-                  <tr key={user._id} className="hover:bg-gray-50">
+                  <tr key={user._id} className={`hover:bg-gray-50 ${loading ? 'opacity-60' : ''}`}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10">
@@ -402,6 +410,11 @@ const UserManagement = () => {
                           </div>
                           <div className="text-sm text-gray-500">{user.email}</div>
                         </div>
+                        {loading && (
+                          <div className="ml-2">
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                          </div>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
