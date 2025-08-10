@@ -35,7 +35,7 @@ const UserManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('all');
-  const [pageSize, setPageSize] = useState(10);
+
   const [selectedUser, setSelectedUser] = useState(null);
   const [isUserDetailsModalOpen, setIsUserDetailsModalOpen] = useState(false);
   const [isUserEditModalOpen, setIsUserEditModalOpen] = useState(false);
@@ -64,15 +64,10 @@ const UserManagement = () => {
     dispatch(fetchUsers(params));
   }, [dispatch, pagination.page, pagination.limit, debouncedSearchTerm, filterRole, filters.status, sort.field, sort.order]);
 
-  // Fetch users on component mount
+  // Fetch users on component mount and when dependencies change
   useEffect(() => {
     fetchUsersWithParams();
   }, [fetchUsersWithParams]);
-
-  // Refetch when pagination, filters, or sort changes
-  useEffect(() => {
-    fetchUsersWithParams();
-  }, [pagination.page, pagination.limit, debouncedSearchTerm, filterRole, filters.status, sort.field, sort.order]);
 
   // Handle error notifications
   useEffect(() => {
@@ -80,7 +75,7 @@ const UserManagement = () => {
       showError(error);
       dispatch(clearError());
     }
-  }, [error, dispatch]);
+  }, [error, dispatch, showError]);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -181,7 +176,6 @@ const UserManagement = () => {
 
   // Handle page size change
   const handlePageSizeChange = (newPageSize) => {
-    setPageSize(newPageSize);
     dispatch(setPagination({ page: 1, limit: newPageSize }));
   };
 
@@ -478,11 +472,11 @@ const UserManagement = () => {
                       </div>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         <div className="px-6 py-4 flex items-center justify-between border-t border-gray-200 sm:px-6">
           <div className="flex-1 flex justify-between sm:hidden">
