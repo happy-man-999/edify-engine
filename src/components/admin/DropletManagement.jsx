@@ -392,8 +392,11 @@ const DropletManagement = () => {
         </div>
         
         {loading ? (
-          <div className="flex justify-center items-center py-12">
-            <LoadingSpinner />
+          <div className="p-6 text-center">
+            <div className="inline-flex items-center">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+              <span className="ml-2 text-gray-600">Loading droplets...</span>
+            </div>
           </div>
         ) : error ? (
           <div className="px-6 py-4 text-center">
