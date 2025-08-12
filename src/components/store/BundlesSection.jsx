@@ -63,12 +63,12 @@ const BundlesSection = ({ currency, onAddToCart }) => {
         </button>
       </div>
       {/* Special Bundle Offer */}
-      <div className="bundle-card text-white mb-8 relative overflow-hidden pulse cursor-pointer">
+      <div className="bg-gradient-to-br from-[#42677D] to-[#5E8EA9] text-white mb-8 relative overflow-hidden rounded-xl shadow-[0_10px_30px_rgba(66,103,125,0.2)] cursor-pointer animate-[pulse_2s_infinite]">
         <div className="absolute inset-0 bg-gradient-to-r from-[#42677D] to-[#5E8EA9] opacity-90"></div>
         <div className="relative z-10 p-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
             <div className="mb-6 md:mb-0 md:w-2/3">
-              <div className="bundle-badge">
+              <div className="absolute top-4 right-4 bg-[#f7931a] text-white font-bold px-3 py-1 rounded-full text-sm rotate-[5deg] shadow-lg">
                 <i className="fas fa-bolt mr-1"></i> LIMITED TIME
               </div>
               <h3 className="text-3xl font-bold mb-3">Starter Creator Bundle</h3>
@@ -99,14 +99,14 @@ const BundlesSection = ({ currency, onAddToCart }) => {
                   <span>Dedicated Server</span>
                 </div>
               </div>
-              <div className="countdown-timer mb-6">
+              <div className="bg-white bg-opacity-15 rounded-lg px-3 py-2 inline-flex items-center mb-6">
                 <i className="fas fa-clock mr-2"></i>
                 <span>Offer ends in:</span>
-                <span className="countdown-number">{countdown.hours}</span>
+                <span className="font-bold text-lg mx-1">{countdown.hours}</span>
                 <span>h</span>
-                <span className="countdown-number">{countdown.minutes}</span>
+                <span className="font-bold text-lg mx-1">{countdown.minutes}</span>
                 <span>m</span>
-                <span className="countdown-number">{countdown.seconds}</span>
+                <span className="font-bold text-lg mx-1">{countdown.seconds}</span>
                 <span>s</span>
               </div>
             </div>
@@ -139,18 +139,18 @@ const BundlesSection = ({ currency, onAddToCart }) => {
       {/* Other Bundles */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {bundles.map((item, i) => (
-          <div key={i} className="store-item bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transition duration-300 relative">
+          <div key={i} className="bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl relative">
             <div className="absolute top-3 left-3 bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded-full">
               <i className="fas fa-boxes mr-1"></i> Bundle
             </div>
-            <div className="preview-container h-48 bg-gray-100 flex items-center justify-center">
+            <div className="h-48 bg-gray-100 flex items-center justify-center [perspective:1000px] [transform-style:preserve-3d]">
               <img src={item.img} alt={item.title} className="w-full h-full object-cover" />
             </div>
             <div className="p-4">
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-semibold">{item.title}</h3>
-                <div className={`usd-price bg-[#42677D] text-white text-sm px-2 py-1 rounded${currency === 'BTC' ? ' hidden' : ''}`}>{item.usd}</div>
-                <div className={`btc-price bg-[#f7931a] text-white text-sm px-2 py-1 rounded${currency === 'BTC' ? '' : ' hidden'}`}>{item.btc}</div>
+                <div className={`bg-[#42677D] text-white text-sm px-2 py-1 rounded${currency === 'BTC' ? ' hidden' : ''}`}>{item.usd}</div>
+                <div className={`bg-[#f7931a] text-white text-sm px-2 py-1 rounded${currency === 'BTC' ? '' : ' hidden'}`}>{item.btc}</div>
               </div>
               <p className="text-gray-500 text-sm mb-3">{item.desc}</p>
               <div className="flex justify-between items-center">
@@ -159,7 +159,7 @@ const BundlesSection = ({ currency, onAddToCart }) => {
                   {item.rating % 1 !== 0 && <i className="fas fa-star-half-alt"></i>}
                   <span className="text-gray-500 ml-1">{item.reviews ? `(${item.reviews})` : null}</span>
                 </div>
-                <button className="add-to-cart text-[#42677D] hover:text-[#355263] text-sm font-medium" onClick={() => onAddToCart(item)}>
+                <button className="text-[#42677D] hover:text-[#355263] text-sm font-medium" onClick={() => onAddToCart(item)}>
                   <i className="fas fa-cart-plus mr-1"></i> Add to Cart
                 </button>
               </div>

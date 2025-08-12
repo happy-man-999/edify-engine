@@ -16,7 +16,11 @@ const StoreTabs = ({ activeTab, onTabClick }) => (
     {tabs.map(tab => (
       <button
         key={tab}
-        className={`tab-underline pb-2 font-medium whitespace-nowrap transition ${activeTab === tab ? 'active text-[#42677D]' : 'hover:text-[#42677D]'}`}
+        className={`relative pb-2 font-medium whitespace-nowrap transition ${
+          activeTab === tab 
+            ? 'text-[#42677D] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#42677D] after:transition-all after:duration-300' 
+            : 'hover:text-[#42677D] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#42677D] hover:after:w-full after:transition-all after:duration-300'
+        }`}
         onClick={() => onTabClick(tab)}
       >
         {tab}

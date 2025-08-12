@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import StoreGlobalStyles from "../components/store/StoreGlobalStyles"
 import StoreHeader from "../components/store/StoreHeader";
 import StoreTabs from "../components/store/StoreTabs";
 import StoreCategories from "../components/store/StoreCategories";
@@ -92,7 +91,6 @@ const Store = () => {
 
   return (
     <div className="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
-      <StoreGlobalStyles />
       <main className="flex-1 p-6">
         <div className="max-w-7xl mx-auto">
           <StoreHeader onWalletClick={() => setWalletOpen(true)} cartCount={cartCount} currency={currency} onCurrencyToggle={handleCurrencyToggle} />

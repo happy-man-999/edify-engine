@@ -69,7 +69,7 @@ const Admin = () => {
           <div className="clouds absolute inset-0"></div>
           <div className="hero-content max-w-4xl mx-auto text-center relative z-10">
             <h1 className="text-4xl font-bold mb-4">
-              <span className="gradient-text">Admin Dashboard</span>
+              <span className="bg-gradient-to-r from-[#42677D] to-[#5E8EA9] bg-clip-text text-transparent">Admin Dashboard</span>
             </h1>
             <p className="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">
               Manage users, droplets, payments, and system configurations

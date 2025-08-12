@@ -8,7 +8,7 @@ const WelcomeStep = ({ onNext }) => {
         <div className="clouds absolute inset-0"></div>
         <div className="hero-content relative z-10">
           <h1 className="text-5xl font-bold mb-6">
-            Instantly deploy <span className="gradient-text">immersive spaces</span>
+            Instantly deploy <span className="bg-gradient-to-r from-[#42677D] to-[#5E8EA9] bg-clip-text text-transparent">immersive spaces</span>
           </h1>
           <p className="text-xl text-gray-700 mb-8">
             No coding required

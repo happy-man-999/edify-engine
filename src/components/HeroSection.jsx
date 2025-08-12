@@ -6,7 +6,7 @@ const HeroSection = () => (
     <div className="clouds absolute inset-0"></div>
     <div className="hero-content max-w-4xl mx-auto text-center relative z-10">
       <h1 className="text-5xl font-bold mb-6">
-        Build Your <span className="gradient-text">Virtual World</span>
+        Build Your <span className="bg-gradient-to-r from-[#42677D] to-[#5E8EA9] bg-clip-text text-transparent">Virtual World</span>
       </h1>
       <p className="text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
         Create immersive 3D experiences with our powerful tools. No coding required - just your imagination and creativity.

@@ -15,6 +15,7 @@ const initialState = {
   walletModal: {
     isOpen: false,
   },
+  currency: 'USD',
 };
 
 const uiSlice = createSlice({
@@ -57,6 +58,9 @@ const uiSlice = createSlice({
         isOpen: false 
       }; 
     },
+    changeCurrency(state, action) {
+      state.currency = action.payload;
+    },
   },
 });
 
@@ -71,6 +75,7 @@ export const {
   hideLoadingSpinner,
   showWalletModal,
   hideWalletModal,
+  changeCurrency,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

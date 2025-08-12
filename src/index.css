@@ -1,1 +1,32 @@
 @import "tailwindcss";
+
+/* Custom animations for store components */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar { 
+  width: 8px; 
+}
+
+::-webkit-scrollbar-track { 
+  background: #f1f1f1; 
+}
+
+::-webkit-scrollbar-thumb { 
+  background: #d1d5db; 
+  border-radius: 4px; 
+}
+
+::-webkit-scrollbar-thumb:hover { 
+  background: #9ca3af; 
+}
