@@ -12,6 +12,8 @@ import AnimatedBackground from './components/AnimatedBackground';
 import Homepage from './pages/Homepage';
 import LandingPage from './pages/LandingPage';
 import Store from './pages/Store';
+import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
 import Signup from './pages/Signup';
 import Signin from './pages/Signin';
 import SignupSuccess from './pages/SignupSuccess';
@@ -72,11 +74,15 @@ function App() {
             <Routes>
               <Route path="/home" element={<Navbar />} />
               <Route path="/store" element={<Navbar />} />
+              <Route path="/cart" element={<Navbar />} />
+              <Route path="/checkout" element={<Navbar />} />
             </Routes>
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/home" element={<Homepage />} />
               <Route path="/store" element={<Store />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/signin" element={<Signin />} />
               <Route path="/signup-success" element={<SignupSuccess />} />

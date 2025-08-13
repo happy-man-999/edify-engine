@@ -3,6 +3,7 @@ import uiReducer from './uiSlice';
 import authReducer from './authSlice';
 import userManagementReducer from './userManagementSlice';
 import dropletReducer from './dropletSlice';
+import cartReducer from './cartSlice';
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     auth: authReducer,
     userManagement: userManagementReducer,
     droplets: dropletReducer,
+    cart: cartReducer,
   },
 });
 

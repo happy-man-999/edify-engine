@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const StoreHeader = ({ onWalletClick, cartCount, currency, onCurrencyToggle }) => (
+const StoreHeader = ({ onWalletClick, onCartClick, cartCount, currency, onCurrencyToggle }) => (
   <section className="mb-12">
     <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8">
       <div>
@@ -39,7 +39,7 @@ const StoreHeader = ({ onWalletClick, cartCount, currency, onCurrencyToggle }) =
           </label>
           <span className="hidden">SOL</span>
         </div>
-        <button className="btn-primary flex items-center" onClick={onWalletClick}>
+        <button className="btn-primary flex items-center" onClick={onCartClick}>
           <i className="fas fa-shopping-cart mr-2"></i>
           <span>Cart ({cartCount})</span>
         </button>
