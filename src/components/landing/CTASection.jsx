@@ -48,7 +48,7 @@ const CTASection = () => {
             className="border-2 border-white/30 text-white hover:bg-white/10 px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300"
           >
             <i className="fas fa-store mr-2"></i>
-            Browse Templates
+            Browse Store
           </Link>
         </div>
       </div>

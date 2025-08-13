@@ -41,7 +41,7 @@ const FeaturedSection = ({ currency, onAddToCart, onCryptoPay }) => (
     </div>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {featured.map((item, i) => (
-        <div key={i} onClick={onCryptoPay} className="bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl relative animate-[float_4s_ease-in-out_infinite]">
+        <div key={i} onClick={onCryptoPay} className="bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl relative">
           <div className="absolute top-3 left-3 bg-yellow-400 text-yellow-800 text-xs font-bold px-2 py-1 rounded-full">
             <i className="fas fa-star mr-1"></i> Featured
           </div>

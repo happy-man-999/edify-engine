@@ -66,7 +66,7 @@ body {
 
 .shape {
   position: absolute;
-  opacity: 0.03;
+  opacity: 0.08;
   animation: float 8s ease-in-out infinite;
 }
 
@@ -372,7 +372,7 @@ body {
   animation-delay: 1.1s;
 }
 
-/* Subtle Grid Pattern Overlay */
+/* Clear Grid Pattern Overlay */
 .grid-pattern {
   position: fixed;
   top: 0;
@@ -381,9 +381,9 @@ body {
   height: 100%;
   z-index: -1;
   background-image: 
-    linear-gradient(rgba(66, 103, 125, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(66, 103, 125, 0.02) 1px, transparent 1px);
-  background-size: 50px 50px;
+    linear-gradient(rgba(66, 103, 125, 0.06) 1.2px, transparent 1.2px),
+    linear-gradient(90deg, rgba(66, 103, 125, 0.06) 1.2px, transparent 1.2px);
+  background-size: 40px 40px;
   animation: gridMove 40s linear infinite;
 }
 
@@ -404,7 +404,7 @@ body {
   height: 1px;
   background: var(--accent-primary);
   border-radius: 50%;
-  opacity: 0.3;
+  opacity: 0.15;
   animation: particleFloat 12s linear infinite;
 }
 
@@ -696,6 +696,9 @@ body {
   
   .grid-pattern {
     background-size: 30px 30px;
+    background-image: 
+      linear-gradient(rgba(66, 103, 125, 0.08) 1.2px, transparent 1.2px),
+      linear-gradient(90deg, rgba(66, 103, 125, 0.08) 1.2px, transparent 1.2px);
   }
 }
 

@@ -1,13 +1,14 @@
 export const homepageTabs = [
-  { title: "Dashboard", href: "#" },
+  { title: "Home", href: "/home" },
   { title: "Explore", href: "#" },
-  { title: "Landing", href: "/landing" },
   { title: "Store", href: "/store" },
+  { title: "Docs", href: "#" },
   { title: "Sign In", href: "/signin" },
 ]
 export const storeTabs = [
-  { title: "Dashboard", href: "#" },
-  { title: "Create", href: "#" },
+  { title: "Home", href: "/home" },
+  { title: "Explore", href: "#" },
   { title: "Store", href: "/store" },
-  { title: "Learn", href: "#" },
+  { title: "Docs", href: "#" },
+  { title: "Sign In", href: "/signin" },
 ]

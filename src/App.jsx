@@ -70,12 +70,12 @@ function App() {
             <AnimatedBackground />
             <MainLayout>
             <Routes>
-              <Route path="/" element={<Navbar />} />
+              <Route path="/home" element={<Navbar />} />
               <Route path="/store" element={<Navbar />} />
             </Routes>
             <Routes>
-              <Route path="/" element={<Homepage />} />
-              <Route path="/landing" element={<LandingPage />} />
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/home" element={<Homepage />} />
               <Route path="/store" element={<Store />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/signin" element={<Signin />} />

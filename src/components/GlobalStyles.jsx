@@ -7,7 +7,7 @@ const GlobalStyles = () => (
     ::-webkit-scrollbar-track { background: #f1f1f1; }
     ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
-    .world-card:hover { animation: float 3s ease-in-out infinite; }
+    .world-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
     .hero-section { background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%); border-radius: 1.5rem; position: relative; overflow: hidden; }
     .sky-background { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, #87CEEB 0%, #E0F7FA 100%); z-index: 0; }
     .clouds { position: absolute; width: 100%; height: 100%; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="500" viewBox="0 0 1440 500"><path fill="%23FFFFFF" fill-opacity="0.7" d="M0 300q60-60 120-60t120 60q60-60 120-60t120 60q60-60 120-60t120 60q60-60 120-60t120 60q60-60 120-60t120 60q60-60 120-60t120 60v200H0z"/><path fill="%23FFFFFF" fill-opacity="0.7" d="M0 250q80-40 160-40t160 40q80-40 160-40t160 40q80-40 160-40t160 40q80-40 160-40t160 40v250H0z"/><path fill="%23FFFFFF" fill-opacity="0.5" d="M0 200q100-30 200-30t200 30q100-30 200-30t200 30q100-30 200-30t200 30v300H0z"/></svg>') repeat-x; animation: cloudAnimation 60s linear infinite; z-index: 1; }
