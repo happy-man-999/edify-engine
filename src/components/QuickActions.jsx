@@ -24,12 +24,12 @@ const actions = [
 const QuickActions = () => (
   <section className="mb-12 grid grid-cols-1 md:grid-cols-3 gap-6">
     {actions.map((a, i) => (
-      <div key={i} className="bg-white p-6 rounded-xl border border-gray-200 hover:border-[#42677D] transition cursor-pointer shadow-sm hover:shadow-md">
+      <div key={i} className="professional-card p-6 hover:border-[#42677D] transition-all duration-300 cursor-pointer">
         <div className="flex items-center mb-4">
           <div className={`w-12 h-12`} style={{background:`${a.color}1A`, borderRadius:'0.5rem', display:'flex', alignItems:'center', justifyContent:'center', marginRight:'1rem'}}>
             <i className={`fas ${a.icon}`} style={{color:a.color}}></i>
           </div>
-          <h3 className="text-xl font-semibold">{a.title}</h3>
+          <h3 className="text-xl font-semibold text-gray-900">{a.title}</h3>
         </div>
         <p className="text-gray-600">{a.desc}</p>
       </div>

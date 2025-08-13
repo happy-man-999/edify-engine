@@ -19,7 +19,7 @@ const NavbarTabs = () => {
   return (
     <>
       {tabs.map((tab, id) => (
-        <Link key={id} to={tab.href} className="hover:text-[#42677D] transition">
+        <Link key={id} to={tab.href} className="hover:text-[#5E8EA9] transition-colors duration-300 text-gray-700">
           {tab.title}
         </Link>
       ))}
@@ -34,7 +34,7 @@ const NavbarAction = () => {
 };
 
 const Navbar = () => (
-  <nav className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-sm">
+  <nav className="glass border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50 backdrop-blur-md">
     <div className="w-full flex items-center space-x-4">
       <a href="/" className="flex items-center">
         <video autoPlay loop muted playsInline className="logo-video mr-2" width={32} height={32}>

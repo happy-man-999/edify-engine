@@ -8,7 +8,9 @@ import ErrorModal from './components/ErrorModal';
 import Notification from './components/Notification';
 import LoadingSpinner from './components/LoadingSpinner';
 import CustomWalletModal from './components/CustomWalletModal';
+import AnimatedBackground from './components/AnimatedBackground';
 import Homepage from './pages/Homepage';
+import LandingPage from './pages/LandingPage';
 import Store from './pages/Store';
 import Signup from './pages/Signup';
 import Signin from './pages/Signin';
@@ -65,6 +67,7 @@ function App() {
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           <Router>
+            <AnimatedBackground />
             <MainLayout>
             <Routes>
               <Route path="/" element={<Navbar />} />
@@ -72,6 +75,7 @@ function App() {
             </Routes>
             <Routes>
               <Route path="/" element={<Homepage />} />
+              <Route path="/landing" element={<LandingPage />} />
               <Route path="/store" element={<Store />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/signin" element={<Signin />} />

@@ -87,10 +87,10 @@ const Store = () => {
   if (activeTab === "Featured") tabContent = <FeaturedSection currency={currency} onAddToCart={handleAddToCart} onCryptoPay={handleCryptoPay} />;
   else if (activeTab === "Apps") tabContent = <AppsSection currency={currency} onAddToCart={handleAddToCart} />;
   else if (activeTab === "Bundles") tabContent = <BundlesSection currency={currency} onAddToCart={handleAddToCart} />;
-  else tabContent = <div className="text-center text-gray-400 py-16">Coming soon...</div>;
+  else tabContent = <div className="text-center text-gray-500 py-16">Coming soon...</div>;
 
   return (
-    <div className="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+    <div className="text-gray-800 font-sans min-h-screen flex flex-col">
       <main className="flex-1 p-6">
         <div className="max-w-7xl mx-auto">
           <StoreHeader onWalletClick={() => setWalletOpen(true)} cartCount={cartCount} currency={currency} onCurrencyToggle={handleCurrencyToggle} />

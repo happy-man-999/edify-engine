@@ -42,21 +42,21 @@ const worlds = [
 const ExploreSection = () => (
   <section className="mb-12">
     <div className="flex items-center justify-between mb-6">
-      <h2 className="text-2xl font-bold">Explore</h2>
-      <button className="text-[#42677D] hover:text-[#355263] flex items-center">
+      <h2 className="text-2xl font-bold text-gray-900">Explore</h2>
+      <button className="text-[#5E8EA9] hover:text-[#42677D] flex items-center transition-colors duration-300">
         <span>View All</span>
         <i className="fas fa-chevron-right ml-2"></i>
       </button>
     </div>
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {worlds.map((w, i) => (
-        <div key={i} onClick={() => window.open(w.url, '_blank')} className="world-card bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer">
+        <div key={i} onClick={() => window.open(w.url, '_blank')} className="world-card professional-card overflow-hidden cursor-pointer">
           <div className="h-48 overflow-hidden">
             <img src={w.img} alt={w.title} className="w-full h-full object-cover" />
           </div>
           <div className="p-4">
-            <h3 className="font-semibold mb-1">{w.title}</h3>
-            <p className="text-gray-500 text-sm">{w.desc}</p>
+            <h3 className="font-semibold mb-1 text-gray-900">{w.title}</h3>
+            <p className="text-gray-600 text-sm">{w.desc}</p>
           </div>
         </div>
       ))}
