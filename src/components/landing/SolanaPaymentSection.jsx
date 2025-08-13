@@ -24,10 +24,10 @@ const SolanaPaymentSection = () => {
               {/* Solana Logo */}
               <div className="flex items-center justify-center mb-6">
                 <div className="w-20 h-20 bg-gradient-to-r from-[#9945FF] to-[#14F195] rounded-full flex items-center justify-center">
-                  <svg className="w-12 h-12 text-white" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M4.5 9.75L12 4.5l7.5 5.25v4.5L12 19.5l-7.5-5.25v-4.5z"/>
-                    <path d="M12 15.75l7.5-5.25"/>
-                    <path d="M12 19.5l7.5-5.25"/>
+                  <svg className="w-12 h-12" viewBox="0 0 397.7 311.7" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="white" d="M64.6,237.9c2.4-2.4,5.7-3.8,9.2-3.8h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5 c-5.8,0-8.7-7-4.6-11.1L64.6,237.9z"/>
+                    <path fill="white" d="M64.6,3.8C67.1,1.4,70.4,0,73.8,0h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5 c-5.8,0-8.7-7-4.6-11.1L64.6,3.8z"/>
+                    <path fill="white" d="M333.1,120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8,0-8.7,7-4.6,11.1l62.7,62.7c2.4,2.4,5.7,3.8,9.2,3.8h317.4 c5.8,0,8.7-7,4.6-11.1L333.1,120.1z"/>
                   </svg>
                 </div>
               </div>
@@ -70,9 +70,12 @@ const SolanaPaymentSection = () => {
               </div>
             </div>
             
-            {/* Floating elements */}
-            <div className="absolute -top-4 -right-4 w-16 h-16 bg-yellow-400 rounded-full opacity-20 animate-pulse"></div>
-            <div className="absolute -bottom-4 -left-4 w-12 h-12 bg-blue-400 rounded-full opacity-20 animate-pulse delay-1000"></div>
+            {/* Floating animated elements */}
+            <div className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-400 opacity-30" style={{clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)', animation: 'slideUp 15s ease-in-out infinite'}}></div>
+            <div className="absolute -bottom-4 -left-4 w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-400 opacity-30" style={{clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)', animation: 'slideDown 18s ease-in-out infinite'}}></div>
+            <div className="absolute top-1/2 -right-8 w-8 h-8 bg-gradient-to-r from-pink-400 to-red-400 opacity-40" style={{clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)', animation: 'rotate3D 25s linear infinite'}}></div>
+            <div className="absolute top-1/4 -left-6 w-10 h-10 bg-gradient-to-r from-green-400 to-teal-400 opacity-25" style={{clipPath: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)', animation: 'wave 20s ease-in-out infinite'}}></div>
+            <div className="absolute bottom-1/4 -right-12 w-6 h-6 bg-gradient-to-r from-indigo-400 to-blue-400 opacity-35" style={{clipPath: 'polygon(40% 0%, 60% 0%, 60% 40%, 100% 40%, 100% 60%, 60% 60%, 60% 100%, 40% 100%, 40% 60%, 0% 60%, 0% 40%, 40% 40%)', animation: 'zigzag 16s ease-in-out infinite'}}></div>
           </div>
           
           {/* Right side - Benefits and features */}
@@ -123,19 +126,24 @@ const SolanaPaymentSection = () => {
         
         {/* Bottom stats */}
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-          <div className="p-6 bg-white rounded-xl border border-gray-100">
-            <div className="text-3xl font-bold text-[#9945FF] mb-2">400ms</div>
+          <div className="p-6 bg-white rounded-xl border border-gray-100 hover:shadow-lg transform hover:-translate-y-2 transition-all duration-300">
+            <div className="text-3xl font-bold text-[#9945FF] mb-2 animate-pulse">400ms</div>
             <div className="text-gray-600">Average Transaction Time</div>
           </div>
-          <div className="p-6 bg-white rounded-xl border border-gray-100">
-            <div className="text-3xl font-bold text-[#14F195] mb-2">$0.00025</div>
+          <div className="p-6 bg-white rounded-xl border border-gray-100 hover:shadow-lg transform hover:-translate-y-2 transition-all duration-300">
+            <div className="text-3xl font-bold text-[#14F195] mb-2 animate-bounce delay-500">$0.00025</div>
             <div className="text-gray-600">Average Transaction Fee</div>
           </div>
-          <div className="p-6 bg-white rounded-xl border border-gray-100">
-            <div className="text-3xl font-bold text-[#9945FF] mb-2">65,000+</div>
+          <div className="p-6 bg-white rounded-xl border border-gray-100 hover:shadow-lg transform hover:-translate-y-2 transition-all duration-300">
+            <div className="text-3xl font-bold text-[#9945FF] mb-2 animate-pulse delay-1000">65,000+</div>
             <div className="text-gray-600">TPS Capacity</div>
           </div>
         </div>
+        
+        {/* Additional floating animated elements */}
+        <div className="absolute top-1/4 right-10 w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-400 opacity-40" style={{clipPath: 'polygon(50% 0%, 100% 100%, 0% 100%)', animation: 'scaleIn 18s ease-in-out infinite'}}></div>
+        <div className="absolute bottom-1/4 left-10 w-8 h-8 bg-gradient-to-r from-green-400 to-teal-400 opacity-30" style={{clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)', animation: 'slideLeft 22s ease-in-out infinite'}}></div>
+        <div className="absolute top-3/4 right-1/4 w-4 h-4 bg-gradient-to-r from-purple-400 to-pink-400 opacity-50" style={{clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)', animation: 'bounceRotate 24s ease-in-out infinite'}}></div>
       </div>
     </section>
   );

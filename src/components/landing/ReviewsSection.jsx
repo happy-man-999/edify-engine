@@ -40,8 +40,18 @@ const ReviewsSection = () => {
   ];
 
   return (
-    <section className="py-20 bg-white">
-      <div className="max-w-6xl mx-auto px-6">
+    <section className="py-20 bg-white relative overflow-hidden">
+      {/* Animated Background Shapes */}
+      <div className="absolute inset-0">
+        <div className="absolute top-20 left-10 w-24 h-24 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full" style={{animation: 'pulse 8s ease-in-out infinite'}}></div>
+        <div className="absolute top-40 right-20 w-20 h-20 bg-gradient-to-r from-green-100 to-teal-100 rounded-full" style={{animation: 'bounce 10s ease-in-out infinite'}}></div>
+        <div className="absolute bottom-40 left-1/4 w-16 h-16 bg-gradient-to-r from-yellow-100 to-orange-100 rounded-full" style={{animation: 'spin 15s linear infinite'}}></div>
+        <div className="absolute bottom-20 right-1/3 w-28 h-28 bg-gradient-to-r from-pink-100 to-red-100 rounded-full" style={{animation: 'ping 12s ease-in-out infinite'}}></div>
+        <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-gradient-to-r from-indigo-100 to-blue-100 rounded-full" style={{animation: 'pulse 9s ease-in-out infinite'}}></div>
+        <div className="absolute top-1/3 right-1/4 w-12 h-12 bg-gradient-to-r from-cyan-100 to-blue-100 rounded-full" style={{animation: 'bounce 11s ease-in-out infinite'}}></div>
+      </div>
+      
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
             Loved by Creators
@@ -61,33 +71,45 @@ const ReviewsSection = () => {
               <button
                 key={index}
                 onClick={() => setCurrentReview(index)}
-                className={`w-3 h-3 rounded-full mx-2 transition-all duration-300 ${
+                className={`w-3 h-3 rounded-full mx-2 transition-all duration-500 ${
                   index === currentReview ? 'bg-[#42677D] scale-125' : 'bg-gray-300'
                 }`}
               />
             ))}
           </div>
           
-          <div className="bg-gradient-to-r from-[#42677D]/10 to-[#5E8EA9]/10 rounded-3xl p-12 text-center">
-            <div className="flex justify-center mb-6">
-              {[...Array(reviews[currentReview].rating)].map((_, i) => (
-                <i key={i} className="fas fa-star text-yellow-400 text-2xl mx-1"></i>
+          <div className="relative overflow-hidden">
+            <div 
+              className="flex transition-transform duration-700 ease-in-out"
+              style={{ transform: `translateX(-${currentReview * 100}%)` }}
+            >
+              {reviews.map((review, index) => (
+                <div 
+                  key={index} 
+                  className="w-full flex-shrink-0 bg-gradient-to-r from-[#42677D]/10 to-[#5E8EA9]/10 rounded-3xl p-12 text-center"
+                >
+                  <div className="flex justify-center mb-6">
+                    {[...Array(review.rating)].map((_, i) => (
+                      <i key={i} className="fas fa-star text-yellow-400 text-2xl mx-1"></i>
+                    ))}
+                  </div>
+                  <blockquote className="text-xl text-gray-700 mb-8 italic leading-relaxed">
+                    "{review.text}"
+                  </blockquote>
+                  <div className="flex items-center justify-center">
+                    <img 
+                      src={review.avatar} 
+                      alt={review.name}
+                      className="w-16 h-16 rounded-full mr-4"
+                    />
+                    <div className="text-left">
+                      <div className="font-semibold text-gray-900">{review.name}</div>
+                      <div className="text-gray-600">{review.role}</div>
+                      <div className="text-[#42677D]">{review.company}</div>
+                    </div>
+                  </div>
+                </div>
               ))}
-            </div>
-            <blockquote className="text-xl text-gray-700 mb-8 italic leading-relaxed">
-              "{reviews[currentReview].text}"
-            </blockquote>
-            <div className="flex items-center justify-center">
-              <img 
-                src={reviews[currentReview].avatar} 
-                alt={reviews[currentReview].name}
-                className="w-16 h-16 rounded-full mr-4"
-              />
-              <div className="text-left">
-                <div className="font-semibold text-gray-900">{reviews[currentReview].name}</div>
-                <div className="text-gray-600">{reviews[currentReview].role}</div>
-                <div className="text-[#42677D]">{reviews[currentReview].company}</div>
-              </div>
             </div>
           </div>
         </div>

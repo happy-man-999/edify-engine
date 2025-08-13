@@ -20,6 +20,28 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30"></div>
       </div>
       
+      {/* Animated Background Shapes */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Triangle */}
+        <div className="absolute top-20 left-10 w-0 h-0 border-l-[32px] border-r-[32px] border-b-[56px] border-l-transparent border-r-transparent border-b-blue-400/20" style={{animation: 'pulse 12s ease-in-out infinite'}}></div>
+        {/* Square */}
+        <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-r from-green-400/20 to-teal-400/20" style={{animation: 'bounce 15s ease-in-out infinite'}}></div>
+        {/* Circle */}
+        <div className="absolute bottom-40 left-20 w-20 h-20 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 rounded-full" style={{animation: 'spin 25s linear infinite'}}></div>
+        {/* Diamond */}
+        <div className="absolute top-1/2 right-1/4 w-16 h-16 bg-gradient-to-r from-pink-400/20 to-red-400/20 transform rotate-45" style={{animation: 'ping 18s ease-in-out infinite'}}></div>
+        {/* Star */}
+        <div className="absolute bottom-1/3 right-1/3 w-28 h-28 text-indigo-400/20" style={{animation: 'pulse 13s ease-in-out infinite'}}>
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+        </div>
+        {/* Hexagon */}
+        <div className="absolute top-1/3 left-1/4 w-12 h-12 bg-gradient-to-r from-cyan-400/20 to-blue-400/20" style={{animation: 'bounce 16s ease-in-out infinite', clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'}}></div>
+        {/* Cross */}
+        <div className="absolute top-1/4 right-1/3 w-8 h-8 bg-gradient-to-r from-purple-400/20 to-pink-400/20" style={{animation: 'pulse 14s ease-in-out infinite', clipPath: 'polygon(40% 0%, 60% 0%, 60% 40%, 100% 40%, 100% 60%, 60% 60%, 60% 100%, 40% 100%, 40% 60%, 0% 60%, 0% 40%, 40% 40%)'}}></div>
+      </div>
+      
       {/* Hero Content */}
       <div className="relative z-10 text-center text-white max-w-6xl mx-auto px-6">
         <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
