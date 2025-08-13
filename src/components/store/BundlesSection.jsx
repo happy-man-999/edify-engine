@@ -1,35 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useCurrency } from "../../hooks/useCurrency";
-
-const bundles = [
-  {
-    img: "https://nfp.land/wp-content/uploads/2023/04/nfp_store-scaled.jpg",
-    title: "Business Essentials",
-    desc: "10 apps + 3 templates for professional environments",
-    usd: 289.99,
-    rating: 4,
-    reviews: 42
-  },
-  {
-    img: "https://nfp.land/wp-content/uploads/2023/05/New-Frontier-Presents-Lunchables-Land.jpg",
-    title: "Gaming Starter Kit",
-    desc: "5 gaming apps + 15 high-quality 3D assets",
-    usd: 149.99,
-    rating: 4,
-    reviews: 0
-  },
-  {
-    img: "https://nfp.land/wp-content/uploads/2023/10/new-frontier-presents-university-of-miami.png",
-    title: "Education Pack",
-    desc: "3 templates + 8 apps for virtual learning",
-    usd: 0,
-    rating: 0,
-    reviews: 0
-  }
-];
+import { useItems } from "../../hooks/useItems";
+import LoadingSpinner from "../LoadingSpinner";
 
 const BundlesSection = ({ currency, onAddToCart }) => {
   const { showPrice } = useCurrency();
+  const { getBundles, loading, error } = useItems();
+  const bundles = getBundles();
   
   // Countdown timer for the special bundle offer
   const [countdown, setCountdown] = useState({ hours: "00", minutes: "00", seconds: "00" });
@@ -53,6 +30,45 @@ const BundlesSection = ({ currency, onAddToCart }) => {
     return () => clearInterval(interval);
   }, []);
 
+  if (loading) {
+    return (
+      <section className="mb-12">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold">Premium Bundles</h2>
+        </div>
+        <div className="flex justify-center items-center h-40">
+          <LoadingSpinner />
+        </div>
+      </section>
+    );
+  }
+  
+  if (error) {
+    return (
+      <section className="mb-12">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold">Premium Bundles</h2>
+        </div>
+        <div className="text-center text-red-500 py-8">
+          Error loading bundles: {error}
+        </div>
+      </section>
+    );
+  }
+  
+  if (bundles.length === 0) {
+    return (
+      <section className="mb-12">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold">Premium Bundles</h2>
+        </div>
+        <div className="text-center text-gray-500 py-8">
+          No bundles available at the moment.
+        </div>
+      </section>
+    );
+  }
+  
   return (
     <section className="mb-12">
       <div className="flex items-center justify-between mb-6">
@@ -144,24 +160,24 @@ const BundlesSection = ({ currency, onAddToCart }) => {
               <i className="fas fa-boxes mr-1"></i> Bundle
             </div>
             <div className="h-48 bg-gray-100 flex items-center justify-center [perspective:1000px] [transform-style:preserve-3d]">
-              <img src={item.img} alt={item.title} className="w-full h-full object-cover" />
+              <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
             </div>
             <div className="p-4">
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-semibold">{item.title}</h3>
                 <div className={`bg-[#42677D] text-white text-sm px-2 py-1 rounded${currency === 'SOL' ? ' hidden' : ''}`}>
-                  ${item.usd}
+                  ${item.priceUSD}
                 </div>
                 <div className={`bg-[#0EA47A] text-white text-sm px-2 py-1 rounded${currency === 'SOL' ? '' : ' hidden'}`}>
-                  {showPrice(item.usd) ? `${showPrice(item.usd).toFixed(4)} SOL` : '...'}
+                  {showPrice(item.priceUSD) ? `${showPrice(item.priceUSD).toFixed(4)} SOL` : '...'}
                 </div>
               </div>
-              <p className="text-gray-500 text-sm mb-3">{item.desc}</p>
+              <p className="text-gray-500 text-sm mb-3">{item.description}</p>
               <div className="flex justify-between items-center">
                 <div className="flex items-center text-yellow-400 text-sm">
                   {Array.from({length: Math.floor(item.rating)}, (_, i) => <i key={i} className="fas fa-star"></i>)}
                   {item.rating % 1 !== 0 && <i className="fas fa-star-half-alt"></i>}
-                  <span className="text-gray-500 ml-1">{item.reviews ? `(${item.reviews})` : null}</span>
+                  <span className="text-gray-500 ml-1">{item.reviewCount ? `(${item.reviewCount})` : null}</span>
                 </div>
                 <button className="text-[#42677D] hover:text-[#355263] text-sm font-medium" onClick={() => onAddToCart(item)}>
                   <i className="fas fa-cart-plus mr-1"></i> Add to Cart

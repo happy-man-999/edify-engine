@@ -1,38 +1,54 @@
 import React from "react";
 import { useCurrency } from "../../hooks/useCurrency";
-
-const featured = [
-  {
-    img: "https://nfp.land/wp-content/uploads/2025/04/edify-engine-professional-services.jpg",
-    title: "Professional Services",
-    desc: "Complete environment with furniture and props",
-    usd: 499.99,
-    rating: 4.5,
-    reviews: 128
-  },
-  {
-    img: "https://nfp.land/wp-content/uploads/2023/11/New-Frontier-Presents-Race-Club-Web3-Gaming-1.png",
-    title: "Race Track",
-    desc: "Build your race track with this template",
-    usd: 229.99,
-    rating: 5,
-    reviews: 87
-  },
-  {
-    img: "https://nfp.land/wp-content/uploads/2024/04/10.png",
-    title: "Desert Template",
-    desc: "Agade farm retreat with surrounding environment",
-    usd: 179.99,
-    rating: 5,
-    reviews: 64
-  }
-];
+import { useItems } from "../../hooks/useItems";
+import LoadingSpinner from "../LoadingSpinner";
 
 const FeaturedSection = ({ currency, onAddToCart, onCryptoPay }) => {
   const { showPrice } = useCurrency();
+  const { getFeaturedItems, loading, error } = useItems();
+  const featured = getFeaturedItems();
+  
+  if (loading) {
+    return (
+      <section className="mb-12">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold">Featured Items</h2>
+        </div>
+        <div className="flex justify-center items-center h-40">
+          <LoadingSpinner />
+        </div>
+      </section>
+    );
+  }
+  
+  if (error) {
+    return (
+      <section className="mb-12">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold">Featured Items</h2>
+        </div>
+        <div className="text-center text-red-500 py-8">
+          Error loading featured items: {error}
+        </div>
+      </section>
+    );
+  }
+  
+  if (featured.length === 0) {
+    return (
+      <section className="mb-12">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold">Featured Items</h2>
+        </div>
+        <div className="text-center text-gray-500 py-8">
+          No featured items available at the moment.
+        </div>
+      </section>
+    );
+  }
   
   return (
-    <section className="mb-12">
+  <section className="mb-12">
     <div className="flex items-center justify-between mb-6">
       <h2 className="text-2xl font-bold">Featured Items</h2>
       <button className="text-[#42677D] hover:text-[#355263] flex items-center">
@@ -47,24 +63,24 @@ const FeaturedSection = ({ currency, onAddToCart, onCryptoPay }) => {
             <i className="fas fa-star mr-1"></i> Featured
           </div>
           <div className="h-48 bg-gray-100 overflow-hidden [perspective:1000px] [transform-style:preserve-3d]">
-            <img src={item.img} alt={item.title} className="w-full h-full object-cover" />
+            <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
           </div>
           <div className="p-4">
             <div className="flex justify-between items-start mb-2">
               <h3 className="font-semibold">{item.title}</h3>
               <div className={`bg-[#42677D] text-white text-sm px-2 py-1 rounded${currency === 'SOL' ? ' hidden' : ''}`}>
-                ${item.usd}
+                ${item.priceUSD}
               </div>
               <div className={`bg-[#0EA47A] text-white text-sm px-2 py-1 rounded${currency === 'SOL' ? '' : ' hidden'}`}>
-                {showPrice(item.usd) ? `${showPrice(item.usd).toFixed(4)} SOL` : '...'}
+                {showPrice(item.priceUSD) ? `${showPrice(item.priceUSD).toFixed(4)} SOL` : '...'}
               </div>
             </div>
-            <p className="text-gray-500 text-sm mb-3">{item.desc}</p>
+            <p className="text-gray-500 text-sm mb-3">{item.description}</p>
             <div className="flex justify-between items-center">
               <div className="flex items-center text-yellow-400 text-sm">
                 {Array.from({length: Math.floor(item.rating)}, (_, i) => <i key={i} className="fas fa-star"></i>)}
                 {item.rating % 1 !== 0 && <i className="fas fa-star-half-alt"></i>}
-                <span className="text-gray-500 ml-1">({item.reviews})</span>
+                <span className="text-gray-500 ml-1">({item.reviewCount})</span>
               </div>
               <button className="text-[#42677D] hover:text-[#355263] text-sm font-medium" onClick={() => onAddToCart(item)}>
                 <i className="fas fa-cart-plus mr-1"></i> Add to Cart
