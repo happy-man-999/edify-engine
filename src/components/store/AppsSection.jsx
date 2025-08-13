@@ -1,12 +1,12 @@
 import React from "react";
+import { useCurrency } from "../../hooks/useCurrency";
 
 const apps = [
   {
     img: "https://nfp.land/wp-content/uploads/2025/04/edify-engine-analytics-Dashbaord.png",
     title: "Analytics Dashboard",
     desc: "Real-time data visualization for your virtual worlds",
-    usd: "$3.99",
-    btc: "0.00065 BTC",
+    usd: 3.99,
     rating: 4,
     reviews: 42
   },
@@ -14,8 +14,7 @@ const apps = [
     img: "https://nfp.land/wp-content/uploads/2025/04/edify-engine-multiplayer-system.png",
     title: "Multiplayer System",
     desc: "Seamless multiplayer integration for your experiences",
-    usd: "$59.99",
-    btc: "0.00097 BTC",
+    usd: 59.99,
     rating: 3.5,
     reviews: 28
   },
@@ -23,8 +22,7 @@ const apps = [
     img: "https://nfp.land/wp-content/uploads/2025/04/Edify-Engine-AI-Assistant.png",
     title: "AI Assistant",
     desc: "Complete inventory management for virtual items",
-    usd: "$49.99",
-    btc: "0.00081 BTC",
+    usd: 49.99,
     rating: 4.5,
     reviews: 35
   },
@@ -32,14 +30,16 @@ const apps = [
     img: "https://nfp.land/wp-content/uploads/2025/04/Edify-Engine-Physics-Engine.png",
     title: "Physics Engine",
     desc: "Real-time illustrating dynamic physics simulations",
-    usd: "$29.99",
-    btc: "0.00049 BTC",
+    usd: 29.99,
     rating: 4,
     reviews: 52
   }
 ];
 
-const AppsSection = ({ currency, onAddToCart }) => (
+const AppsSection = ({ currency, onAddToCart }) => {
+  const { showPrice } = useCurrency();
+  
+  return (
   <section className="mb-12">
     <div className="flex items-center justify-between mb-6">
       <h2 className="text-2xl font-bold">Apps</h2>
@@ -57,8 +57,12 @@ const AppsSection = ({ currency, onAddToCart }) => (
           <div className="p-4">
             <div className="flex justify-between items-start mb-2">
               <h3 className="font-semibold text-sm">{item.title}</h3>
-              <div className={`bg-[#42677D] text-white text-xs px-2 py-1 rounded${currency === 'BTC' ? ' hidden' : ''}`}>{item.usd}</div>
-              <div className={`bg-[#f7931a] text-white text-xs px-2 py-1 rounded${currency === 'BTC' ? '' : ' hidden'}`}>{item.btc}</div>
+              <div className={`bg-[#42677D] text-white text-xs px-2 py-1 rounded${currency === 'SOL' ? ' hidden' : ''}`}>
+                ${item.usd}
+              </div>
+              <div className={`bg-[#0EA47A] text-white text-xs px-2 py-1 rounded${currency === 'SOL' ? '' : ' hidden'}`}>
+                {showPrice(item.usd) ? `${showPrice(item.usd).toFixed(4)} SOL` : '...'}
+              </div>
             </div>
             <p className="text-gray-500 text-xs mb-3">{item.desc}</p>
             <div className="flex justify-between items-center">
@@ -76,6 +80,7 @@ const AppsSection = ({ currency, onAddToCart }) => (
       ))}
     </div>
   </section>
-);
+  );
+};
 
 export default AppsSection;

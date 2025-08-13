@@ -1,12 +1,12 @@
 import React from "react";
+import { useCurrency } from "../../hooks/useCurrency";
 
 const featured = [
   {
     img: "https://nfp.land/wp-content/uploads/2025/04/edify-engine-professional-services.jpg",
     title: "Professional Services",
     desc: "Complete environment with furniture and props",
-    usd: "$499.99",
-    btc: "0.0024 BTC",
+    usd: 499.99,
     rating: 4.5,
     reviews: 128
   },
@@ -14,24 +14,25 @@ const featured = [
     img: "https://nfp.land/wp-content/uploads/2023/11/New-Frontier-Presents-Race-Club-Web3-Gaming-1.png",
     title: "Race Track",
     desc: "Build your race track with this template",
-    usd: "$229.99",
-    btc: "0.0037 BTC",
+    usd: 229.99,
     rating: 5,
     reviews: 87
   },
   {
     img: "https://nfp.land/wp-content/uploads/2024/04/10.png",
     title: "Desert Template",
-    desc: "Agave farm retreat with surrounding environment",
-    usd: "$179.99",
-    btc: "0.0029 BTC",
+    desc: "Agade farm retreat with surrounding environment",
+    usd: 179.99,
     rating: 5,
     reviews: 64
   }
 ];
 
-const FeaturedSection = ({ currency, onAddToCart, onCryptoPay }) => (
-  <section className="mb-12">
+const FeaturedSection = ({ currency, onAddToCart, onCryptoPay }) => {
+  const { showPrice } = useCurrency();
+  
+  return (
+    <section className="mb-12">
     <div className="flex items-center justify-between mb-6">
       <h2 className="text-2xl font-bold">Featured Items</h2>
       <button className="text-[#42677D] hover:text-[#355263] flex items-center">
@@ -51,8 +52,12 @@ const FeaturedSection = ({ currency, onAddToCart, onCryptoPay }) => (
           <div className="p-4">
             <div className="flex justify-between items-start mb-2">
               <h3 className="font-semibold">{item.title}</h3>
-              <div className={`bg-[#42677D] text-white text-sm px-2 py-1 rounded${currency === 'BTC' ? ' hidden' : ''}`}>{item.usd}</div>
-              <div className={`bg-[#f7931a] text-white text-sm px-2 py-1 rounded${currency === 'BTC' ? '' : ' hidden'}`}>{item.btc}</div>
+              <div className={`bg-[#42677D] text-white text-sm px-2 py-1 rounded${currency === 'SOL' ? ' hidden' : ''}`}>
+                ${item.usd}
+              </div>
+              <div className={`bg-[#0EA47A] text-white text-sm px-2 py-1 rounded${currency === 'SOL' ? '' : ' hidden'}`}>
+                {showPrice(item.usd) ? `${showPrice(item.usd).toFixed(4)} SOL` : '...'}
+              </div>
             </div>
             <p className="text-gray-500 text-sm mb-3">{item.desc}</p>
             <div className="flex justify-between items-center">
@@ -68,8 +73,9 @@ const FeaturedSection = ({ currency, onAddToCart, onCryptoPay }) => (
           </div>
         </div>
       ))}
-    </div>
-  </section>
-);
+      </div>
+    </section>
+  );
+};
 
 export default FeaturedSection;

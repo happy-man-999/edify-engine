@@ -13,11 +13,12 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { useDispatch } from "react-redux";
 import { showNotification } from "../store/uiSlice";
 import { useAuth } from "../hooks/useAuth";
+import { useCurrency } from "../hooks/useCurrency";
 
 const Store = () => {
   const [cartCount, setCartCount] = useState(3);
-  const [currency, setCurrency] = useState("USD");
   const [activeTab, setActiveTab] = useState("Featured");
+  const [walletOpen, setWalletOpen] = useState(false);
   
   const dispatch = useDispatch();
   const { connected, publicKey } = useWallet();
@@ -25,6 +26,7 @@ const Store = () => {
   const { showError } = useErrorModal();
   const { showModal } = useYesNoModal();
   const { user, isAuthenticated } = useAuth();
+  const { currency, toggleCurrency } = useCurrency();
   
   const handleAddToCart = (item) => {
     setCartCount(c => c + 1);
@@ -32,7 +34,7 @@ const Store = () => {
   };
 
   const handleCurrencyToggle = () => {
-    setCurrency(c => c === "USD" ? "BTC" : "USD");
+    toggleCurrency();
   };
 
   const handleCryptoPay = async (item) => {

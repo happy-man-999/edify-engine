@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useCurrency } from "../../hooks/useCurrency";
 
 const bundles = [
   {
     img: "https://nfp.land/wp-content/uploads/2023/04/nfp_store-scaled.jpg",
     title: "Business Essentials",
     desc: "10 apps + 3 templates for professional environments",
-    usd: "$289.99",
-    btc: "0.0031 BTC",
+    usd: 289.99,
     rating: 4,
     reviews: 42
   },
@@ -14,8 +14,7 @@ const bundles = [
     img: "https://nfp.land/wp-content/uploads/2023/05/New-Frontier-Presents-Lunchables-Land.jpg",
     title: "Gaming Starter Kit",
     desc: "5 gaming apps + 15 high-quality 3D assets",
-    usd: "$149.99",
-    btc: "0.0024 BTC",
+    usd: 149.99,
     rating: 4,
     reviews: 0
   },
@@ -23,14 +22,15 @@ const bundles = [
     img: "https://nfp.land/wp-content/uploads/2023/10/new-frontier-presents-university-of-miami.png",
     title: "Education Pack",
     desc: "3 templates + 8 apps for virtual learning",
-    usd: "",
-    btc: "",
+    usd: 0,
     rating: 0,
     reviews: 0
   }
 ];
 
 const BundlesSection = ({ currency, onAddToCart }) => {
+  const { showPrice } = useCurrency();
+  
   // Countdown timer for the special bundle offer
   const [countdown, setCountdown] = useState({ hours: "00", minutes: "00", seconds: "00" });
   useEffect(() => {
@@ -149,8 +149,12 @@ const BundlesSection = ({ currency, onAddToCart }) => {
             <div className="p-4">
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-semibold">{item.title}</h3>
-                <div className={`bg-[#42677D] text-white text-sm px-2 py-1 rounded${currency === 'BTC' ? ' hidden' : ''}`}>{item.usd}</div>
-                <div className={`bg-[#f7931a] text-white text-sm px-2 py-1 rounded${currency === 'BTC' ? '' : ' hidden'}`}>{item.btc}</div>
+                <div className={`bg-[#42677D] text-white text-sm px-2 py-1 rounded${currency === 'SOL' ? ' hidden' : ''}`}>
+                  ${item.usd}
+                </div>
+                <div className={`bg-[#0EA47A] text-white text-sm px-2 py-1 rounded${currency === 'SOL' ? '' : ' hidden'}`}>
+                  {showPrice(item.usd) ? `${showPrice(item.usd).toFixed(4)} SOL` : '...'}
+                </div>
               </div>
               <p className="text-gray-500 text-sm mb-3">{item.desc}</p>
               <div className="flex justify-between items-center">
