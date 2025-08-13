@@ -139,11 +139,6 @@ const SolanaPaymentSection = () => {
             <div className="text-gray-600">TPS Capacity</div>
           </div>
         </div>
-        
-        {/* Additional floating animated elements */}
-        <div className="absolute top-1/4 right-10 w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-400 opacity-40" style={{clipPath: 'polygon(50% 0%, 100% 100%, 0% 100%)', animation: 'scaleIn 18s ease-in-out infinite'}}></div>
-        <div className="absolute bottom-1/4 left-10 w-8 h-8 bg-gradient-to-r from-green-400 to-teal-400 opacity-30" style={{clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)', animation: 'slideLeft 22s ease-in-out infinite'}}></div>
-        <div className="absolute top-3/4 right-1/4 w-4 h-4 bg-gradient-to-r from-purple-400 to-pink-400 opacity-50" style={{clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)', animation: 'bounceRotate 24s ease-in-out infinite'}}></div>
       </div>
     </section>
   );
