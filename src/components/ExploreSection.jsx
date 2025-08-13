@@ -39,15 +39,17 @@ const worlds = [
   }
 ];
 
-const ExploreSection = () => (
+const ExploreSection = ({ showHeader = true }) => (
   <section className="mb-12">
-    <div className="flex items-center justify-between mb-6">
-      <h2 className="text-2xl font-bold text-gray-900">Explore</h2>
-      <button className="text-[#5E8EA9] hover:text-[#42677D] flex items-center transition-colors duration-300">
-        <span>View All</span>
-        <i className="fas fa-chevron-right ml-2"></i>
-      </button>
-    </div>
+    {showHeader && (
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-gray-900">Explore</h2>
+        <button className="text-[#5E8EA9] hover:text-[#42677D] flex items-center transition-colors duration-300">
+          <span>View All</span>
+          <i className="fas fa-chevron-right ml-2"></i>
+        </button>
+      </div>
+    )}
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {worlds.map((w, i) => (
         <div key={i} onClick={() => window.open(w.url, '_blank')} className="world-card professional-card overflow-hidden cursor-pointer">

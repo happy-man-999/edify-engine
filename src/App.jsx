@@ -85,7 +85,7 @@ function App() {
             </Routes>
 
             <Routes>
-              <Route path="/" element={<Footer />} />
+              <Route path="/home" element={<Footer />} />
               <Route path="/store" element={<StoreFooter />} />
             </Routes>
             <LoadingSpinner />
