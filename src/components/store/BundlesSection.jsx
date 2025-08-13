@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useCurrency } from "../../hooks/useCurrency";
 import { useItems } from "../../hooks/useItems";
-import LoadingSpinner from "../LoadingSpinner";
+import LoadingState from "../LoadingState";
+import ErrorState from "../ErrorState";
+import EmptyState from "../EmptyState";
 
 const BundlesSection = ({ currency, onAddToCart }) => {
   const { showPrice } = useCurrency();
@@ -36,9 +38,12 @@ const BundlesSection = ({ currency, onAddToCart }) => {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Premium Bundles</h2>
         </div>
-        <div className="flex justify-center items-center h-40">
-          <LoadingSpinner />
-        </div>
+        <LoadingState
+          title="Loading Bundles"
+          message="Fetching the latest premium bundles..."
+          skeletonCount={3}
+          className="my-8"
+        />
       </section>
     );
   }
@@ -49,9 +54,12 @@ const BundlesSection = ({ currency, onAddToCart }) => {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Premium Bundles</h2>
         </div>
-        <div className="text-center text-red-500 py-8">
-          Error loading bundles: {error}
-        </div>
+        <ErrorState
+          title="Failed to Load Bundles"
+          message="We couldn't load the premium bundles. This might be a temporary issue."
+          onRetry={() => fetchItems()}
+          className="my-8"
+        />
       </section>
     );
   }
@@ -62,9 +70,12 @@ const BundlesSection = ({ currency, onAddToCart }) => {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Premium Bundles</h2>
         </div>
-        <div className="text-center text-gray-500 py-8">
-          No bundles available at the moment.
-        </div>
+        <EmptyState
+          title="No Bundles Available"
+          message="We don't have any premium bundles in our store at the moment. Check back soon for new offers!"
+          icon="fas fa-boxes"
+          className="my-8"
+        />
       </section>
     );
   }

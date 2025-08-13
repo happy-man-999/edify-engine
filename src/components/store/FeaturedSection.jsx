@@ -1,7 +1,9 @@
 import React from "react";
 import { useCurrency } from "../../hooks/useCurrency";
 import { useItems } from "../../hooks/useItems";
-import LoadingSpinner from "../LoadingSpinner";
+import LoadingState from "../LoadingState";
+import ErrorState from "../ErrorState";
+import EmptyState from "../EmptyState";
 
 const FeaturedSection = ({ currency, onAddToCart, onCryptoPay }) => {
   const { showPrice } = useCurrency();
@@ -14,9 +16,12 @@ const FeaturedSection = ({ currency, onAddToCart, onCryptoPay }) => {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Featured Items</h2>
         </div>
-        <div className="flex justify-center items-center h-40">
-          <LoadingSpinner />
-        </div>
+        <LoadingState
+          title="Loading Featured Items"
+          message="Fetching the latest featured items..."
+          skeletonCount={3}
+          className="my-8"
+        />
       </section>
     );
   }
@@ -27,9 +32,12 @@ const FeaturedSection = ({ currency, onAddToCart, onCryptoPay }) => {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Featured Items</h2>
         </div>
-        <div className="text-center text-red-500 py-8">
-          Error loading featured items: {error}
-        </div>
+        <ErrorState
+          title="Failed to Load Featured Items"
+          message="We couldn't load the featured items. This might be a temporary issue."
+          onRetry={() => fetchFeaturedItems()}
+          className="my-8"
+        />
       </section>
     );
   }
@@ -40,9 +48,12 @@ const FeaturedSection = ({ currency, onAddToCart, onCryptoPay }) => {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Featured Items</h2>
         </div>
-        <div className="text-center text-gray-500 py-8">
-          No featured items available at the moment.
-        </div>
+        <EmptyState
+          title="No Featured Items"
+          message="We don't have any featured items at the moment. Check back soon for new highlights!"
+          icon="fas fa-star"
+          className="my-8"
+        />
       </section>
     );
   }

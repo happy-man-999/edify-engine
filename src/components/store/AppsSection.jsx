@@ -1,7 +1,9 @@
 import React from "react";
 import { useCurrency } from "../../hooks/useCurrency";
 import { useItems } from "../../hooks/useItems";
-import LoadingSpinner from "../LoadingSpinner";
+import LoadingState from "../LoadingState";
+import ErrorState from "../ErrorState";
+import EmptyState from "../EmptyState";
 
 const AppsSection = ({ currency, onAddToCart }) => {
   const { showPrice } = useCurrency();
@@ -14,9 +16,12 @@ const AppsSection = ({ currency, onAddToCart }) => {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Apps</h2>
         </div>
-        <div className="flex justify-center items-center h-40">
-          <LoadingSpinner />
-        </div>
+        <LoadingState
+          title="Loading Apps"
+          message="Fetching the latest apps from our store..."
+          skeletonCount={4}
+          className="my-8"
+        />
       </section>
     );
   }
@@ -27,9 +32,12 @@ const AppsSection = ({ currency, onAddToCart }) => {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Apps</h2>
         </div>
-        <div className="text-center text-red-500 py-8">
-          Error loading apps: {error}
-        </div>
+        <ErrorState
+          title="Failed to Load Apps"
+          message="We couldn't load the apps from our store. This might be a temporary issue."
+          onRetry={() => fetchItems()}
+          className="my-8"
+        />
       </section>
     );
   }
@@ -40,9 +48,12 @@ const AppsSection = ({ currency, onAddToCart }) => {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Apps</h2>
         </div>
-        <div className="text-center text-gray-500 py-8">
-          No apps available at the moment.
-        </div>
+        <EmptyState
+          title="No Apps Available"
+          message="We don't have any apps in our store at the moment. Check back soon for new releases!"
+          icon="fas fa-mobile-alt"
+          className="my-8"
+        />
       </section>
     );
   }
