@@ -12,12 +12,17 @@ const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const { item, quantity = 1 } = action.payload;
-      const existingItem = state.items.find(cartItem => cartItem.id === item.id);
+      
+      // Create a unique ID if the item doesn't have one
+      const itemId = item.id || `${item.title}-${item.type}-${item.category}`;
+      const itemWithId = { ...item, id: itemId };
+      
+      const existingItem = state.items.find(cartItem => cartItem.id === itemId);
       
       if (existingItem) {
         existingItem.quantity += quantity;
       } else {
-        state.items.push({ ...item, quantity });
+        state.items.push({ ...itemWithId, quantity });
       }
       
       state.itemCount = state.items.reduce((total, cartItem) => total + cartItem.quantity, 0);
