@@ -43,7 +43,6 @@ import {
 } from './store/uiSlice';
 import YesNoModal from './components/YesNoModal';
 import { usePaymentModal } from './hooks/usePaymentModal';
-import { PaymentModalProvider } from './contexts/PaymentModalContext';
 
 import './App.css';
 
@@ -74,8 +73,7 @@ function App() {
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          <PaymentModalProvider openPaymentModal={openPaymentModal}>
-            <Router>
+          <Router>
               <AnimatedBackground />
               <MainLayout>
                 <Routes>
@@ -118,7 +116,6 @@ function App() {
                 />
               </MainLayout>
             </Router>
-          </PaymentModalProvider>
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>

@@ -6,16 +6,14 @@ import StoreCategories from "../components/store/StoreCategories";
 import FeaturedSection from "../components/store/FeaturedSection";
 import AppsSection from "../components/store/AppsSection";
 import BundlesSection from "../components/store/BundlesSection";
-import { useLoadingSpinner } from "../hooks/useLoadingSpinner";
 import { useErrorModal } from "../hooks/useErrorModal";
-import { useYesNoModal } from "../hooks/useYesNoModal";
-import { useWallet } from "@solana/wallet-adapter-react";
 import { useDispatch } from "react-redux";
 import { showNotification } from "../store/uiSlice";
 import { useCart } from "../hooks/useCart";
-import { useAuth } from "../hooks/useAuth";
 import { useCurrency } from "../hooks/useCurrency";
-import { usePaymentModalContext } from "../contexts/PaymentModalContext";
+import { usePaymentModal } from "../hooks/usePaymentModal";
+import { usePaymentSuccess } from "../hooks/usePaymentSuccess";
+import { shortAddress } from "../utils/format";
 
 const Store = () => {
   const [activeTab, setActiveTab] = useState("Featured");
@@ -28,9 +26,11 @@ const Store = () => {
   const { currency, toggleCurrency } = useCurrency();
   
   // Get the global payment modal function
-  const { openPaymentModal } = usePaymentModalContext();
+  const { openPaymentModal } = usePaymentModal();
   // Get the error modal function
   const { showError } = useErrorModal();
+  // Get the payment success handler
+  const { handleStripePaymentSuccess } = usePaymentSuccess();
   
   const handleAddToCart = (item) => {
     addItem(item, 1);
@@ -51,17 +51,49 @@ const Store = () => {
       amount: item.priceUSD,
       itemName: item.title,
       itemId: item._id || item.id
-    }).then((result) => {
+    }).then(async (result) => {
       console.log('Payment successful:', result);
       
       if (result.paymentMethod === 'stripe') {
         // For Stripe, the redirect will handle the notification
         // Just close the modal
-        // The PaymentModalContext handles closing and showing notifications
-      } else {
-        // For Solana, show notification and close modal
-        dispatch(showNotification(`Payment successful! Signature: ${result.signature}`));
-        // The PaymentModalContext handles closing and showing notifications
+        // The Redux state handles closing and showing notifications
+      } else if (result.paymentMethod === 'solana') {
+        // For Solana, call the payment success endpoint to get domain info
+        try {
+          const response = await fetch('/api/solana/payment-success', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+              signature: result.signature
+            })
+          });
+
+          if (response.ok) {
+            const paymentResult = await response.json();
+            
+            // Show appropriate notification based on item type
+            if (paymentResult.itemType === 'new-world' && paymentResult.domain) {
+              dispatch(showNotification(`New world created successfully! Your domain: ${paymentResult.domain}`));
+            } else if (paymentResult.itemType === 'item-purchase') {
+              dispatch(showNotification(`Item purchased successfully! ${item.title}`));
+            } else {
+              dispatch(showNotification(`Payment successful! Signature: ${shortAddress(result.signature)}`));
+            }
+          } else {
+            // Fallback to generic success message
+            dispatch(showNotification(`Payment successful! Signature: ${shortAddress(result.signature)}`));
+          }
+        } catch (error) {
+          console.error('Error getting payment details:', error);
+          // Fallback to generic success message
+          dispatch(showNotification(`Payment successful! Signature: ${shortAddress(result.signature)}`));
+        }
+        
+        // The Redux state handles closing and showing notifications
       }
     }).catch((error) => {
       console.error('Payment failed:', error);
@@ -76,8 +108,8 @@ const Store = () => {
     const sessionId = searchParams.get('session_id');
 
     if (paymentStatus === 'success' && sessionId) {
-      // Show success notification
-      dispatch(showNotification(`Payment successful! Session ID: ${sessionId}`));
+      // Call payment success endpoint
+      handleStripePaymentSuccess(sessionId);
       
       // Clean up URL parameters
       navigate(location.pathname, { replace: true });
@@ -89,6 +121,8 @@ const Store = () => {
       navigate(location.pathname, { replace: true });
     }
   }, [location.search, dispatch, navigate, location.pathname]);
+
+
 
   // Tab content
   let tabContent = null;

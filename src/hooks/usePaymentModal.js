@@ -1,55 +1,38 @@
-import { useState, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { openPaymentModal, closePaymentModal, resolvePayment, rejectPayment } from '../store/uiSlice';
 
 export const usePaymentModal = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [paymentData, setPaymentData] = useState(null);
-  const resolveRef = useRef(null);
-  const rejectRef = useRef(null);
+  const dispatch = useDispatch();
+  const { isOpen, paymentData } = useSelector(state => state.ui.paymentModal);
 
-  const openPaymentModal = (data) => {
+  const openModal = (data) => {
     return new Promise((resolve, reject) => {
-      resolveRef.current = resolve;
-      rejectRef.current = reject;
-      setPaymentData(data);
-      setIsOpen(true);
+      dispatch(openPaymentModal({
+        ...data,
+        resolveRef: resolve,
+        rejectRef: reject
+      }));
     });
   };
 
-  const closePaymentModal = () => {
-    setIsOpen(false);
-    setPaymentData(null);
-    // Reject any pending promise if modal is closed without completion
-    if (rejectRef.current) {
-      rejectRef.current(new Error('Payment modal was closed'));
-      resolveRef.current = null;
-      rejectRef.current = null;
-    }
+  const closeModal = () => {
+    dispatch(closePaymentModal());
   };
 
-  const resolvePayment = (result) => {
-    if (resolveRef.current) {
-      resolveRef.current(result);
-      resolveRef.current = null;
-      rejectRef.current = null;
-    }
-    closePaymentModal();
+  const resolveModal = (result) => {
+    dispatch(resolvePayment(result));
   };
 
-  const rejectPayment = (error) => {
-    if (rejectRef.current) {
-      rejectRef.current(error);
-      resolveRef.current = null;
-      rejectRef.current = null;
-    }
-    closePaymentModal();
+  const rejectModal = (error) => {
+    dispatch(rejectPayment(error));
   };
 
   return {
     isOpen,
     paymentData,
-    openPaymentModal,
-    closePaymentModal,
-    resolvePayment,
-    rejectPayment
+    openPaymentModal: openModal,
+    closePaymentModal: closeModal,
+    resolvePayment: resolveModal,
+    rejectPayment: rejectModal
   };
 }; 

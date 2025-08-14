@@ -262,7 +262,7 @@ const Signup = () => {
         throw new Error('Failed to initialize Stripe');
       }
 
-      const sessionId = await createCheckoutSession(4700);
+      const sessionId = await createCheckoutSession(4700, 'usd', null, null, 'premium-plan', 'Edify Engine Premium Plan');
       await redirectToCheckout(sessionId);
       
       // Note: User will be redirected to Stripe, then back to success page

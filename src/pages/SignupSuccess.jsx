@@ -26,12 +26,18 @@ const SignupSuccess = () => {
             },
             body: JSON.stringify({
               sessionId: sessionId || paymentIntent,
-              amount: 4700
+              amount: 0 // Amount will be retrieved from Stripe session metadata
             })
           });
           
           if (response.ok) {
-            console.log('Payment status updated successfully via /payment-success endpoint');
+            const result = await response.json();
+            console.log('Payment status updated successfully via /payment-success endpoint:', result);
+            
+            // Handle different payment types
+            if (result.itemType === 'premium-plan') {
+              console.log('Premium plan signup payment completed');
+            }
           } else {
             console.error('Failed to update payment status:', response.status);
           }
