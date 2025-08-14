@@ -5,7 +5,7 @@ import LoadingState from "../LoadingState";
 import ErrorState from "../ErrorState";
 import EmptyState from "../EmptyState";
 
-const FeaturedSection = ({ currency, onAddToCart }) => {
+const FeaturedSection = ({ currency, onAddToCart, onItemSelect }) => {
   const { showPrice } = useCurrency();
   const { getFeaturedItems, loading, error, items } = useItems();
   const featured = getFeaturedItems();
@@ -112,7 +112,11 @@ const FeaturedSection = ({ currency, onAddToCart }) => {
     </div>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {displayItems.map((item, i) => (
-        <div key={item.id || i} className="bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl relative">
+        <div 
+          key={item.id || i} 
+          className="bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl relative"
+          onClick={() => onItemSelect(item)}
+        >
           <div className="absolute top-3 left-3 bg-yellow-400 text-yellow-800 text-xs font-bold px-2 py-1 rounded-full">
             <i className="fas fa-star mr-1"></i> Featured
           </div>
@@ -136,7 +140,13 @@ const FeaturedSection = ({ currency, onAddToCart }) => {
                 {item.rating % 1 !== 0 && <i className="fas fa-star-half-alt"></i>}
                 <span className="text-gray-500 ml-1">({item.reviewCount})</span>
               </div>
-              <button className="text-[#42677D] hover:text-[#355263] text-sm font-medium" onClick={() => onAddToCart(item)}>
+              <button 
+                className="text-[#42677D] hover:text-[#355263] text-sm font-medium" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onAddToCart(item);
+                }}
+              >
                 <i className="fas fa-cart-plus mr-1"></i> Add to Cart
               </button>
             </div>

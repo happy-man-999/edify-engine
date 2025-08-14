@@ -30,7 +30,7 @@ const Admin = () => {
 
   // Check if user is admin (you can modify this logic based on your admin criteria)
   if (!isAuthenticated || user?.role !== 'admin') {
-    navigate('/');
+    navigate('/home');
     return null;
   }
 
@@ -60,7 +60,7 @@ const Admin = () => {
   };
 
   return (
-    <main className="flex-1 p-6">
+    <main className="flex-1 p-6 pt-24">
       <GlobalStyles />
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
@@ -80,7 +80,7 @@ const Admin = () => {
                 Welcome, {user?.name || user?.email}
               </span>
               <button
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/home')}
                 className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-md transition shadow-sm font-medium"
               >
                 <i className="fas fa-arrow-left mr-2"></i>

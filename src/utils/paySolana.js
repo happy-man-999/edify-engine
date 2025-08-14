@@ -18,7 +18,7 @@ export const sendSOLWithReference = async (recipient, amountSol, reference) => {
 
     const connection = new Connection('https://api.devnet.solana.com');
     const sender = window.solana.publicKey;
-    const lamports = amountSol * 1e9;
+    const lamports = Math.round(amountSol * 1e9);
 
     // Validate recipient address
     let recipientPubkey;

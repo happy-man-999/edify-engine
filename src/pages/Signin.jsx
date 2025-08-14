@@ -58,7 +58,7 @@ const Signin = () => {
           navigate('/signup');
         } else {
           // User has completed signup, redirect to homepage
-          navigate('/');
+          navigate('/home');
         }
       } else {
         setErrors({ general: result.error });
@@ -77,7 +77,7 @@ const Signin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pt-24">
       <GlobalStyles />
 
       {/* Main Content */}

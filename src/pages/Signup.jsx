@@ -339,7 +339,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pt-24">
       <GlobalStyles />
 
       {/* Progress Bar */}

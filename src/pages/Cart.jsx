@@ -64,7 +64,7 @@ const Cart = () => {
 
   if (isEmpty) {
     return (
-      <div className="min-h-screen py-12 relative">
+      <div className="min-h-screen py-12 pt-24 relative">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="mx-auto h-24 w-24 text-gray-300 mb-6">

@@ -34,7 +34,7 @@ const NavbarAction = () => {
 };
 
 const Navbar = () => (
-  <nav className="glass border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50 backdrop-blur-md">
+  <nav className="glass navbar navbar-fixed border-b border-gray-200 px-6 py-4 flex items-center justify-between backdrop-blur-md">
     <div className="w-full flex items-center space-x-4">
       <a href="/" className="flex items-center">
         <video autoPlay loop muted playsInline className="logo-video mr-2" width={32} height={32}>

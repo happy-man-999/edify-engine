@@ -9,6 +9,7 @@ import Notification from './components/Notification';
 import LoadingSpinner from './components/LoadingSpinner';
 import CustomWalletModal from './components/CustomWalletModal';
 import AnimatedBackground from './components/AnimatedBackground';
+import PaymentModal from './components/PaymentModal';
 import Homepage from './pages/Homepage';
 import LandingPage from './pages/LandingPage';
 import Store from './pages/Store';
@@ -41,12 +42,17 @@ import {
   clearNotification,
 } from './store/uiSlice';
 import YesNoModal from './components/YesNoModal';
+import { usePaymentModal } from './hooks/usePaymentModal';
+import { PaymentModalProvider } from './contexts/PaymentModalContext';
 
 import './App.css';
 
 function App() {
   const dispatch = useDispatch();
   const { errorModal, notification } = useSelector(state => state.ui);
+
+  // Global payment modal state
+  const { isOpen, paymentData, openPaymentModal, closePaymentModal, resolvePayment, rejectPayment } = usePaymentModal();
 
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'
   const network = WalletAdapterNetwork.Devnet;
@@ -68,39 +74,51 @@ function App() {
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          <Router>
-            <AnimatedBackground />
-            <MainLayout>
-            <Routes>
-              <Route path="/home" element={<Navbar />} />
-              <Route path="/store" element={<Navbar />} />
-              <Route path="/cart" element={<Navbar />} />
-              <Route path="/checkout" element={<Navbar />} />
-            </Routes>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/home" element={<Homepage />} />
-              <Route path="/store" element={<Store />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/signin" element={<Signin />} />
-              <Route path="/signup-success" element={<SignupSuccess />} />
-              <Route path="/auth-callback" element={<AuthCallback />} />
-              <Route path="/admin" element={<Admin />} />
-            </Routes>
+          <PaymentModalProvider openPaymentModal={openPaymentModal}>
+            <Router>
+              <AnimatedBackground />
+              <MainLayout>
+                <Routes>
+                  <Route path="/home" element={<Navbar />} />
+                  <Route path="/store" element={<Navbar />} />
+                  <Route path="/cart" element={<Navbar />} />
+                  <Route path="/checkout" element={<Navbar />} />
+                </Routes>
+                <Routes>
+                  <Route path="/" element={<LandingPage />} />
+                  <Route path="/home" element={<Homepage />} />
+                  <Route path="/store" element={<Store />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/checkout" element={<Checkout />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/signin" element={<Signin />} />
+                  <Route path="/signup-success" element={<SignupSuccess />} />
+                  <Route path="/auth-callback" element={<AuthCallback />} />
+                  <Route path="/admin" element={<Admin />} />
+                </Routes>
 
-            <Routes>
-              <Route path="/home" element={<Footer />} />
-              <Route path="/store" element={<StoreFooter />} />
-            </Routes>
-            <LoadingSpinner />
-            {notification && <Notification message={notification} onClose={() => dispatch(clearNotification())} />}
-            <ErrorModal open={errorModal.open} message={errorModal.message} onClose={() => dispatch(closeErrorModal())} />
-            <YesNoModal />
-            <CustomWalletModal />
-          </MainLayout>
-          </Router>
+                <Routes>
+                  <Route path="/home" element={<Footer />} />
+                  <Route path="/store" element={<StoreFooter />} />
+                </Routes>
+                <LoadingSpinner />
+                {notification && <Notification message={notification} onClose={() => dispatch(clearNotification())} />}
+                <ErrorModal open={errorModal.open} message={errorModal.message} onClose={() => dispatch(closeErrorModal())} />
+                <YesNoModal />
+                <CustomWalletModal />
+                <PaymentModal
+                  open={isOpen}
+                  onClose={closePaymentModal}
+                  amount={paymentData?.amount}
+                  currency={paymentData?.currency}
+                  itemName={paymentData?.itemName}
+                  itemId={paymentData?.itemId}
+                  resolvePayment={resolvePayment}
+                  rejectPayment={rejectPayment}
+                />
+              </MainLayout>
+            </Router>
+          </PaymentModalProvider>
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>

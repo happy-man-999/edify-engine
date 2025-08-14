@@ -31,12 +31,12 @@ const AuthCallback = () => {
             navigate('/signup');
           } else {
             // User has completed signup or no progress found, redirect to homepage
-            navigate('/');
+            navigate('/home');
           }
         } catch (error) {
           console.error('Auth callback error:', error);
           // On error, redirect to homepage as fallback
-          navigate('/');
+          navigate('/home');
         }
       };
       

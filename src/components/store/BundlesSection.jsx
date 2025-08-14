@@ -5,7 +5,7 @@ import LoadingState from "../LoadingState";
 import ErrorState from "../ErrorState";
 import EmptyState from "../EmptyState";
 
-const BundlesSection = ({ currency, onAddToCart }) => {
+const BundlesSection = ({ currency, onAddToCart, onItemSelect }) => {
   const { showPrice } = useCurrency();
   const { getBundles, loading, error } = useItems();
   const bundles = getBundles();
@@ -90,7 +90,15 @@ const BundlesSection = ({ currency, onAddToCart }) => {
         </button>
       </div>
       {/* Special Bundle Offer */}
-      <div className="bg-gradient-to-br from-[#42677D] to-[#5E8EA9] text-white mb-8 relative overflow-hidden rounded-xl shadow-[0_10px_30px_rgba(66,103,125,0.2)] cursor-pointer animate-[pulse_2s_infinite]">
+      <div 
+        className="bg-gradient-to-br from-[#42677D] to-[#5E8EA9] text-white mb-8 relative overflow-hidden rounded-xl shadow-[0_10px_30px_rgba(66,103,125,0.2)] cursor-pointer animate-[pulse_2s_infinite]"
+        onClick={() => onItemSelect({
+          id: 'starter-creator-bundle',
+          title: 'Starter Creator Bundle',
+          priceUSD: 267,
+          description: 'Complete starter kit for creators'
+        })}
+      >
         <div className="absolute inset-0 bg-gradient-to-r from-[#42677D] to-[#5E8EA9] opacity-90"></div>
         <div className="relative z-10 p-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
@@ -151,7 +159,13 @@ const BundlesSection = ({ currency, onAddToCart }) => {
                   <span className="text-white text-opacity-80">You Save:</span>
                   <span className="text-green-300 font-bold">78%</span>
                 </div>
-                <button className="w-full bg-[#f7931a] hover:bg-[#e6830a] text-white font-bold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center" onClick={() => onAddToCart({title: 'Starter Creator Bundle'})}>
+                <button 
+                  className="w-full bg-[#f7931a] hover:bg-[#e6830a] text-white font-bold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onAddToCart({title: 'Starter Creator Bundle'});
+                  }}
+                >
                   <i className="fas fa-shopping-cart mr-2"></i>
                   Add to Cart
                 </button>
@@ -166,7 +180,11 @@ const BundlesSection = ({ currency, onAddToCart }) => {
       {/* Other Bundles */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {bundles.map((item, i) => (
-          <div key={i} className="bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl relative">
+          <div 
+            key={i} 
+            className="bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl relative"
+            onClick={() => onItemSelect(item)}
+          >
             <div className="absolute top-3 left-3 bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded-full">
               <i className="fas fa-boxes mr-1"></i> Bundle
             </div>
@@ -190,7 +208,13 @@ const BundlesSection = ({ currency, onAddToCart }) => {
                   {item.rating % 1 !== 0 && <i className="fas fa-star-half-alt"></i>}
                   <span className="text-gray-500 ml-1">{item.reviewCount ? `(${item.reviewCount})` : null}</span>
                 </div>
-                <button className="text-[#42677D] hover:text-[#355263] text-sm font-medium" onClick={() => onAddToCart(item)}>
+                <button 
+                  className="text-[#42677D] hover:text-[#355263] text-sm font-medium" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onAddToCart(item);
+                  }}
+                >
                   <i className="fas fa-cart-plus mr-1"></i> Add to Cart
                 </button>
               </div>
