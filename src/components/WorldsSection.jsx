@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { usePaymentModal } from "../hooks/usePaymentModal";
 import { usePaymentSuccess } from "../hooks/usePaymentSuccess";
 import { useErrorModal } from "../hooks/useErrorModal";
@@ -8,95 +9,50 @@ import { showNotification } from "../store/uiSlice";
 
 const WorldsSection = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { openPaymentModal } = usePaymentModal();
-  const { handleStripePaymentSuccess } = usePaymentSuccess();
+  const { handleStripePaymentSuccess, handleSolanaPaymentSuccess } = usePaymentSuccess();
   const { showError } = useErrorModal();
   
   // Check for pending Stripe payment success on component mount
   useEffect(() => {
-    const checkPendingPayment = async () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const paymentStatus = urlParams.get('payment');
-      const sessionId = urlParams.get('session_id');
-      
-      // Check if this is a successful payment return from Stripe
-      if (paymentStatus === 'success' && sessionId) {
-        try {
-          // Check if this payment was for new world creation by looking at the session
-          // We'll need to call the payment success endpoint to get the metadata
-          const result = await handleStripePaymentSuccess(sessionId);
-          
-          // If this was a new world creation payment, handle it specifically
-          if (result && result.itemType === 'new-world') {
-            console.log('New world creation payment completed successfully!');
-            // You could add additional logic here like:
-            // - Refreshing the worlds list
-            // - Showing a specific success message
-            // - Redirecting to world creation page
-            // - etc.
-          }
-        } catch (error) {
-          console.error('Error handling payment success:', error);
-        }
-      }
-    };
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment');
+    const sessionId = urlParams.get('session_id');
     
-    checkPendingPayment();
-  }, []);
+    // Check if this is a successful payment return from Stripe
+    if (paymentStatus === 'success' && sessionId) {
+      handleStripePaymentSuccess(sessionId);
+      navigate(location.pathname, { replace: true });
+    } else if (paymentStatus === 'cancelled') {
+      dispatch(showNotification('Payment was cancelled'));
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.search, dispatch, navigate, location.pathname]);
   
   const handleCreateWorld = () => {
     openPaymentModal({
       amount: 19.99,
       itemName: "New World",
       itemId: "new-world"
-    }).then(async (result) => {
-      console.log('Payment successful:', result);
-      
+    }).then(async (result) => { 
+      alert(result.paymentMethod)
       if (result.paymentMethod === 'stripe') {
-        // For Stripe payments: User gets redirected to Stripe, then back to Store page
-        // The component will handle payment success when user returns via useEffect
-        console.log('Stripe payment initiated for new world creation');
-        // Note: Payment success will be handled when user returns from Stripe
       } else if (result.paymentMethod === 'solana') {
-        // For Solana, call the payment success endpoint to get domain info
+        // For Solana, use the payment success hook for consistent handling
         try {
-          const response = await fetch('/api/solana/payment-success', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify({
-              signature: result.signature
-            })
-          });
-
-          if (response.ok) {
-            const paymentResult = await response.json();
-            
-            // Show appropriate notification based on item type
-            if (paymentResult.itemType === 'new-world' && paymentResult.domain) {
-              dispatch(showNotification(`New world created successfully! Your domain: ${paymentResult.domain}`));
-            } else {
-              dispatch(showNotification(`Payment successful! Signature: ${shortAddress(result.signature)}`));
-            }
-          } else {
-            // Fallback to generic success message
-            dispatch(showNotification(`Payment successful! Signature: ${shortAddress(result.signature)}`));
-          }
+          await handleSolanaPaymentSuccess(result.signature);
         } catch (error) {
-          console.error('Error getting payment details:', error);
-          // Fallback to generic success message
-          dispatch(showNotification(`Payment successful! Signature: ${shortAddress(result.signature)}`));
+          console.error('Error handling Solana payment success:', error);
+          showError('Payment successful, but confirmation failed');
         }
-        
-        // The Redux state handles closing and showing notifications
       }
     }).catch((error) => {
       console.error('Payment failed:', error);
       showError(`Payment functionality is not available for new world creation. Please try again later.`);
     });
   };
+
   return (
     <section className="mb-12">
       <div className="flex items-center justify-between mb-6">
@@ -106,6 +62,7 @@ const WorldsSection = () => {
           <i className="fas fa-chevron-right ml-2"></i>
         </button>
       </div>
+      
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Empty State with Glowing Border */}
         <div onClick={handleCreateWorld} className="professional-card border-2 border-dashed border-gray-300 hover:border-[#42677D] transition-all duration-300 cursor-pointer flex flex-col items-center justify-center p-8 relative overflow-hidden">

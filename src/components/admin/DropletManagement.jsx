@@ -61,9 +61,6 @@ const DropletManagement = () => {
       ...advancedFilters
     };
     
-    // Debug: Log the filters being sent
-    console.log('Sending filters to API:', filters);
-    
     loadDroplets(filters);
   }, [currentPage, pageSize, debouncedSearchTerm, filterStatus, advancedFilters]);
 
@@ -158,7 +155,6 @@ const DropletManagement = () => {
   };
 
   const handleApplyFilters = (filters) => {
-    console.log('Applying advanced filters:', filters);
     setAdvancedFilters(filters);
     setCurrentPage(1); // Reset to first page when applying filters
   };

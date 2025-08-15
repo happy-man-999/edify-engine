@@ -18,8 +18,6 @@ const initialState = {
   paymentModal: {
     isOpen: false,
     paymentData: null,
-    resolveRef: null,
-    rejectRef: null,
   },
   currency: 'USD',
 };
@@ -68,42 +66,12 @@ const uiSlice = createSlice({
       state.paymentModal = {
         isOpen: true,
         paymentData: action.payload,
-        resolveRef: action.payload.resolveRef,
-        rejectRef: action.payload.rejectRef,
       };
     },
-    closePaymentModal(state) {
+    closePaymentModal(state, action) {
       state.paymentModal = {
         isOpen: false,
         paymentData: null,
-        resolveRef: null,
-        rejectRef: null,
-      };
-    },
-    resolvePayment(state, action) {
-      if (state.paymentModal.resolveRef) {
-        state.paymentModal.resolveRef(action.payload);
-        state.paymentModal.resolveRef = null;
-        state.paymentModal.rejectRef = null;
-      }
-      state.paymentModal = {
-        isOpen: false,
-        paymentData: null,
-        resolveRef: null,
-        rejectRef: null,
-      };
-    },
-    rejectPayment(state, action) {
-      if (state.paymentModal.rejectRef) {
-        state.paymentModal.rejectRef(action.payload);
-        state.paymentModal.resolveRef = null;
-        state.paymentModal.rejectRef = null;
-      }
-      state.paymentModal = {
-        isOpen: false,
-        paymentData: null,
-        resolveRef: null,
-        rejectRef: null,
       };
     },
     changeCurrency(state, action) {
@@ -125,8 +93,6 @@ export const {
   hideWalletModal,
   openPaymentModal,
   closePaymentModal,
-  resolvePayment,
-  rejectPayment,
   changeCurrency,
 } = uiSlice.actions;
 

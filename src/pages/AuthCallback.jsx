@@ -42,7 +42,7 @@ const AuthCallback = () => {
       
       handleAuth();
     } else {
-      console.log('AuthCallback: No token received');
+      console.error('AuthCallback: No token received');
       setError('Authentication failed. No token received.');
     }
   }, [searchParams]);

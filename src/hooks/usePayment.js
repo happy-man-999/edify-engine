@@ -4,6 +4,7 @@ import { useLoadingSpinner } from './useLoadingSpinner';
 import { useErrorModal } from './useErrorModal';
 import { useWalletWithRedirects } from './useWalletWithRedirects';
 import { useCurrency } from './useCurrency';
+import { useSettings } from './useSettings';
 import { createCheckoutSession, redirectToCheckout, initializeStripe } from '../utils/stripe';
 import { sendSOLWithReference } from '../utils/paySolana';
 
@@ -15,18 +16,16 @@ export const usePayment = () => {
   const { showError } = useErrorModal();
   const { connected: solanaConnected, publicKey: solanaPublicKey } = useWalletWithRedirects();
   const { convertUsdToSol } = useCurrency();
+  const { stripePublicKey, loading: settingsLoading } = useSettings();
   
-  // Initialize Stripe when hook is first used
+  // Initialize Stripe when hook is first used and settings are loaded
   useEffect(() => {
     const initStripe = async () => {
+      if (settingsLoading) return; // Wait for settings to load
+      
       try {
-        const success = await initializeStripe();
+        const success = await initializeStripe(stripePublicKey);
         setStripeInitialized(success);
-        if (success) {
-          console.log('Stripe initialized successfully');
-        } else {
-          console.log('Stripe initialization failed');
-        }
       } catch (error) {
         console.error('Error initializing Stripe:', error);
         setStripeInitialized(false);
@@ -34,7 +33,7 @@ export const usePayment = () => {
     };
 
     initStripe();
-  }, []);
+  }, [stripePublicKey, settingsLoading]);
 
   const processPayment = async ({ 
     amount, 
@@ -90,6 +89,11 @@ export const usePayment = () => {
 
   const processStripePayment = async (amount, itemId, itemName) => {
     try {
+      // Check if settings are loaded
+      if (settingsLoading) {
+        throw new Error('Settings are still loading. Please try again.');
+      }
+
       // Check if Stripe is initialized
       if (!stripeInitialized) {
         throw new Error('Stripe is not initialized. Please try again.');
@@ -97,7 +101,6 @@ export const usePayment = () => {
 
       // Stripe only supports USD and expects amount in cents
       const amountInCents = Math.round(amount * 100);
-      console.log('Stripe payment - Amount conversion:', { original: amount, inCents: amountInCents });
       
       // Create success and cancel URLs that redirect back to current page
       const currentUrl = window.location.href;
@@ -141,11 +144,25 @@ export const usePayment = () => {
         throw new Error('Invalid amount');
       }
 
-      // Use the owner's Solana address from environment or fallback
-      const recipient = import.meta.env.VITE_OWNER_SOLNANA_ADDRESS || '11111111111111111111111111111111';
+      // Fetch Solana wallet address from server settings
+      let recipient;
+      try {
+        const response = await fetch('/api/admin/settings');
+        if (response.ok) {
+          const data = await response.json();
+          recipient = data.settings.solanaWalletAddress;
+        }
+      } catch (error) {
+        console.error('Failed to fetch settings, falling back to environment variable');
+      }
+      
+      // Fallback to environment variable if settings fetch failed
+      if (!recipient) {
+        recipient = import.meta.env.VITE_OWNER_SOLNANA_ADDRESS || '11111111111111111111111111111111';
+      }
 
       // Generate a unique order ID similar to your reference code
-      const payInfo = `${user._id || user.id}-${itemId}`;
+      const payInfo = `${user._id || user.id}*${itemId}`;
       
       // Send SOL payment
       const signature = await sendSOLWithReference(recipient, amount, payInfo);
@@ -167,6 +184,7 @@ export const usePayment = () => {
     // State
     isProcessing,
     stripeInitialized,
+    settingsLoading,
     
     // Actions
     processPayment,

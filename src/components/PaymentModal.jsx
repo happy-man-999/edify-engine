@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { usePayment } from '../hooks/usePayment';
 import { useCurrency } from '../hooks/useCurrency';
 import { useWalletWithRedirects } from '../hooks/useWalletWithRedirects';
+import { usePaymentModal } from '../hooks/usePaymentModal';
 
 const PaymentModal = ({ 
   open, 
@@ -9,16 +10,15 @@ const PaymentModal = ({
   amount, 
   currency = 'usd',
   itemName = 'Purchase',
-  itemId = null,
-  resolvePayment,
-  rejectPayment 
+  itemId = null
 }) => {
   const [selectedMethod, setSelectedMethod] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
   
-  const { processPayment, isProcessing, stripeInitialized } = usePayment();
+  const { processPayment, isProcessing, stripeInitialized, settingsLoading } = usePayment();
   const { connected: solanaConnected } = useWalletWithRedirects();
   const { convertUsdToSol } = useCurrency();
+  const { resolvePayment, rejectPayment } = usePaymentModal();
 
   const displayAmount = amount;
 
@@ -29,8 +29,8 @@ const PaymentModal = ({
   }, [open]);
 
   const handleMethodSelect = (methodId) => {
-    // Prevent selecting Stripe if not initialized
-    if (methodId === 'stripe' && !stripeInitialized) {
+    // Prevent selecting Stripe if not initialized or settings are loading
+    if (methodId === 'stripe' && (!stripeInitialized || settingsLoading)) {
       return;
     }
     setSelectedMethod(methodId);
@@ -49,13 +49,11 @@ const PaymentModal = ({
         itemId
       });
 
-      if (resolvePayment) {
-        resolvePayment(result);
-      }
+      // Use the new custom event pattern
+      resolvePayment(result);
     } catch (error) {
-      if (rejectPayment) {
-        rejectPayment(error);
-      }
+      // Use the new custom event pattern
+      rejectPayment(error);
     }
   };
 
@@ -98,20 +96,24 @@ const PaymentModal = ({
             {/* Stripe Payment Method */}
             <div
               className={`border-2 rounded-lg p-4 transition-all ${
-                stripeInitialized
+                stripeInitialized && !settingsLoading
                   ? selectedMethod === 'stripe'
                     ? 'border-[#42677D] bg-[#42677D]/5 cursor-pointer'
                     : 'border-gray-200 hover:border-gray-300 cursor-pointer'
                   : 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60'
               }`}
-              onClick={() => stripeInitialized && handleMethodSelect('stripe')}
+              onClick={() => stripeInitialized && !settingsLoading && handleMethodSelect('stripe')}
             >
               <div className="flex items-center space-x-3">
                 <div className="text-2xl">💳</div>
                 <div className="flex-1">
                   <div className="flex items-center space-x-2">
                     <h4 className="font-medium text-gray-800">Credit Card</h4>
-                    {stripeInitialized ? (
+                    {settingsLoading ? (
+                      <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+                        <i className="fas fa-spinner fa-spin mr-1"></i>Loading
+                      </span>
+                    ) : stripeInitialized ? (
                       <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
                         <i className="fas fa-check mr-1"></i>Available
                       </span>
@@ -122,10 +124,16 @@ const PaymentModal = ({
                     )}
                   </div>
                   <p className="text-sm text-gray-600">Pay with Visa, Mastercard, or other cards</p>
-                  {!stripeInitialized && (
+                  {!stripeInitialized && !settingsLoading && (
                     <p className="text-xs text-yellow-600 mt-1">
                       <i className="fas fa-clock mr-1"></i>
                       Setting up payment system...
+                    </p>
+                  )}
+                  {settingsLoading && (
+                    <p className="text-xs text-yellow-600 mt-1">
+                      <i className="fas fa-spinner fa-spin mr-1"></i>
+                      Loading payment configuration...
                     </p>
                   )}
                 </div>
@@ -205,10 +213,11 @@ const PaymentModal = ({
             </button>
             <button
               onClick={() => setShowConfirm(true)}
-              disabled={!selectedMethod || isProcessing || (selectedMethod === 'stripe' && !stripeInitialized)}
+              disabled={!selectedMethod || isProcessing || (selectedMethod === 'stripe' && (!stripeInitialized || settingsLoading))}
               className="flex-1 px-4 py-3 bg-[#42677D] text-white rounded-lg hover:bg-[#355263] transition-colors disabled:opacity-50"
             >
               {isProcessing ? 'Processing...' : 
+               selectedMethod === 'stripe' && settingsLoading ? 'Loading Config...' :
                selectedMethod === 'stripe' && !stripeInitialized ? 'Initializing...' :
                'Continue'}
             </button>
@@ -249,4 +258,4 @@ const PaymentModal = ({
   );
 };
 
-export default PaymentModal; 
+export default PaymentModal;

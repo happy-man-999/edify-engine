@@ -51,7 +51,7 @@ function App() {
   const { errorModal, notification } = useSelector(state => state.ui);
 
   // Global payment modal state
-  const { isOpen, paymentData, openPaymentModal, closePaymentModal, resolvePayment, rejectPayment } = usePaymentModal();
+  const { isOpen, paymentData, openPaymentModal, closePaymentModal } = usePaymentModal();
 
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'
   const network = WalletAdapterNetwork.Devnet;
@@ -111,8 +111,6 @@ function App() {
                   currency={paymentData?.currency}
                   itemName={paymentData?.itemName}
                   itemId={paymentData?.itemId}
-                  resolvePayment={resolvePayment}
-                  rejectPayment={rejectPayment}
                 />
               </MainLayout>
             </Router>

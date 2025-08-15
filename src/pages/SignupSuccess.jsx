@@ -32,17 +32,13 @@ const SignupSuccess = () => {
           
           if (response.ok) {
             const result = await response.json();
-            console.log('Payment status updated successfully via /payment-success endpoint:', result);
             
             // Handle different payment types
             if (result.itemType === 'premium-plan') {
-              console.log('Premium plan signup payment completed');
             }
           } else {
             console.error('Failed to update payment status:', response.status);
           }
-        } else {
-          console.log('No payment parameters found, checking if signup is already complete...');
         }
         
         // Check signup completion
@@ -51,7 +47,6 @@ const SignupSuccess = () => {
         if (progressData && progressData.isCompleted) {
           setIsProcessing(false);
         } else {
-          console.log('Signup not completed, redirecting to signup');
           //navigate('/signup');
         }
       } catch (error) {

@@ -30,7 +30,7 @@ const Store = () => {
   // Get the error modal function
   const { showError } = useErrorModal();
   // Get the payment success handler
-  const { handleStripePaymentSuccess } = usePaymentSuccess();
+  const { handleStripePaymentSuccess, handleSolanaPaymentSuccess } = usePaymentSuccess();
   
   const handleAddToCart = (item) => {
     addItem(item, 1);
@@ -51,40 +51,22 @@ const Store = () => {
       amount: item.priceUSD,
       itemName: item.title,
       itemId: item._id || item.id
-    }).then(async (result) => {
-      console.log('Payment successful:', result);
-      
+    }).then(async (result) => {      
       if (result.paymentMethod === 'stripe') {
         // For Stripe, the redirect will handle the notification
         // Just close the modal
         // The Redux state handles closing and showing notifications
       } else if (result.paymentMethod === 'solana') {
-        // For Solana, call the payment success endpoint to get domain info
+        // For Solana, use the payment success hook for consistent handling
         try {
-          const response = await fetch('/api/solana/payment-success', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify({
-              signature: result.signature
-            })
-          });
-
-          if (response.ok) {
-            const paymentResult = await response.json();
-            
-            // Show appropriate notification based on item type
-            if (paymentResult.itemType === 'new-world' && paymentResult.domain) {
-              dispatch(showNotification(`New world created successfully! Your domain: ${paymentResult.domain}`));
-            } else if (paymentResult.itemType === 'item-purchase') {
-              dispatch(showNotification(`Item purchased successfully! ${item.title}`));
-            } else {
-              dispatch(showNotification(`Payment successful! Signature: ${shortAddress(result.signature)}`));
-            }
+          const paymentResult = await handleSolanaPaymentSuccess(result.signature);
+          
+          // Show appropriate notification based on item type
+          if (paymentResult.itemType === 'new-world' && paymentResult.domain) {
+            dispatch(showNotification(`New world created successfully! Your domain: ${paymentResult.domain}`));
+          } else if (paymentResult.itemType === 'item-purchase') {
+            dispatch(showNotification(`Item purchased successfully! ${item.title}`));
           } else {
-            // Fallback to generic success message
             dispatch(showNotification(`Payment successful! Signature: ${shortAddress(result.signature)}`));
           }
         } catch (error) {
@@ -108,16 +90,10 @@ const Store = () => {
     const sessionId = searchParams.get('session_id');
 
     if (paymentStatus === 'success' && sessionId) {
-      // Call payment success endpoint
       handleStripePaymentSuccess(sessionId);
-      
-      // Clean up URL parameters
       navigate(location.pathname, { replace: true });
     } else if (paymentStatus === 'cancelled') {
-      // Show cancellation notification
       dispatch(showNotification('Payment was cancelled'));
-      
-      // Clean up URL parameters
       navigate(location.pathname, { replace: true });
     }
   }, [location.search, dispatch, navigate, location.pathname]);

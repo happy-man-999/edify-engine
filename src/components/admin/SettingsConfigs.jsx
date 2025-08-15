@@ -6,7 +6,10 @@ const SettingsConfigs = () => {
     defaultDnsDomain: 'edifyengine.com',
     stripeMode: 'live',
     solanaMode: 'mainnet',
-    isTestMode: false
+    isTestMode: false,
+    solanaWalletAddress: '11111111111111111111111111111111',
+    stripePublicKey: '',
+    stripeSecretKey: ''
   });
 
   const [loading, setLoading] = useState(true);
@@ -92,6 +95,32 @@ const SettingsConfigs = () => {
     }
   };
 
+  const handleRefreshStripe = async () => {
+    try {
+      setMessage('Refreshing Stripe configuration...');
+      
+      // Call the server to refresh Stripe instance
+      const response = await fetch('/api/admin/refresh-stripe', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (response.ok) {
+        setMessage('Stripe configuration refreshed successfully!');
+      } else {
+        throw new Error('Failed to refresh Stripe configuration');
+      }
+      
+      // Clear message after 3 seconds
+      setTimeout(() => setMessage(''), 3000);
+    } catch (error) {
+      console.error('Error refreshing Stripe:', error);
+      setMessage(error.message || 'Failed to refresh Stripe configuration');
+    }
+  };
+
   const handleExportReport = (type) => {
     console.log(`Exporting ${type} report`);
     // Implement export logic
@@ -125,6 +154,14 @@ const SettingsConfigs = () => {
           >
             <i className="fas fa-save mr-2"></i>
             {saving ? 'Saving...' : 'Save Settings'}
+          </button>
+          
+          <button 
+            onClick={handleRefreshStripe}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          >
+            <i className="fas fa-sync-alt mr-2"></i>
+            Refresh Stripe
           </button>
         </div>
       </div>
@@ -195,6 +232,54 @@ const SettingsConfigs = () => {
           </h3>
           
           <div className="space-y-4">
+            {/* Solana Wallet Address */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Solana Wallet Address
+              </label>
+              <input
+                type="text"
+                value={settings.solanaWalletAddress}
+                onChange={(e) => handleSettingChange('solanaWalletAddress', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                placeholder="11111111111111111111111111111111"
+                maxLength="44"
+              />
+              <p className="text-xs text-gray-500 mt-1">Wallet address to receive Solana payments</p>
+            </div>
+
+            {/* Stripe Public Key */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Stripe Public Key
+              </label>
+              <input
+                type="text"
+                value={settings.stripePublicKey}
+                onChange={(e) => handleSettingChange('stripePublicKey', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                placeholder="pk_test_..."
+                maxLength="1000"
+              />
+              <p className="text-xs text-gray-500 mt-1">Stripe publishable key (starts with pk_)</p>
+            </div>
+
+            {/* Stripe Secret Key */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Stripe Secret Key
+              </label>
+              <input
+                type="password"
+                value={settings.stripeSecretKey}
+                onChange={(e) => handleSettingChange('stripeSecretKey', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                placeholder="sk_test_..."
+                maxLength="1000"
+              />
+              <p className="text-xs text-gray-500 mt-1">Stripe secret key (starts with sk_) - Keep secure!</p>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Stripe Mode

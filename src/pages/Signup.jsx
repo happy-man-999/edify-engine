@@ -225,7 +225,7 @@ const Signup = () => {
         setCurrentStep(prev => Math.min(prev + 1, totalSteps));
       }
     } else {
-      console.log('Validation failed, errors:', errors);
+      console.error('Validation failed, errors:', errors);
     }
   };
 

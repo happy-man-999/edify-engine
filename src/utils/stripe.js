@@ -2,13 +2,16 @@
 let stripe = null;
 
 // Initialize Stripe
-export const initializeStripe = async () => {
+export const initializeStripe = async (stripePublicKey = null) => {
   try {
     const { loadStripe } = await import('@stripe/stripe-js');
-    const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+    
+    // Use provided public key or fall back to environment variable
+    if (!stripePublicKey) {
+      stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+    }
     
     if (!stripePublicKey) {
-      console.log('Stripe public key not found, using mock mode');
       // For development, create a mock stripe object
       stripe = {
         redirectToCheckout: async ({ sessionId }) => {
@@ -73,7 +76,22 @@ export const createCheckoutSession = async (amount, currency = 'usd', successUrl
     });
 
     if (!response.ok) {
-      throw new Error('Failed to create checkout session');
+      let errorMessage = `HTTP ${response.status}`;
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.error || errorMessage;
+      } catch (e) {
+        // If we can't parse JSON, use status text
+        errorMessage = response.statusText || errorMessage;
+      }
+      
+      console.error('Stripe checkout session creation failed:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorMessage
+      });
+      
+      throw new Error(`Failed to create checkout session: ${errorMessage}`);
     }
 
     const data = await response.json();
@@ -96,9 +114,9 @@ export const redirectToCheckout = async (sessionId) => {
     });
     
     if (error) {
+      console.error('Stripe checkout redirect error:', error);
       throw new Error(error.message);
     }
-    
     return { success: true };
   } catch (error) {
     console.error('Checkout redirect error:', error);
