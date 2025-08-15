@@ -1,14 +1,50 @@
 // Placeholder for Stripe instance
 let stripe = null;
 
+// Get Stripe configuration from settings
+const getStripeConfig = async () => {
+  try {
+    const response = await fetch('/api/admin/payment-settings');
+    if (response.ok) {
+      const settings = await response.json();
+      const stripeMode = settings.stripeMode || 'live';
+      const isTestMode = settings.isTestMode || false;
+      
+      // If test mode is enabled, force test mode
+      const effectiveMode = isTestMode ? 'test' : stripeMode;
+      
+      console.log(`Stripe configuration: ${effectiveMode.toUpperCase()} mode (Test Mode: ${isTestMode})`);
+      
+      return {
+        publicKey: settings.stripePublicKey,
+        mode: effectiveMode,
+        isTestMode: isTestMode
+      };
+    }
+  } catch (error) {
+    console.warn('Failed to fetch Stripe settings, using environment variables as fallback:', error);
+  }
+  
+  // Fallback to environment variables
+  return {
+    publicKey: import.meta.env.VITE_STRIPE_PUBLIC_KEY,
+    mode: 'live',
+    isTestMode: false
+  };
+};
+
 // Initialize Stripe
 export const initializeStripe = async (stripePublicKey = null) => {
   try {
     const { loadStripe } = await import('@stripe/stripe-js');
     
-    // Use provided public key or fall back to environment variable
+    // Use provided public key or get from settings
     if (!stripePublicKey) {
-      stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+      const config = await getStripeConfig();
+      stripePublicKey = config.publicKey;
+      
+      // Log current mode for debugging
+      console.log(`Stripe initialized in ${config.mode.toUpperCase()} mode (Test: ${config.isTestMode})`);
     }
     
     if (!stripePublicKey) {

@@ -85,6 +85,27 @@ const SettingsConfigs = () => {
       setSettings(data.settings);
       setMessage('Settings saved successfully!');
       
+      // Refresh all services to apply new settings
+      try {
+        const refreshResponse = await fetch('/api/admin/refresh-services', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        
+        if (refreshResponse.ok) {
+          const refreshData = await refreshResponse.json();
+          console.log('Services refreshed:', refreshData);
+          setMessage('Settings saved and services refreshed successfully!');
+        } else {
+          console.warn('Settings saved but service refresh failed');
+        }
+      } catch (refreshError) {
+        console.warn('Settings saved but service refresh failed:', refreshError);
+        // Don't fail the entire operation if refresh fails
+      }
+      
       // Clear message after 3 seconds
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
@@ -126,6 +147,33 @@ const SettingsConfigs = () => {
     // Implement export logic
   };
 
+  const handleTestModeStatus = async () => {
+    try {
+      setMessage('Checking Test Mode Status...');
+      const response = await fetch('/api/admin/test-mode-status', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to check test mode status');
+      }
+
+      const data = await response.json();
+      console.log('Test Mode Status:', data);
+      
+      const statusMessage = `Current Status: Test Mode ${data.settings.isTestMode ? 'ENABLED' : 'DISABLED'} | Stripe: ${data.settings.effectiveStripeMode.toUpperCase()} | Solana: ${data.settings.effectiveSolanaMode.toUpperCase()}`;
+      setMessage(statusMessage);
+      
+      // Clear message after 8 seconds to allow reading
+      setTimeout(() => setMessage(''), 8000);
+    } catch (error) {
+      console.error('Error checking test mode status:', error);
+      setMessage(error.message || 'Failed to check test mode status');
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -162,6 +210,14 @@ const SettingsConfigs = () => {
           >
             <i className="fas fa-sync-alt mr-2"></i>
             Refresh Stripe
+          </button>
+
+          <button 
+            onClick={handleTestModeStatus}
+            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          >
+            <i className="fas fa-vial mr-2"></i>
+            Test Mode Status
           </button>
         </div>
       </div>
@@ -488,6 +544,60 @@ const SettingsConfigs = () => {
               <p className="text-xs text-green-600">Connected</p>
             </div>
           </div>
+        </div>
+
+        {/* Current Operational Mode */}
+        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <h4 className="text-sm font-medium text-blue-900 mb-3">Current Operational Mode</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-blue-700">Test Mode:</span>
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                settings.isTestMode 
+                  ? 'bg-yellow-100 text-yellow-800' 
+                  : 'bg-green-100 text-green-800'
+              }`}>
+                {settings.isTestMode ? 'ENABLED' : 'DISABLED'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-blue-700">Stripe Mode:</span>
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                settings.isTestMode || settings.stripeMode === 'test'
+                  ? 'bg-yellow-100 text-yellow-800' 
+                  : 'bg-green-100 text-green-800'
+              }`}>
+                {settings.isTestMode ? 'TEST (Forced)' : settings.stripeMode.toUpperCase()}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-blue-700">Solana Network:</span>
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                settings.isTestMode || settings.solanaMode === 'devnet'
+                  ? 'bg-yellow-100 text-yellow-800' 
+                  : 'bg-green-100 text-green-800'
+              }`}>
+                {settings.isTestMode ? 'DEVNET (Forced)' : settings.solanaMode.toUpperCase()}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-blue-700">Status:</span>
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                {settings.isTestMode ? 'TESTING' : 'PRODUCTION'}
+              </span>
+            </div>
+          </div>
+          {settings.isTestMode && (
+            <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="flex items-start">
+                <i className="fas fa-info-circle text-yellow-600 mt-0.5 mr-2"></i>
+                <div className="text-xs text-yellow-800">
+                  <p className="font-medium">Test Mode Active</p>
+                  <p>All payments and operations are now running in test mode. No real transactions will occur.</p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

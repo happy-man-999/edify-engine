@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import Navbar from './components/navbar';
@@ -53,11 +53,44 @@ function App() {
   // Global payment modal state
   const { isOpen, paymentData, openPaymentModal, closePaymentModal } = usePaymentModal();
 
-  // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'
-  const network = WalletAdapterNetwork.Devnet;
+  // Dynamic network configuration from settings
+  const [network, setNetwork] = useState(WalletAdapterNetwork.Devnet);
+  const [endpoint, setEndpoint] = useState(clusterApiUrl(WalletAdapterNetwork.Devnet));
 
-  // You can also provide a custom RPC endpoint
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  useEffect(() => {
+    const fetchNetworkSettings = async () => {
+      try {
+        const response = await fetch('/api/admin/payment-settings');
+        if (response.ok) {
+          const settings = await response.json();
+          const solanaMode = settings.solanaMode || 'devnet';
+          const isTestMode = settings.isTestMode || false;
+          
+          // If test mode is enabled, force devnet
+          const effectiveSolanaMode = isTestMode ? 'devnet' : solanaMode;
+          
+          const newNetwork = effectiveSolanaMode === 'mainnet' 
+            ? WalletAdapterNetwork.Mainnet 
+            : WalletAdapterNetwork.Devnet;
+          
+          setNetwork(newNetwork);
+          setEndpoint(clusterApiUrl(newNetwork));
+          
+          console.log(`Network configured: ${effectiveSolanaMode.toUpperCase()} (Test Mode: ${isTestMode})`);
+        }
+      } catch (error) {
+        console.warn('Failed to fetch Solana network settings, using devnet as fallback:', error);
+        // Keep default devnet configuration
+      }
+    };
+
+    fetchNetworkSettings();
+    
+    // Set up periodic refresh to check for settings changes
+    const interval = setInterval(fetchNetworkSettings, 30000); // Check every 30 seconds
+    
+    return () => clearInterval(interval);
+  }, []);
 
   // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking and lazy loading
   // Only the wallets you configure here will be compiled into your application

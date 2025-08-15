@@ -1,6 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-const PaymentStep = ({ isProcessingPayment, onPayment }) => {
+const PaymentStep = ({ onPayment, isProcessingPayment }) => {
+  const [paymentSettings, setPaymentSettings] = useState({
+    stripeMode: 'live',
+    solanaMode: 'mainnet',
+    isTestMode: false
+  });
+
+  useEffect(() => {
+    const fetchPaymentSettings = async () => {
+      try {
+        const response = await fetch('/api/admin/payment-settings');
+        if (response.ok) {
+          const settings = await response.json();
+          setPaymentSettings(settings);
+        }
+      } catch (error) {
+        console.warn('Failed to fetch payment settings:', error);
+      }
+    };
+
+    fetchPaymentSettings();
+  }, []);
+
+  const isTestMode = paymentSettings.isTestMode || paymentSettings.stripeMode === 'test' || paymentSettings.solanaMode === 'devnet';
+
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-8">
@@ -94,18 +118,20 @@ const PaymentStep = ({ isProcessingPayment, onPayment }) => {
           </div>
         </div>
 
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <div className="flex items-start">
-            <i className="fas fa-info-circle text-yellow-600 mt-0.5 mr-2"></i>
-            <div>
-              <h4 className="text-sm font-medium text-yellow-800">Test Mode</h4>
-              <p className="text-sm text-yellow-700 mt-1">
-                This is a test payment. Use test card numbers like 4242 4242 4242 4242. 
-                No real money will be charged.
-              </p>
+        {isTestMode && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <div className="flex items-start">
+              <i className="fas fa-info-circle text-yellow-600 mt-0.5 mr-2"></i>
+              <div>
+                <h4 className="text-sm font-medium text-yellow-800">Test Mode</h4>
+                <p className="text-sm text-yellow-700 mt-1">
+                  This is a test payment. Use test card numbers like 4242 4242 4242 4242. 
+                  No real money will be charged.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
         
         <button
           onClick={onPayment}

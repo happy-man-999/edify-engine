@@ -1,5 +1,36 @@
 import { Transaction, SystemProgram, PublicKey, Connection, TransactionInstruction } from '@solana/web3.js';
 
+// Get Solana network configuration from settings
+const getSolanaNetwork = async () => {
+  try {
+    const response = await fetch('/api/admin/payment-settings');
+    if (response.ok) {
+      const settings = await response.json();
+      const solanaMode = settings.solanaMode || 'devnet';
+      const isTestMode = settings.isTestMode || false;
+      
+      // If test mode is enabled, force devnet
+      if (isTestMode) {
+        console.log('Test mode enabled, using Solana devnet');
+        return 'devnet';
+      }
+      
+      console.log(`Using Solana network: ${solanaMode.toUpperCase()}`);
+      return solanaMode;
+    }
+  } catch (error) {
+    console.warn('Failed to fetch Solana network settings, using devnet as fallback:', error);
+  }
+  return 'devnet'; // Default fallback
+};
+
+// Get Solana RPC endpoint based on network
+const getSolanaEndpoint = (network) => {
+  return network === 'mainnet' 
+    ? 'https://api.mainnet-beta.solana.com'
+    : 'https://api.devnet.solana.com';
+};
+
 export const sendSOLWithReference = async (recipient, amountSol, reference) => {
   try {
     // Validate inputs
@@ -16,7 +47,11 @@ export const sendSOLWithReference = async (recipient, amountSol, reference) => {
       throw new Error('Wallet not connected');
     }
 
-    const connection = new Connection('https://api.devnet.solana.com');
+    // Get network configuration
+    const network = await getSolanaNetwork();
+    const endpoint = getSolanaEndpoint(network);
+    
+    const connection = new Connection(endpoint);
     const sender = window.solana.publicKey;
     const lamports = Math.round(amountSol * 1e9);
 
