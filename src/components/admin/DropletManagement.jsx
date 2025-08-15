@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDroplets } from '../../hooks/useDroplets';
+import { useDispatch } from 'react-redux';
+import { showNotification } from '../../store/uiSlice';
 import LoadingSpinner from '../LoadingSpinner';
 import { shortAddress } from '../../utils/format';
 import DropletDetailsModal from './DropletDetailsModal';
 import DropletFilterModal from './DropletFilterModal';
+import { useYesNoModal } from '../../hooks/useYesNoModal';
 
 const DropletManagement = () => {
   const [filterStatus, setFilterStatus] = useState('all');
@@ -33,6 +36,9 @@ const DropletManagement = () => {
     deleteDroplet,
     clearError
   } = useDroplets();
+
+  const dispatch = useDispatch();
+  const { showModal } = useYesNoModal();
 
   // Debounce search term
   useEffect(() => {
@@ -161,9 +167,15 @@ const DropletManagement = () => {
 
   const handleAction = async (action, dropletId) => {
     try {
+      let result;
       switch (action) {
         case 'sync':
-          await syncDroplet(dropletId);
+          result = await syncDroplet(dropletId);
+          if (result.success) {
+            dispatch(showNotification(`Droplet ${dropletId} status synced successfully.`));
+          } else {
+            dispatch(showNotification(`Failed to sync droplet ${dropletId}: ${result.error}`));
+          }
           break;
         case 'view':
           // Find the droplet by ID and open the details modal
@@ -174,17 +186,47 @@ const DropletManagement = () => {
           }
           break;
         case 'restart':
-          await restartDroplet(dropletId);
+          const restartConfirmed = await showModal('Are you sure you want to restart this droplet? This will cause a brief interruption in service.');
+          if (restartConfirmed) {
+            result = await restartDroplet(dropletId);
+            if (result.success) {
+              dispatch(showNotification(`Droplet ${dropletId} restart initiated successfully.`));
+            } else {
+              dispatch(showNotification(`Failed to restart droplet ${dropletId}: ${result.error}`));
+            }
+          }
           break;
         case 'terminate':
-          await terminateDroplet(dropletId);
+          const terminateConfirmed = await showModal('Are you sure you want to terminate this droplet? This will shut it down immediately.');
+          if (terminateConfirmed) {
+            result = await terminateDroplet(dropletId);
+            if (result.success) {
+              dispatch(showNotification(`Droplet ${dropletId} terminated successfully.`));
+            } else {
+              dispatch(showNotification(`Failed to terminate droplet ${dropletId}: ${result.error}`));
+            }
+          }
           break;
         case 'reprovision':
-          await reprovisionDroplet(dropletId);
+          const reprovisionConfirmed = await showModal('Are you sure you want to reprovision this droplet? This will reset it to its initial state and may cause data loss.');
+          if (reprovisionConfirmed) {
+            result = await reprovisionDroplet(dropletId);
+            if (result.success) {
+              dispatch(showNotification(`Droplet ${dropletId} reprovisioned successfully.`));
+            } else {
+              dispatch(showNotification(`Failed to reprovision droplet ${dropletId}: ${result.error}`));
+            }
+          }
           break;
         case 'delete':
-          if (window.confirm('Are you sure you want to delete this droplet? This action cannot be undone.')) {
-            await deleteDroplet(dropletId);
+          const confirmed = await showModal('Are you sure you want to delete this droplet? This action cannot be undone.');
+          if (confirmed) {
+            result = await deleteDroplet(dropletId);
+            if (result.success) {
+              dispatch(showNotification(`Droplet ${dropletId} deleted successfully.`));
+            } else {
+              dispatch(showNotification(`Failed to delete droplet ${dropletId}: ${result.error}`));
+            }
           }
           break;
         default:
@@ -192,6 +234,7 @@ const DropletManagement = () => {
       }
     } catch (error) {
       console.error(`Error performing action ${action} on droplet ${dropletId}:`, error);
+      dispatch(showNotification(`Error performing action ${action} on droplet ${dropletId}: ${error.message}`));
     }
   };
 

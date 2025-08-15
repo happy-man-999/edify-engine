@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { showNotification } from './uiSlice';
 
 // Async thunks for API calls
 export const fetchDroplets = createAsyncThunk(
@@ -319,8 +318,7 @@ const dropletSlice = createSlice({
         if (state.selectedDroplet && state.selectedDroplet.id === action.payload.id) {
           state.selectedDroplet = action.payload;
         }
-        // Show success notification
-        action.dispatch(showNotification('Droplet status synced successfully'));
+        // Success notification will be handled by the component
       })
       .addCase(syncDropletStatus.rejected, (state, action) => {
         state.loading = false;
@@ -344,8 +342,7 @@ const dropletSlice = createSlice({
         if (state.selectedDroplet && state.selectedDroplet.id === action.payload.id) {
           state.selectedDroplet = action.payload;
         }
-        // Show success notification
-        action.dispatch(showNotification('Droplet restart initiated successfully'));
+        // Success notification will be handled by the component
       })
       .addCase(restartDroplet.rejected, (state, action) => {
         state.loading = false;
@@ -369,8 +366,7 @@ const dropletSlice = createSlice({
         if (state.selectedDroplet && state.selectedDroplet.id === action.payload.id) {
           state.selectedDroplet = action.payload;
         }
-        // Show success notification
-        action.dispatch(showNotification('Droplet terminated successfully'));
+        // Success notification will be handled by the component
       })
       .addCase(terminateDroplet.rejected, (state, action) => {
         state.loading = false;
@@ -394,8 +390,7 @@ const dropletSlice = createSlice({
         if (state.selectedDroplet && state.selectedDroplet.id === action.payload.id) {
           state.selectedDroplet = action.payload;
         }
-        // Show success notification
-        action.dispatch(showNotification('Droplet reprovisioned successfully'));
+        // Success notification will be handled by the component
       })
       .addCase(reprovisionDroplet.rejected, (state, action) => {
         state.loading = false;
@@ -418,8 +413,7 @@ const dropletSlice = createSlice({
         }
         // Update total count
         state.pagination.total = Math.max(0, state.pagination.total - 1);
-        // Show success notification
-        action.dispatch(showNotification('Droplet deleted successfully'));
+        // Success notification will be handled by the component
       })
       .addCase(deleteDroplet.rejected, (state, action) => {
         state.loading = false;
