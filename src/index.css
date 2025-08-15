@@ -600,6 +600,11 @@ body {
   margin-top: 0;
 }
 
+/* Utility class for consistent navbar spacing */
+.navbar-spacing {
+  padding-top: 8rem; /* 128px - equivalent to pt-32 */
+}
+
 /* Custom scrollbar for body */
 body::-webkit-scrollbar {
   width: 12px;
