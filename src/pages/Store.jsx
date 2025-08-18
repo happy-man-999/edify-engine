@@ -14,10 +14,13 @@ import { useCurrency } from "../hooks/useCurrency";
 import { usePaymentModal } from "../hooks/usePaymentModal";
 import { usePaymentSuccess } from "../hooks/usePaymentSuccess";
 import { shortAddress } from "../utils/format";
+import PaymentProcessingStatus from "../components/PaymentProcessingStatus";
+import { useCallback } from "react";
 
 const Store = () => {
   const [activeTab, setActiveTab] = useState("Featured");
   const [walletOpen, setWalletOpen] = useState(false);
+  const [currentPayment, setCurrentPayment] = useState(null);
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,8 +33,25 @@ const Store = () => {
   // Get the error modal function
   const { showError } = useErrorModal();
   // Get the payment success handler
-  const { handleStripePaymentSuccess, handleSolanaPaymentSuccess } = usePaymentSuccess();
+  const { handleStripePaymentSuccess, handleSolanaPaymentSuccess, isPaymentProcessing } = usePaymentSuccess();
   
+  // Get current user ID
+  const getCurrentUserId = useCallback(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.userId || payload.sub;
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        return null;
+      }
+    }
+    return null;
+  }, []);
+
+  const userId = getCurrentUserId();
+
   const handleAddToCart = (item) => {
     addItem(item, 1);
     dispatch(showNotification("Item added to cart"));
@@ -60,6 +80,15 @@ const Store = () => {
         // For Solana, use the payment success hook for consistent handling
         try {
           const paymentResult = await handleSolanaPaymentSuccess(result.signature);
+          
+          // Track current payment for processing status
+          if (paymentResult.itemType === 'new-world' && paymentResult.processing) {
+            setCurrentPayment({
+              identifier: result.signature,
+              method: 'solana',
+              type: 'new-world'
+            });
+          }
           
           // Show appropriate notification based on item type
           if (paymentResult.itemType === 'new-world' && paymentResult.domain) {
@@ -108,7 +137,17 @@ const Store = () => {
   else tabContent = <div className="text-center text-gray-500 py-16">Coming soon...</div>;
 
   return (
-    <div className="text-gray-800 font-sans min-h-screen flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      {/* Payment Processing Status */}
+      {currentPayment && (
+        <PaymentProcessingStatus
+          userId={userId}
+          paymentIdentifier={currentPayment.identifier}
+          paymentMethod={currentPayment.method}
+          itemType={currentPayment.type}
+        />
+      )}
+      
       <main className="flex-1 p-6 pt-24">
         <div className="max-w-7xl mx-auto">
           <StoreHeader 

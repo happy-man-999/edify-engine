@@ -1,12 +1,53 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import PaymentProcessingStatus from '../components/PaymentProcessingStatus';
+import { useWebhook } from '../hooks/useWebhook';
 
 const SignupSuccess = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { checkSignupProgress } = useAuth();
   const [isProcessing, setIsProcessing] = useState(true);
+  const [currentPayment, setCurrentPayment] = useState(null);
+  const [paymentResult, setPaymentResult] = useState(null);
+
+  // Get current user ID
+  const getCurrentUserId = useCallback(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.userId || payload.sub;
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        return null;
+      }
+    }
+    return null;
+  }, []);
+
+  const userId = getCurrentUserId();
+  
+  // Connect to webhook for real-time updates
+  const { lastEvent: webhookEvent } = useWebhook(userId, true);
+
+  // Memoize the webhook event handler to prevent infinite loops
+  const handleWebhookEvent = useCallback((event) => {
+    if (event.type === 'new-world-created') {
+      const { status } = event.data;
+      
+      if (status === 'completed') {
+        // New world creation completed
+        setCurrentPayment(null);
+        setIsProcessing(false);
+      }
+    } else if (event.type === 'new-world-creation-failed') {
+      // New world creation failed
+      setCurrentPayment(null);
+      setIsProcessing(false);
+    }
+  }, []);
 
   useEffect(() => {
     const handlePaymentSuccess = async () => {
@@ -32,9 +73,19 @@ const SignupSuccess = () => {
           
           if (response.ok) {
             const result = await response.json();
+            setPaymentResult(result);
             
             // Handle different payment types
-            if (result.itemType === 'premium-plan') {
+            if (result.itemType === 'new-world' && result.processing) {
+              // Track current payment for processing status
+              setCurrentPayment({
+                identifier: sessionId || paymentIntent,
+                method: 'stripe',
+                type: 'new-world'
+              });
+            } else if (result.itemType === 'premium-plan') {
+              // Premium plan payment completed
+              setIsProcessing(false);
             }
           } else {
             console.error('Failed to update payment status:', response.status);
@@ -56,7 +107,26 @@ const SignupSuccess = () => {
     };
 
     handlePaymentSuccess();
-  }, [searchParams]);
+  }, [searchParams, checkSignupProgress]);
+
+  // Handle webhook events
+  useEffect(() => {
+    if (webhookEvent && currentPayment) {
+      handleWebhookEvent(webhookEvent);
+    }
+  }, [webhookEvent, currentPayment, handleWebhookEvent]);
+
+  // Show payment processing status for new world creation
+  if (currentPayment && currentPayment.type === 'new-world') {
+    return (
+      <PaymentProcessingStatus
+        userId={userId}
+        paymentIdentifier={currentPayment.identifier}
+        paymentMethod={currentPayment.method}
+        itemType={currentPayment.type}
+      />
+    );
+  }
 
   if (isProcessing) {
     return (
@@ -90,6 +160,14 @@ const SignupSuccess = () => {
             <p className="text-gray-600 mb-6">
               Your account has been created successfully. You now have access to our world engine and can start building your immersive spaces.
             </p>
+            
+            {/* Show domain information if new world was created */}
+            {paymentResult && paymentResult.itemType === 'new-world' && paymentResult.domain && (
+              <div className="bg-blue-50 rounded-lg p-4 mb-6">
+                <p className="text-sm text-blue-600 mb-2">Your new world domain:</p>
+                <p className="text-lg font-mono font-bold text-blue-800 break-all">{paymentResult.domain}</p>
+              </div>
+            )}
           </div>
           
           <div className="space-y-4">
