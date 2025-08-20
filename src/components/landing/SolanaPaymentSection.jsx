@@ -5,9 +5,9 @@ const SolanaPaymentSection = () => {
     <section className="py-20 bg-gradient-to-br from-purple-50 to-blue-50">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
             Shop with
-            <span className="block bg-gradient-to-r from-[#9945FF] to-[#14F195] bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-[#9945FF] to-[#14F195] bg-clip-text text-transparent leading-tight">
               Solana Cryptocurrency
             </span>
           </h2>

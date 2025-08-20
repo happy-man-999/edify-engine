@@ -48,9 +48,9 @@ const FeaturesSection = () => {
       
       <div className="max-w-6xl mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
             Everything You Need to Build
-            <span className="block bg-gradient-to-r from-[#42677D] to-[#5E8EA9] bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-[#42677D] to-[#5E8EA9] bg-clip-text text-transparent leading-tight">
               Amazing Virtual Worlds
             </span>
           </h2>
