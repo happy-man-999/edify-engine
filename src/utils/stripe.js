@@ -127,7 +127,7 @@ export const createCheckoutSession = async (amount, currency = 'usd', successUrl
         error: errorMessage
       });
       
-      throw new Error(`Failed to create checkout session: ${errorMessage}`);
+      throw new Error(`Failed to create checkout session. Please try again later.`);
     }
 
     const data = await response.json();
@@ -156,17 +156,6 @@ export const redirectToCheckout = async (sessionId) => {
     return { success: true };
   } catch (error) {
     console.error('Checkout redirect error:', error);
-    throw error;
-  }
-};
-
-// Process payment (legacy - keeping for compatibility)
-export const processPayment = async (clientSecret, paymentMethod) => {
-  try {
-    // For development, simulate successful payment
-    return { success: true };
-  } catch (error) {
-    console.error('Payment processing error:', error);
     throw error;
   }
 };

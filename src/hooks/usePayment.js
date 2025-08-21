@@ -82,102 +82,89 @@ export const usePayment = () => {
       hideSpinner();
       setIsProcessing(false);
       showError(error.message);
-      
-      throw error;
     }
   };
 
   const processStripePayment = async (amount, itemId, itemName) => {
-    try {
-      // Check if settings are loaded
-      if (settingsLoading) {
-        throw new Error('Settings are still loading. Please try again.');
-      }
-
-      // Check if Stripe is initialized
-      if (!stripeInitialized) {
-        throw new Error('Stripe is not initialized. Please try again.');
-      }
-
-      // Stripe only supports USD and expects amount in cents
-      const amountInCents = Math.round(amount * 100);
-      
-      // Create success and cancel URLs that redirect back to current page
-      const currentUrl = window.location.href;
-      const successUrl = `${currentUrl}?payment=success&session_id={CHECKOUT_SESSION_ID}`;
-      const cancelUrl = `${currentUrl}?payment=cancelled`;
-      
-      const sessionId = await createCheckoutSession(amountInCents, 'usd', successUrl, cancelUrl, itemId, itemName);
-      
-      // Redirect to Stripe checkout
-      const checkoutResult = await redirectToCheckout(sessionId);
-      
-      if (checkoutResult.error) {
-        throw new Error(checkoutResult.error);
-      }
-
-      return {
-        sessionId,
-        token: sessionId,
-        success: true
-      };
-    } catch (error) {
-      console.error('Stripe payment error:', error);
-      throw new Error(`Stripe payment failed: ${error.message}`);
+    // Check if settings are loaded
+    if (settingsLoading) {
+      throw new Error('Settings are still loading. Please try again.');
     }
+
+    // Check if Stripe is initialized
+    if (!stripeInitialized) {
+      throw new Error('Stripe is not initialized. Please try again.');
+    }
+
+    // Stripe only supports USD and expects amount in cents
+    const amountInCents = Math.round(amount * 100);
+    
+    // Create success and cancel URLs that redirect back to current page
+    const currentUrl = window.location.href;
+    const successUrl = `${currentUrl}?payment=success&session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = `${currentUrl}?payment=cancelled`;
+    
+    const sessionId = await createCheckoutSession(amountInCents, 'usd', successUrl, cancelUrl, itemId, itemName);
+    
+    // Redirect to Stripe checkout
+    const checkoutResult = await redirectToCheckout(sessionId);
+    
+    if (checkoutResult.error) {
+      throw new Error(checkoutResult.error);
+    }
+
+    return {
+      sessionId,
+      token: sessionId,
+      success: true
+    };
   };
 
   const processSolanaPayment = async (amount, itemId) => {
-    try {
-      // Check if Solana wallet is connected using the hook
-      if (!solanaConnected) {
-        throw new Error('Please connect your wallet first');
-      }
-
-      // Check if user is authenticated
-      if (!user) {
-        throw new Error('Please login to pay');
-      }
-
-      // Validate amount
-      if (!amount || amount <= 0) {
-        throw new Error('Invalid amount');
-      }
-
-      // Fetch Solana wallet address from server settings
-      let recipient;
-      try {
-        const response = await fetch('/api/admin/settings');
-        if (response.ok) {
-          const data = await response.json();
-          recipient = data.settings.solanaWalletAddress;
-        }
-      } catch (error) {
-        console.error('Failed to fetch settings, falling back to environment variable');
-      }
-      
-      // Fallback to environment variable if settings fetch failed
-      if (!recipient) {
-        recipient = import.meta.env.VITE_OWNER_SOLNANA_ADDRESS || '11111111111111111111111111111111';
-      }
-
-      // Generate a unique order ID similar to your reference code
-      const payInfo = `${user._id || user.id}*${itemId}`;
-      
-      // Send SOL payment
-      const signature = await sendSOLWithReference(recipient, amount, payInfo);
-
-      return {
-        signature,
-        token: signature,
-        success: true
-      };
-    } catch (error) {
-      console.error('Solana payment error:', error);
-      throw new Error(`Solana payment failed: ${error.message}`);
+    // Check if Solana wallet is connected using the hook
+    if (!solanaConnected) {
+      throw new Error('Please connect your wallet first');
     }
-  };
 
+    // Check if user is authenticated
+    if (!user) {
+      throw new Error('Please login to pay');
+    }
+
+    // Validate amount
+    if (!amount || amount <= 0) {
+      throw new Error('Invalid amount');
+    }
+
+    // Fetch Solana wallet address from server settings
+    let recipient;
+    try {
+      const response = await fetch('/api/admin/settings');
+      if (response.ok) {
+        const data = await response.json();
+        recipient = data.settings.solanaWalletAddress;
+      }
+    } catch (error) {
+      console.error('Failed to fetch settings, falling back to environment variable');
+    }
+    
+    // Fallback to environment variable if settings fetch failed
+    if (!recipient) {
+      recipient = import.meta.env.VITE_OWNER_SOLNANA_ADDRESS || '11111111111111111111111111111111';
+    }
+
+    // Generate a unique order ID similar to your reference code
+    const payInfo = `${user._id || user.id}*${itemId}`;
+    
+    // Send SOL payment
+    const signature = await sendSOLWithReference(recipient, amount, payInfo);
+
+    return {
+      signature,
+      token: signature,
+      success: true
+    };
+  };
 
 
   return {

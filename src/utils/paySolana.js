@@ -95,6 +95,6 @@ export const sendSOLWithReference = async (recipient, amountSol, reference) => {
     return signature;
   } catch (error) {
     console.error('SOL payment error:', error);
-    throw new Error(`Payment failed: ${error.message}`);
+    throw new Error(`Payment failed.`);
   }
 };

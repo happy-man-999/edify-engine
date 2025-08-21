@@ -38,8 +38,9 @@ const WorldsSection = () => {
       amount: 19.99,
       itemName: "New World",
       itemId: "new-world"
-    }).then(async (result) => { 
-      alert(result.paymentMethod)
+    }).then(async (result) => {
+      if (!result) return;
+      
       if (result.paymentMethod === 'stripe') {
         // For Stripe, the redirect will handle the notification
         // Refresh user droplets after successful payment
@@ -61,7 +62,7 @@ const WorldsSection = () => {
       }
     }).catch((error) => {
       console.error('Payment failed:', error);
-      showError(`Payment functionality is not available for new world creation. Please try again later.`);
+      showError(error.message);
     });
   };
 

@@ -101,14 +101,14 @@ const Store = () => {
         } catch (error) {
           console.error('Error getting payment details:', error);
           // Fallback to generic success message
-          dispatch(showNotification(`Payment successful! Signature: ${shortAddress(result.signature)}`));
+          showError('Payment successful, but confirmation failed');
         }
         
         // The Redux state handles closing and showing notifications
       }
     }).catch((error) => {
       console.error('Payment failed:', error);
-      showError(`Payment functionality is not available for ${item.title}. Please try again later.`);
+      showError(error.message);
     });
   };
 
