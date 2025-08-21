@@ -72,7 +72,7 @@ export const sendSOLWithReference = async (recipient, amountSol, reference) => {
       new TransactionInstruction({
         keys: [],
         programId: new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'),
-        data: Buffer.from(reference),
+        data: new TextEncoder().encode(reference),
       })
     );
 
