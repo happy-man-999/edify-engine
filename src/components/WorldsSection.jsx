@@ -45,7 +45,7 @@ const WorldsSection = () => {
       itemName: "New World",
       itemId: "new-world"
     }).then(async (result) => {
-      if (!result) return;
+      if (!result || !result.paymentMethod) return;
       
       if (result.paymentMethod === 'stripe') {
         // For Stripe, the redirect will handle the notification
