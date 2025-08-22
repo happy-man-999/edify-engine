@@ -34,6 +34,12 @@ const WorldsSection = () => {
   }, [location.search, dispatch, navigate, location.pathname]);
   
   const handleCreateWorld = () => {
+    // Check if user has reached the world limit
+    if (hasReachedWorldLimit) {
+      showError('You have reached the maximum limit of 3 worlds. Please delete an existing world before creating a new one.');
+      return;
+    }
+    
     openPaymentModal({
       amount: 19.99,
       itemName: "New World",
@@ -70,10 +76,22 @@ const WorldsSection = () => {
     navigate('/admin/droplets');
   };
 
+  // Check if user has reached the world limit
+  const hasReachedWorldLimit = userDroplets.length >= 3;
+  const remainingWorlds = 3 - userDroplets.length;
+
   return (
     <section className="mb-12">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Your Worlds</h2>
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Your Worlds</h2>
+          {!loading && !error && (
+            <p className="text-sm text-gray-600 mt-1">
+              {userDroplets.length} of 3 worlds created
+              {remainingWorlds > 0 && ` • ${remainingWorlds} remaining`}
+            </p>
+          )}
+        </div>
         <div className="flex items-center space-x-4">
           <button
             onClick={refreshUserDroplets}
@@ -135,13 +153,47 @@ const WorldsSection = () => {
           ))}
           
           {/* Create New World button - only show when there are existing worlds */}
-          <div onClick={handleCreateWorld} className="professional-card border-2 border-dashed border-gray-300 hover:border-[#42677D] transition-all duration-300 cursor-pointer flex flex-col items-center justify-center p-8 relative overflow-hidden">
-            <div className="absolute inset-0 bg-[#42677D]/5 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-            <div className="w-16 h-16 bg-[#42677D]/10 rounded-full flex items-center justify-center mb-4 relative z-10">
-              <i className="fas fa-plus text-[#42677D]"></i>
+          <div 
+            onClick={hasReachedWorldLimit ? undefined : handleCreateWorld} 
+            className={`professional-card border-2 border-dashed transition-all duration-300 flex flex-col items-center justify-center p-8 relative overflow-hidden ${
+              hasReachedWorldLimit 
+                ? 'border-gray-200 bg-gray-50 cursor-not-allowed' 
+                : 'border-gray-300 hover:border-[#42677D] cursor-pointer'
+            }`}
+          >
+            <div className={`absolute inset-0 transition-opacity duration-300 ${
+              hasReachedWorldLimit 
+                ? 'bg-gray-100' 
+                : 'bg-[#42677D]/5 opacity-0 hover:opacity-100'
+            }`}></div>
+            <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 relative z-10 ${
+              hasReachedWorldLimit 
+                ? 'bg-gray-200' 
+                : 'bg-[#42677D]/10'
+            }`}>
+              <i className={`fas fa-plus ${
+                hasReachedWorldLimit 
+                  ? 'text-gray-400' 
+                  : 'text-[#42677D]'
+              }`}></i>
             </div>
-            <h3 className="font-semibold mb-1 relative z-10 text-gray-900">Create New World</h3>
-            <p className="text-gray-500 text-sm text-center relative z-10">Start building your next virtual experience</p>
+            <h3 className={`font-semibold mb-1 relative z-10 ${
+              hasReachedWorldLimit 
+                ? 'text-gray-500' 
+                : 'text-gray-900'
+            }`}>
+              {hasReachedWorldLimit ? 'World Limit Reached' : 'Create New World'}
+            </h3>
+            <p className={`text-sm text-center relative z-10 ${
+              hasReachedWorldLimit 
+                ? 'text-gray-400' 
+                : 'text-gray-500'
+            }`}>
+              {hasReachedWorldLimit 
+                ? 'You have reached the maximum of 3 worlds. Delete an existing world to create a new one.'
+                : 'Start building your next virtual experience'
+              }
+            </p>
           </div>
         </div>
       )}
@@ -156,10 +208,20 @@ const WorldsSection = () => {
           <p className="text-gray-600 mb-6">Create your first world to get started</p>
           <button
             onClick={handleCreateWorld}
-            className="bg-[#42677D] text-white px-6 py-3 rounded-lg hover:bg-[#5E8EA9] transition-colors"
+            disabled={hasReachedWorldLimit}
+            className={`px-6 py-3 rounded-lg transition-colors ${
+              hasReachedWorldLimit
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-[#42677D] text-white hover:bg-[#5E8EA9]'
+            }`}
           >
-            Create Your First World
+            {hasReachedWorldLimit ? 'World Limit Reached' : 'Create Your First World'}
           </button>
+          {hasReachedWorldLimit && (
+            <p className="text-sm text-gray-500 mt-2">
+              You have reached the maximum of 3 worlds. Delete an existing world to create a new one.
+            </p>
+          )}
         </div>
       )}
     </section>

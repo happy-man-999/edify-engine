@@ -187,7 +187,13 @@ export const usePaymentSuccess = () => {
         return result;
       } else {
         const error = await response.json();
-        showError(`Payment success handling failed: ${error.error}`);
+        
+        // Handle specific world creation limit error
+        if (error.limitReached) {
+          showError(`World creation limit reached: ${error.message}`);
+        } else {
+          showError(`Payment success handling failed: ${error.error}`);
+        }
       }
     } catch (error) {
       console.error('Error handling payment success:', error);
@@ -255,7 +261,13 @@ export const usePaymentSuccess = () => {
         return result;
       } else {
         const error = await response.json();
-        showError(`Payment success handling failed: ${error.error}`);
+        
+        // Handle specific world creation limit error
+        if (error.limitReached) {
+          showError(`World creation limit reached: ${error.message}`);
+        } else {
+          showError(`Payment success handling failed: ${error.error}`);
+        }
       }
     } catch (error) {
       console.error('Error handling Solana payment success:', error);
