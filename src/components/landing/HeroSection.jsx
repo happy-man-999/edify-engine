@@ -49,7 +49,7 @@ const HeroSection = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
-              to="/signup" 
+              to="/signin" 
               className="bg-gradient-to-r from-[#42677D] to-[#5E8EA9] hover:from-[#355263] hover:to-[#4a7a8f] text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
             >
               <i className="fas fa-rocket mr-2"></i>

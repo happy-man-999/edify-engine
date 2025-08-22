@@ -43,12 +43,12 @@ const ReviewsSection = () => {
     <section className="py-20 bg-white relative overflow-hidden">
       {/* Animated Background Shapes */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-24 h-24 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full" style={{animation: 'pulse 8s ease-in-out infinite'}}></div>
-        <div className="absolute top-40 right-20 w-20 h-20 bg-gradient-to-r from-green-100 to-teal-100 rounded-full" style={{animation: 'bounce 10s ease-in-out infinite'}}></div>
-        <div className="absolute bottom-40 left-1/4 w-16 h-16 bg-gradient-to-r from-yellow-100 to-orange-100 rounded-full" style={{animation: 'spin 15s linear infinite'}}></div>
-        <div className="absolute bottom-20 right-1/3 w-28 h-28 bg-gradient-to-r from-pink-100 to-red-100 rounded-full" style={{animation: 'ping 12s ease-in-out infinite'}}></div>
-        <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-gradient-to-r from-indigo-100 to-blue-100 rounded-full" style={{animation: 'pulse 9s ease-in-out infinite'}}></div>
-        <div className="absolute top-1/3 right-1/4 w-12 h-12 bg-gradient-to-r from-cyan-100 to-blue-100 rounded-full" style={{animation: 'bounce 11s ease-in-out infinite'}}></div>
+        <div className="absolute top-20 left-10 w-24 h-24 bg-gradient-to-r from-slate-100 to-slate-200 rounded-full opacity-90" style={{animation: 'pulse 8s ease-in-out infinite'}}></div>
+        <div className="absolute top-40 right-20 w-20 h-20 bg-gradient-to-r from-zinc-100 to-zinc-200 rounded-full opacity-95" style={{animation: 'bounce 10s ease-in-out infinite'}}></div>
+        <div className="absolute bottom-40 left-1/4 w-16 h-16 bg-gradient-to-r from-stone-100 to-stone-200 rounded-full opacity-85" style={{animation: 'spin 15s linear infinite'}}></div>
+        <div className="absolute bottom-20 right-1/3 w-28 h-28 bg-gradient-to-r from-neutral-100 to-neutral-200 rounded-full opacity-90" style={{animation: 'ping 12s ease-in-out infinite'}}></div>
+        <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-gradient-to-r from-slate-100 to-slate-200 rounded-full opacity-88" style={{animation: 'pulse 9s ease-in-out infinite'}}></div>
+        <div className="absolute top-1/3 right-1/4 w-12 h-12 bg-gradient-to-r from-zinc-100 to-zinc-200 rounded-full opacity-92" style={{animation: 'bounce 11s ease-in-out infinite'}}></div>
       </div>
       
       <div className="max-w-6xl mx-auto px-6 relative z-10">

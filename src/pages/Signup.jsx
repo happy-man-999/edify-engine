@@ -12,9 +12,11 @@ import {
   PaymentStep
 } from '../components/signup';
 import GlobalStyles from '../components/GlobalStyles';
+import { useErrorModal } from '../hooks/useErrorModal';
 
 const Signup = () => {
   const [searchParams] = useSearchParams();
+  const { showError } = useErrorModal();
   const { isAuthenticated, handleGoogleAuthCompletion, saveSignupProgress, signupProgress } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -270,7 +272,7 @@ const Signup = () => {
     } catch (error) {
       console.error('Payment failed:', error);
       // You could show an error modal here
-      alert('Payment failed. Please try again.');
+      showError('Payment failed. Please try again.');
     } finally {
       setIsProcessingPayment(false);
     }
