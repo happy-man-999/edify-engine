@@ -12,8 +12,8 @@ const Homepage = () => {
     <main className="flex-1 p-6 pt-24">
       <GlobalStyles />
       <div className="max-w-7xl mx-auto">
-        <HeroSection />
-        <QuickActions />
+        {/*<HeroSection />*/}
+        {/*<QuickActions />*/}
         <WorldsSection />
         <ExploreSection />
       </div>
