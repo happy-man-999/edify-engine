@@ -34,7 +34,7 @@ const WorldCard = ({ world, onRefresh }) => {
     if (world.status === 'active' && world.name) {
       return {
         title: world.name,
-        subtitle: 'Click to visit',
+        subtitle: <p>Click to visit<br /><br />Once it becomes active, you need to wait for another 10 minutes.</p>,
         clickable: true
       };
     } else if (world.status === 'new') {
