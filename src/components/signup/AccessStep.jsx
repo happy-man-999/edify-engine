@@ -4,7 +4,7 @@ const accessOptions = [
   {
     id: 'connect-domain',
     title: 'Connect Domain',
-    description: 'Use your own custom domain',
+    description: 'Use your own custom domain Coming soon...',
     icon: 'fa-link',
     color: '#42677D'
   },
@@ -18,7 +18,7 @@ const accessOptions = [
   {
     id: 'decide-later',
     title: "I'll decide later",
-    description: 'Choose domain access later',
+    description: 'Choose domain access later Coming soon...',
     icon: 'fa-clock',
     color: '#9CA3AF'
   }
@@ -26,6 +26,9 @@ const accessOptions = [
 
 const AccessStep = ({ formData, errors, onInputChange, onNext }) => {
   const handleCardClick = (option) => {
+    if (option === 'Connect Domain' || option === "I'll decide later") {
+      return;
+    }
     onInputChange('accessMethod', option);
   };
 

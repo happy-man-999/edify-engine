@@ -13,7 +13,7 @@ const customizationOptions = [
     id: 'advanced',
     title: 'Advanced',
     subtitle: 'Dynamic, robust functionality',
-    description: 'For experienced users. Full customization with advanced features.',
+    description: 'Coming soon...',//'For experienced users. Full customization with advanced features.',
     icon: 'fa-cogs',
     color: '#5E8EA9'
   },
@@ -21,7 +21,7 @@ const customizationOptions = [
     id: 'undecided',
     title: 'Undecided',
     subtitle: 'Not sure yet',
-    description: 'You can always upgrade or change your plan later.',
+    description: 'Coming soon...',//'You can always upgrade or change your plan later.',
     icon: 'fa-question-circle',
     color: '#9CA3AF'
   }
@@ -29,6 +29,9 @@ const customizationOptions = [
 
 const CustomizationStep = ({ formData, errors, onInputChange, onNext }) => {
   const handleCardClick = (option) => {
+    if (option.title === 'Advanced' || option.title === 'Undecided') {
+      return;
+    }
     onInputChange('customizationLevel', `${option.title} (${option.subtitle})`);
   };
 

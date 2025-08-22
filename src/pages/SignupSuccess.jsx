@@ -83,8 +83,8 @@ const SignupSuccess = () => {
                 method: 'stripe',
                 type: 'new-world'
               });
-            } else if (result.itemType === 'premium-plan') {
-              // Premium plan payment completed
+            } else if (result.itemType === 'basic-plan' || result.itemType === 'advanced-plan') {
+              // Premium basic/advanced payment completed
               setIsProcessing(false);
             }
           } else {

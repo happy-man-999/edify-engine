@@ -173,9 +173,12 @@ export const usePaymentSuccess = () => {
         } else if (result.itemType === 'item-purchase') {
           // Handle item purchase success
           dispatch(showNotification(`Item purchased successfully! ${result.itemName || ''}`));
-        } else if (result.itemType === 'premium-plan') {
-          // Handle premium plan success
-          dispatch(showNotification(`Premium plan activated successfully!`));
+        } else if (result.itemType === 'basic-plan') {
+          // Handle basic plan success
+          dispatch(showNotification(`Basic plan activated successfully!`));
+        } else if (result.itemType === 'advanced-plan') {
+          // Handle advanced plan success
+          dispatch(showNotification(`Advanced plan activated successfully!`));
         } else {
           // Generic success message
           dispatch(showNotification(`Payment successful! ${result.message || ''}`));

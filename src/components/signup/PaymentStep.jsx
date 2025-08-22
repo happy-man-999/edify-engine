@@ -28,17 +28,17 @@ const PaymentStep = ({ onPayment, isProcessingPayment }) => {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">Basic/Advanced Plan</h2>
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">Membership</h2>
         <p className="text-gray-600">Complete your setup and start building</p>
       </div>
       
       <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-2xl border border-blue-200 mb-8">
-        <div className="text-center mb-6">
+        {/*<div className="text-center mb-6">
           <div className="w-16 h-16 bg-[#42677D] rounded-full flex items-center justify-center mx-auto mb-4">
             <i className="fas fa-crown text-white text-2xl"></i>
           </div>
           <h3 className="text-xl font-semibold text-gray-900 mb-2">Premium Access</h3>
-        </div>
+        </div>*/}
         
         <div className="space-y-4 mb-6">
           <div className="flex items-start">
@@ -46,7 +46,16 @@ const PaymentStep = ({ onPayment, isProcessingPayment }) => {
               <i className="fas fa-check text-green-600 text-xs"></i>
             </div>
             <p className="text-gray-700">
-              One month of unlimited access to our world engine
+              Unlimited access to our world engine
+            </p>
+          </div>
+
+          <div className="flex items-start">
+            <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-0.5">
+              <i className="fas fa-check text-green-600 text-xs"></i>
+            </div>
+            <p className="text-gray-700">
+              Can create up to 3 worlds
             </p>
           </div>
           
@@ -55,7 +64,7 @@ const PaymentStep = ({ onPayment, isProcessingPayment }) => {
               <i className="fas fa-check text-green-600 text-xs"></i>
             </div>
             <p className="text-gray-700">
-              Deploy your world for free on a provided domain
+              One-time payment of $19.99 for world deployment on a provided domain
             </p>
           </div>
           
@@ -68,20 +77,20 @@ const PaymentStep = ({ onPayment, isProcessingPayment }) => {
             </p>
           </div>
           
-          <div className="flex items-start">
+          {/*<div className="flex items-start">
             <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-0.5">
               <i className="fas fa-check text-green-600 text-xs"></i>
             </div>
             <p className="text-gray-700">
               Access premium products in the store with templates, apps, and models
             </p>
-          </div>
+          </div>*/}
         </div>
         
         <div className="border-t border-blue-200 pt-6">
           <div className="flex justify-between items-center mb-2">
             <span className="text-lg font-semibold text-gray-900">Total Amount:</span>
-            <span className="text-2xl font-bold text-[#42677D]">$47.00</span>
+            <span className="text-2xl font-bold text-[#42677D]">$24.00</span>
           </div>
           <p className="text-sm text-gray-500 text-center">
             Secure payment powered by Stripe

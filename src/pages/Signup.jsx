@@ -98,10 +98,11 @@ const Signup = () => {
       }
       
       // Set current step to the next incomplete step
+      alert(1)
       const nextStep = Math.min(signupProgress.currentStep + 1, totalSteps);
       setCurrentStep(nextStep);
     }
-  }, [signupProgress, isAuthenticated, totalSteps]);
+  }, []);
 
   // Handle Google auth completion
   useEffect(() => {
@@ -187,7 +188,7 @@ const Signup = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = async () => {    
+  const handleNext = async () => {
     if (validateStep(currentStep)) {
       try {
         // Save progress for current step
@@ -264,7 +265,7 @@ const Signup = () => {
         throw new Error('Failed to initialize Stripe');
       }
 
-      const sessionId = await createCheckoutSession(4700, 'usd', null, null, 'premium-plan', 'Edify Engine Premium Plan');
+      const sessionId = await createCheckoutSession(2400, 'usd', null, null, 'basic-plan', 'Edify Engine Basic Plan');
       await redirectToCheckout(sessionId);
       
       // Note: User will be redirected to Stripe, then back to success page
