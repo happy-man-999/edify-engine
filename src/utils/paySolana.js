@@ -26,9 +26,17 @@ const getSolanaNetwork = async () => {
 
 // Get Solana RPC endpoint based on network
 const getSolanaEndpoint = (network) => {
-  return network === 'mainnet' 
-    ? 'https://api.mainnet-beta.solana.com'
-    : 'https://api.devnet.solana.com';
+  if (network === 'mainnet') {
+    // Use Helius RPC for mainnet - API key should be in .env file
+    const heliusApiKey = import.meta.env.VITE_HELIUS_API_KEY;
+    if (!heliusApiKey) {
+      console.warn('Helius API key not found in environment variables');
+      // Fallback to a free endpoint if no API key
+      return 'https://ssc-dao.genesysgo.net/';
+    }
+    return `https://rpc.helius.xyz/?api-key=${heliusApiKey}`;
+  }
+  return 'https://api.devnet.solana.com';
 };
 
 export const sendSOLWithReference = async (recipient, amountSol, reference) => {
