@@ -38,7 +38,7 @@ export const useAuth = () => {
     const result = await dispatch(signup(userData));
     return {
       success: !result.error,
-      error: result.error?.message || result.payload
+      error: result.error ? result.payload : null
     };
   };
 
@@ -46,7 +46,7 @@ export const useAuth = () => {
     const result = await dispatch(signin(credentials));
     return {
       success: !result.error,
-      error: result.error?.message || result.payload
+      error: result.error ? result.payload : null
     };
   };
 
@@ -59,7 +59,7 @@ export const useAuth = () => {
     const result = await dispatch(updateProfile({ profileData, token }));
     return {
       success: !result.error,
-      error: result.error?.message || result.payload
+      error: result.error ? result.payload : null
     };
   };
 
@@ -69,7 +69,7 @@ export const useAuth = () => {
       success: !result.error,
       user: result.payload?.user,
       token: result.payload?.token,
-      error: result.error?.message || result.payload
+      error: result.error ? result.payload : null
     };
   };
 
@@ -81,7 +81,7 @@ export const useAuth = () => {
   const saveSignupProgressUser = async (step, data) => {
     const result = await dispatch(saveSignupProgress({ step, data }));
     if (result.error) {
-      throw new Error(result.error.message || result.payload);
+      throw new Error(result.payload || 'An error occurred');
     }
     return result.payload;
   };
