@@ -98,7 +98,6 @@ const Signup = () => {
       }
       
       // Set current step to the next incomplete step
-      alert(1)
       const nextStep = Math.min(signupProgress.currentStep + 1, totalSteps);
       setCurrentStep(nextStep);
     }
