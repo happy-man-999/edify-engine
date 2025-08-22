@@ -71,11 +71,11 @@ const SolanaPaymentSection = () => {
             </div>
             
             {/* Floating animated elements */}
-            <div className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-400 opacity-30" style={{clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)', animation: 'slideUp 15s ease-in-out infinite'}}></div>
-            <div className="absolute -bottom-4 -left-4 w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-400 opacity-30" style={{clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)', animation: 'slideDown 18s ease-in-out infinite'}}></div>
-            <div className="absolute top-1/2 -right-8 w-8 h-8 bg-gradient-to-r from-pink-400 to-red-400 opacity-40" style={{clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)', animation: 'rotate3D 25s linear infinite'}}></div>
-            <div className="absolute top-1/4 -left-6 w-10 h-10 bg-gradient-to-r from-green-400 to-teal-400 opacity-25" style={{clipPath: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)', animation: 'wave 20s ease-in-out infinite'}}></div>
-            <div className="absolute bottom-1/4 -right-12 w-6 h-6 bg-gradient-to-r from-indigo-400 to-blue-400 opacity-35" style={{clipPath: 'polygon(40% 0%, 60% 0%, 60% 40%, 100% 40%, 100% 60%, 60% 60%, 60% 100%, 40% 100%, 40% 60%, 0% 60%, 0% 40%, 40% 40%)', animation: 'zigzag 16s ease-in-out infinite'}}></div>
+            <div className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-r from-[#9945FF] to-[#7A3CD8] opacity-30" style={{clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)', animation: 'slideUp 15s ease-in-out infinite'}}></div>
+            <div className="absolute -bottom-4 -left-4 w-12 h-12 bg-gradient-to-r from-[#14F195] to-[#0FD885] opacity-30" style={{clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)', animation: 'slideDown 18s ease-in-out infinite'}}></div>
+            <div className="absolute top-1/2 -right-8 w-8 h-8 bg-gradient-to-r from-[#B366FF] to-[#9945FF] opacity-40" style={{clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)', animation: 'rotate3D 25s linear infinite'}}></div>
+            <div className="absolute top-1/4 -left-6 w-10 h-10 bg-gradient-to-r from-[#33E6B8] to-[#14F195] opacity-25" style={{clipPath: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)', animation: 'wave 20s ease-in-out infinite'}}></div>
+            <div className="absolute bottom-1/4 -right-12 w-6 h-6 bg-gradient-to-r from-[#CC99FF] to-[#9945FF] opacity-35" style={{clipPath: 'polygon(40% 0%, 60% 0%, 60% 40%, 100% 40%, 100% 60%, 60% 60%, 60% 100%, 40% 100%, 40% 60%, 0% 60%, 0% 40%, 40% 40%)', animation: 'zigzag 16s ease-in-out infinite'}}></div>
           </div>
           
           {/* Right side - Benefits and features */}
