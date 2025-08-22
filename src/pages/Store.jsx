@@ -71,7 +71,9 @@ const Store = () => {
       amount: item.priceUSD,
       itemName: item.title,
       itemId: item._id || item.id
-    }).then(async (result) => {      
+    }).then(async (result) => {
+      if (!result || !result.paymentMethod) return;
+      
       if (result.paymentMethod === 'stripe') {
         // For Stripe, the redirect will handle the notification
         // Just close the modal
