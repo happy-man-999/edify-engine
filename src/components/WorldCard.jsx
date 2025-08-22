@@ -8,7 +8,7 @@ const WorldCard = ({ world, onRefresh }) => {
   const handleCardClick = () => {
     if (world.name && world.status === 'active') {
       // Open domain in new tab for active droplets
-      window.open(`https://new.${world.name}.edifyengine.com`, '_blank');
+      window.open(`https://${world.name}.edifyengine.com`, '_blank');
     } else if (world.status === 'new' || world.status === 'off') {
       // For new/off droplets, show info or navigate to management
       console.log('Droplet is still being created or offline');
@@ -81,7 +81,7 @@ const WorldCard = ({ world, onRefresh }) => {
   const handleVisitClick = (e) => {
     e.stopPropagation();
     if (world.name && world.status === 'active') {
-      window.open(`https://new.${world.name}.edifyengine.com`, '_blank');
+      window.open(`https://${world.name}.edifyengine.com`, '_blank');
     }
   };
 
