@@ -3,7 +3,6 @@ export const homepageTabs = [
   //{ title: "Explore", href: "#" },
   { title: "Store", href: "/store" },
   { title: "Learn", href: "#" },
-  { title: "FAQ", href: "#" },
   { title: "Sign In", href: "/signin" },
 ]
 export const storeTabs = [
@@ -11,6 +10,5 @@ export const storeTabs = [
   //{ title: "Explore", href: "#" },
   { title: "Store", href: "/store" },
   { title: "Learn", href: "#" },
-  { title: "FAQ", href: "#" },
   { title: "Sign In", href: "/signin" },
 ]

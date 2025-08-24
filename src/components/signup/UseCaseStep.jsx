@@ -2,38 +2,17 @@ import React from 'react';
 
 const useCases = [
   {
-    id: 'portfolio',
-    title: 'Portfolio',
-    description: 'Showcase your work and projects',
-    icon: 'fa-briefcase',
-    color: '#42677D'
-  },
-  {
     id: 'events',
     title: 'Events',
-    description: 'Host virtual events and gatherings',
+    description: 'Host virtual events and engage communities',
     icon: 'fa-calendar-alt',
     color: '#5E8EA9'
   },
   {
-    id: 'community',
-    title: 'Community',
-    description: 'Build and engage communities',
+    id: 'gaming',
+    title: 'Gaming',
+    description: 'Build, Play and Complete',
     icon: 'fa-users',
-    color: '#42677D'
-  },
-  {
-    id: 'ecommerce',
-    title: 'E-Commerce',
-    description: 'Sell products and services',
-    icon: 'fa-shopping-cart',
-    color: '#5E8EA9'
-  },
-  {
-    id: 'other',
-    title: 'Other',
-    description: 'Custom use case',
-    icon: 'fa-lightbulb',
     color: '#42677D'
   },
   {

@@ -46,7 +46,7 @@ const PaymentStep = ({ onPayment, isProcessingPayment }) => {
               <i className="fas fa-check text-green-600 text-xs"></i>
             </div>
             <p className="text-gray-700">
-              Unlimited access to our world engine
+              Unlimited access to Hyperfy world engine
             </p>
           </div>
 
@@ -55,7 +55,7 @@ const PaymentStep = ({ onPayment, isProcessingPayment }) => {
               <i className="fas fa-check text-green-600 text-xs"></i>
             </div>
             <p className="text-gray-700">
-              Can create up to 3 worlds
+              Dedicated Server and Hosting for up to 3 worlds
             </p>
           </div>
           
@@ -64,7 +64,7 @@ const PaymentStep = ({ onPayment, isProcessingPayment }) => {
               <i className="fas fa-check text-green-600 text-xs"></i>
             </div>
             <p className="text-gray-700">
-              One-time payment of $19.99 for world deployment on a provided domain
+              One-time payment of $19.99 per world deployment on a provided domain
             </p>
           </div>
           
@@ -76,15 +76,6 @@ const PaymentStep = ({ onPayment, isProcessingPayment }) => {
               No coding necessary - drag and drop interface
             </p>
           </div>
-          
-          {/*<div className="flex items-start">
-            <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-0.5">
-              <i className="fas fa-check text-green-600 text-xs"></i>
-            </div>
-            <p className="text-gray-700">
-              Access premium products in the store with templates, apps, and models
-            </p>
-          </div>*/}
         </div>
         
         <div className="border-t border-blue-200 pt-6">

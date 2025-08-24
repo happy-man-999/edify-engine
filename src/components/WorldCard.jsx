@@ -34,7 +34,7 @@ const WorldCard = ({ world, onRefresh }) => {
     if (world.status === 'active' && world.name) {
       return {
         title: world.name,
-        subtitle: <p>Click to visit<br /><br />Once it becomes active, you need to wait for another 10 minutes.</p>,
+        subtitle: <p>Click to visit</p>,
         clickable: true
       };
     } else if (world.status === 'new') {
@@ -123,6 +123,10 @@ const WorldCard = ({ world, onRefresh }) => {
           </h3>
           <p className="text-sm opacity-90 drop-shadow-md">
             {statusContent.subtitle}
+          </p>
+          <br />
+          <p className="text-3xl opacity-90 drop-shadow-md">
+            World
           </p>
           
           {/* Show additional info for non-active droplets */}

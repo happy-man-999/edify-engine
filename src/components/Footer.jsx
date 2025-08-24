@@ -1,4 +1,5 @@
 import React from "react";
+import { homepageTabs } from "./navbar/tabs";
 
 const Footer = () => (
   <footer className="glass border-t border-gray-200 py-6">
@@ -11,10 +12,15 @@ const Footer = () => (
           <span className="font-semibold text-gray-900">Edify Engine</span>
         </div>
         <div className="flex space-x-6">
-          <a href="#" className="text-gray-600 hover:text-[#5E8EA9] transition-colors duration-300">Careers</a>
-          <a href="#" className="text-gray-600 hover:text-[#5E8EA9] transition-colors duration-300">Terms</a>
-          <a href="#" className="text-gray-600 hover:text-[#5E8EA9] transition-colors duration-300">Privacy</a>
-          <a href="#" className="text-gray-600 hover:text-[#5E8EA9] transition-colors duration-300">Help</a>
+          {homepageTabs.filter(tab => tab.title !== "Sign In").map((tab) => (
+            <a 
+              key={tab.title} 
+              href={tab.href} 
+              className="text-gray-600 hover:text-[#5E8EA9] transition-colors duration-300"
+            >
+              {tab.title}
+            </a>
+          ))}
         </div>
       </div>
       <div className="mt-6 text-center md:text-left text-sm text-gray-500">
