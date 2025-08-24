@@ -125,9 +125,11 @@ const WorldCard = ({ world, onRefresh }) => {
             {statusContent.subtitle}
           </p>
           <br />
-          <p className="text-3xl opacity-90 drop-shadow-md">
-            World
-          </p>
+          {world.status === 'active' && 
+            <p className="text-3xl opacity-90 drop-shadow-md">
+              World
+            </p>
+          }
           
           {/* Show additional info for non-active droplets */}
           {world.status !== 'active' && (

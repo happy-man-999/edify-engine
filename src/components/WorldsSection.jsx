@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { usePaymentModal } from "../hooks/usePaymentModal";
@@ -9,6 +9,52 @@ import { shortAddress } from "../utils/format";
 import { showNotification } from "../store/uiSlice";
 import WorldCard from "./WorldCard";
 
+/**
+ * WorldsSection Component
+ * 
+ * Features:
+ * - Displays user's virtual worlds
+ * - Shows informational message when world status changes from 'new' to 'active'
+ * - Informational message includes "Don't show again" option with localStorage persistence
+ * - Message: "Your world is live - finalizing SSL for secure access. Check back in a couple minutes."
+ * 
+ * The informational message appears above the worlds grid when:
+ * 1. A world status changes from 'new' to 'active'
+ * 2. User hasn't previously dismissed it with "Don't show again"
+ * 
+ * localStorage key: 'worldActiveInfoDismissed'
+ */
+const WorldActiveInfo = ({ onClose, onDontShowAgain }) => {
+  return (
+    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 relative">
+      <div className="flex items-start">
+        <div className="flex-shrink-0">
+          <i className="fas fa-info-circle text-blue-400 text-lg"></i>
+        </div>
+        <div className="ml-3 flex-1">
+          <p className="text-sm text-blue-800">
+            Your world is live - finalizing SSL for secure access. Check back in a couple minutes.
+          </p>
+        </div>
+        <div className="flex items-center space-x-2 ml-4">
+          <button
+            onClick={onDontShowAgain}
+            className="text-xs text-blue-600 hover:text-blue-800 underline"
+          >
+            Don't show again
+          </button>
+          <button
+            onClick={onClose}
+            className="text-blue-400 hover:text-blue-600 transition-colors"
+          >
+            <i className="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const WorldsSection = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -16,6 +62,10 @@ const WorldsSection = () => {
   const { handleStripePaymentSuccess, handleSolanaPaymentSuccess } = usePaymentSuccess();
   const { showError } = useErrorModal();
   const { userDroplets, loading, error, refreshUserDroplets } = useUserDroplets();
+  
+  // State for showing the informational message
+  const [showActiveInfo, setShowActiveInfo] = useState(false);
+  const previousDropletsRef = useRef([]);
   
   // Check for pending Stripe payment success on component mount
   useEffect(() => {
@@ -32,6 +82,49 @@ const WorldsSection = () => {
       navigate(location.pathname, { replace: true });
     }
   }, [location.search, dispatch, navigate, location.pathname]);
+
+  // Check for world status changes and show info message
+  useEffect(() => {
+    if (!loading && userDroplets.length > 0 && previousDropletsRef.current.length > 0) {
+      // Check if any world status changed from 'new' to 'active'
+      const hasNewToActiveChange = userDroplets.some((currentDroplet) => {
+        const previousDroplet = previousDropletsRef.current.find(p => p.id === currentDroplet.id);
+        return previousDroplet && 
+               previousDroplet.status === 'new' && 
+               currentDroplet.status === 'active';
+      });
+
+      if (hasNewToActiveChange) {
+        console.log('World status changed from new to active - showing info message');
+        // Check if user has dismissed this message permanently
+        const dontShowAgain = localStorage.getItem('worldActiveInfoDismissed');
+        if (!dontShowAgain) {
+          setShowActiveInfo(true);
+        } else {
+          console.log('User has chosen not to show this message again');
+        }
+      }
+    }
+    
+    // Update previous droplets for next comparison
+    if (!loading && userDroplets.length > 0) {
+      previousDropletsRef.current = userDroplets;
+    }
+  }, [userDroplets, loading]);
+
+  const handleCloseInfo = () => {
+    setShowActiveInfo(false);
+  };
+
+  const handleDontShowAgain = () => {
+    localStorage.setItem('worldActiveInfoDismissed', 'true');
+    setShowActiveInfo(false);
+  };
+
+  // Function to reset the "Don't show again" preference (useful for testing)
+  const resetDontShowAgain = () => {
+    localStorage.removeItem('worldActiveInfoDismissed');
+  };
   
   const handleCreateWorld = () => {
     // Check if user has reached the world limit
@@ -110,6 +203,14 @@ const WorldsSection = () => {
           </button>
         </div>
       </div>
+      
+      {/* Informational message for world status changes */}
+      {showActiveInfo && (
+        <WorldActiveInfo
+          onClose={handleCloseInfo}
+          onDontShowAgain={handleDontShowAgain}
+        />
+      )}
       
       {/* Loading state */}
       {loading && (
