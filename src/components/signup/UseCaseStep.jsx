@@ -4,7 +4,7 @@ const useCases = [
   {
     id: 'events',
     title: 'Events',
-    description: 'Host virtual events and engage communities',
+    description: 'Host communities',
     icon: 'fa-calendar-alt',
     color: '#5E8EA9'
   },
