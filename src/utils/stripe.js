@@ -138,6 +138,49 @@ export const createCheckoutSession = async (amount, currency = 'usd', successUrl
   }
 };
 
+// Create Stripe Checkout session
+export const createSubscriptionSession = async (successUrl = null, cancelUrl = null, itemId = null, itemName = null) => {
+  try {
+    const response = await fetch('/api/stripe/create-subscription-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        success_url: successUrl || `${window.location.origin}/signup-success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: cancelUrl || `${window.location.origin}/signup`,
+        itemId,
+        itemName,
+      }),
+    });
+
+    if (!response.ok) {
+      let errorMessage = `HTTP ${response.status}`;
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.error || errorMessage;
+      } catch (e) {
+        // If we can't parse JSON, use status text
+        errorMessage = response.statusText || errorMessage;
+      }
+      
+      console.error('Stripe checkout session creation failed:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorMessage
+      });
+      
+      throw new Error(`Failed to create checkout session. Please try again later.`);
+    }
+
+    const data = await response.json();
+    return data.sessionId;
+  } catch (error) {
+    console.error('Error creating checkout session:', error);
+    throw error;
+  }
+};
+
 // Redirect to Stripe Checkout
 export const redirectToCheckout = async (sessionId) => {
   try {

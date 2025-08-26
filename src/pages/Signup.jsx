@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { initializeStripe, createCheckoutSession, redirectToCheckout } from '../utils/stripe';
+import { initializeStripe, createSubscriptionSession, redirectToCheckout } from '../utils/stripe';
 import {
   WelcomeStep,
   AccountStep,
@@ -264,7 +264,7 @@ const Signup = () => {
         throw new Error('Failed to initialize Stripe');
       }
 
-      const sessionId = await createCheckoutSession(2400, 'usd', null, null, 'basic-plan', 'Edify Engine Basic Plan');
+      const sessionId = await createSubscriptionSession(null, null, 'basic-plan', 'Edify Engine Basic Plan');
       await redirectToCheckout(sessionId);
       
       // Note: User will be redirected to Stripe, then back to success page
