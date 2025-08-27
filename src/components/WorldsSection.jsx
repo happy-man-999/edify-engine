@@ -8,6 +8,7 @@ import { useUserDroplets } from "../hooks/useUserDroplets";
 import { shortAddress } from "../utils/format";
 import { showNotification } from "../store/uiSlice";
 import WorldCard from "./WorldCard";
+import DomainSelectionModal from "./DomainSelectionModal";
 
 /**
  * WorldsSection Component
@@ -62,6 +63,10 @@ const WorldsSection = () => {
   const { handleStripePaymentSuccess, handleSolanaPaymentSuccess } = usePaymentSuccess();
   const { showError } = useErrorModal();
   const { userDroplets, loading, error, refreshUserDroplets } = useUserDroplets();
+  
+  // State for showing the domain selection modal
+  const [showDomainModal, setShowDomainModal] = useState(false);
+  const [selectedCustomDomain, setSelectedCustomDomain] = useState(null);
   
   // State for showing the informational message
   const [showActiveInfo, setShowActiveInfo] = useState(false);
@@ -133,6 +138,15 @@ const WorldsSection = () => {
       return;
     }
     
+    // Show domain selection modal first
+    setShowDomainModal(true);
+  };
+
+  const handleFreeDomainSelected = () => {
+    setShowDomainModal(false);
+    setSelectedCustomDomain(null);
+    
+    // Proceed with normal payment flow
     openPaymentModal({
       amount: 19.99,
       itemName: "New World",
@@ -158,6 +172,33 @@ const WorldsSection = () => {
           console.error('Error handling Solana payment success:', error);
           showError('Payment successful, but confirmation failed');
         }
+      }
+    }).catch((error) => {
+      console.error('Payment failed:', error);
+      showError(error.message);
+    });
+  };
+
+  const handleCustomDomainSelected = (domain) => {
+    setShowDomainModal(false);
+    setSelectedCustomDomain(domain);
+    
+    // Proceed with subscription payment flow
+    openPaymentModal({
+      amount: 2.99,
+      itemName: "New World (Custom Domain)",
+      itemId: "new-world",
+      subscriptionMode: true,
+      customDomain: domain
+    }).then(async (result) => {
+      if (!result || !result.paymentMethod) return;
+      
+      if (result.paymentMethod === 'stripe') {
+        // For Stripe subscription, the redirect will handle the notification
+        // Refresh user droplets after successful payment
+        setTimeout(() => {
+          refreshUserDroplets();
+        }, 2000); // Wait a bit for the backend to process
       }
     }).catch((error) => {
       console.error('Payment failed:', error);
@@ -325,6 +366,14 @@ const WorldsSection = () => {
           )}
         </div>
       )}
+
+      {/* Domain Selection Modal */}
+      <DomainSelectionModal
+        open={showDomainModal}
+        onClose={() => setShowDomainModal(false)}
+        onDomainSelected={handleCustomDomainSelected}
+        onFreeDomainSelected={handleFreeDomainSelected}
+      />
     </section>
   );
 };

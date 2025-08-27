@@ -140,10 +140,7 @@ function App() {
                 <PaymentModal
                   open={isOpen}
                   onClose={closePaymentModal}
-                  amount={paymentData?.amount}
-                  currency={paymentData?.currency}
-                  itemName={paymentData?.itemName}
-                  itemId={paymentData?.itemId}
+                  {...paymentData}
                 />
               </MainLayout>
             </Router>

@@ -5,7 +5,7 @@ import { useErrorModal } from './useErrorModal';
 import { useWalletWithRedirects } from './useWalletWithRedirects';
 import { useCurrency } from './useCurrency';
 import { useSettings } from './useSettings';
-import { createCheckoutSession, redirectToCheckout, initializeStripe } from '../utils/stripe';
+import { createCheckoutSession, createSubscriptionSession, redirectToCheckout, initializeStripe } from '../utils/stripe';
 import { sendSOLWithReference } from '../utils/paySolana';
 
 export const usePayment = () => {
@@ -40,12 +40,18 @@ export const usePayment = () => {
     paymentMethod, 
     itemName = '',
     itemId = null,
+    isSubscription = false,
+    customDomain = null
   }) => {
     if (!user) {
       throw new Error('User must be authenticated to make payments');
     }
+    
+    if (user.role !== 'admin' && user.role !== 'user') {
+      throw new Error('Only subscribed users can make payments');
+    }
 
-    if (!amount || amount <= 0) {
+    if (!isSubscription && (!amount || amount <= 0)) {
       throw new Error('Invalid amount');
     }
 
@@ -56,8 +62,11 @@ export const usePayment = () => {
       let result;
 
       if (paymentMethod === 'stripe') {
-        // Stripe only supports USD
-        result = await processStripePayment(amount, itemId, itemName);
+        if (isSubscription) {
+          result = await processSubscriptionPayment(itemId, itemName, {customDomain});
+        } else {
+          result = await processStripePayment(amount, itemId, itemName);
+        }
       } else if (paymentMethod === 'solana') {
         result = await processSolanaPayment(convertUsdToSol(amount), itemId);
       } else {
@@ -83,6 +92,38 @@ export const usePayment = () => {
       setIsProcessing(false);
       showError(error.message);
     }
+  };
+
+  const processSubscriptionPayment = async (itemId, itemName, {customDomain}) => {
+    // Check if settings are loaded
+    if (settingsLoading) {
+      throw new Error('Settings are still loading. Please try again.');
+    }
+
+    // Check if Stripe is initialized
+    if (!stripeInitialized) {
+      throw new Error('Stripe is not initialized. Please try again.');
+    }
+    
+    // Create success and cancel URLs that redirect back to current page
+    const currentUrl = window.location.href;
+    const successUrl = `${currentUrl}?payment=success&session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = `${currentUrl}?payment=cancelled`;
+    
+    const sessionId = await createSubscriptionSession(successUrl, cancelUrl, itemId, itemName, {customDomain});
+    
+    // Redirect to Stripe checkout
+    const checkoutResult = await redirectToCheckout(sessionId);
+    
+    if (checkoutResult.error) {
+      throw new Error(checkoutResult.error);
+    }
+
+    return {
+      sessionId,
+      token: sessionId,
+      success: true
+    };
   };
 
   const processStripePayment = async (amount, itemId, itemName) => {
@@ -178,6 +219,7 @@ export const usePayment = () => {
     
     // Individual payment methods (for advanced usage)
     processStripePayment,
+    processSubscriptionPayment,
     processSolanaPayment
   };
 }; 

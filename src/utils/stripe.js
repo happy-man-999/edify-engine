@@ -139,7 +139,7 @@ export const createCheckoutSession = async (amount, currency = 'usd', successUrl
 };
 
 // Create Stripe Checkout session
-export const createSubscriptionSession = async (successUrl = null, cancelUrl = null, itemId = null, itemName = null) => {
+export const createSubscriptionSession = async (successUrl = null, cancelUrl = null, itemId = null, itemName = null, metadata = {}) => {
   try {
     const response = await fetch('/api/stripe/create-subscription-session', {
       method: 'POST',
@@ -151,6 +151,7 @@ export const createSubscriptionSession = async (successUrl = null, cancelUrl = n
         cancel_url: cancelUrl || `${window.location.origin}/signup`,
         itemId,
         itemName,
+        metadata,
       }),
     });
 

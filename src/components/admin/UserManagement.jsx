@@ -279,6 +279,7 @@ const UserManagement = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Roles</option>
+              <option value="lead">Lead</option>
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>
@@ -408,8 +409,10 @@ const UserManagement = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          user.role === 'admin' 
-                            ? 'bg-red-100 text-red-800' 
+                          user.role === 'admin'
+                            ? 'bg-red-100 text-red-800'
+                            : user.role === 'lead'
+                            ? 'bg-yellow-100 text-yellow-800'
                             : 'bg-blue-100 text-blue-800'
                         }`}>
                           {user.role}
