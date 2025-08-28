@@ -1,38 +1,53 @@
 import React from 'react';
 
-const customizationOptions = [
+export const customizationOptions = [
   {
     id: 'basic',
     title: 'Basic',
-    subtitle: 'Static, prebuilt templates',
-    description: 'Perfect for beginners. Choose from our collection of beautiful templates.',
+    subtitle: 'Start Your First World',
+    description: 'Perfect for creators getting started. Build and launch 1 fully hosted world with access to the Hyperfy engine, drag-and-drop tools, and your own dedicated server space.',
     icon: 'fa-palette',
-    color: '#42677D'
+    color: '#42677D',
+    details: [
+      'Unlimited access to Hyperfy world engine',
+      'Dedicated Server and Hosting for 1 world',
+      'One-time payment of $9.99 per world deployment on a provided domain',
+      'No coding necessary - drag and drop interface'
+    ],
+    price: 24
   },
   {
-    id: 'advanced',
-    title: 'Advanced',
-    subtitle: 'Dynamic, robust functionality',
-    description: 'Coming soon...',//'For experienced users. Full customization with advanced features.',
+    id: 'premium',
+    title: 'Premium',
+    subtitle: 'Expand Your Universe',
+    description: 'Unlock the freedom to create and host up to 3 immersive worlds with unlimited access to the Hyperfy engine. Ideal for builders who want more room to experiment and grow - all on secure, dedicated hosting.',
     icon: 'fa-cogs',
-    color: '#5E8EA9'
+    color: '#5E8EA9',
+    details: [
+      'Unlimited access to Hyperfy world engine',
+      'Dedicated Server and Hosting for up to 3 worlds',
+      'One-time payment of $9.99 per world deployment on a provided domain',
+      'No coding necessary - drag and drop interface'
+    ],
+    price: 48
   },
   {
-    id: 'undecided',
-    title: 'Undecided',
-    subtitle: 'Not sure yet',
-    description: 'Coming soon...',//'You can always upgrade or change your plan later.',
-    icon: 'fa-question-circle',
-    color: '#9CA3AF'
-  }
+    id: 'enterprise',
+    title: 'Enterprise',
+    subtitle: 'Scale Without Limits',
+    description: 'Designed for teams, brands, and large-scale projects. Enterprise gives you custom hosting, unlimited worlds, priority support, and advanced integrations - tailored infrastructure to power the next generation of immersive experiences.',
+    icon: 'fa-building',
+    color: '#223A4C',
+    details: [
+    ],
+    price: 0, // Contact us for pricing
+    disabled: true
+  },
 ];
 
 const CustomizationStep = ({ formData, errors, onInputChange, onNext }) => {
   const handleCardClick = (option) => {
-    if (option.title === 'Advanced' || option.title === 'Undecided') {
-      return;
-    }
-    onInputChange('customizationLevel', `${option.title} (${option.subtitle})`);
+    onInputChange('customizationLevel', option.title);
   };
 
   return (
@@ -46,15 +61,20 @@ const CustomizationStep = ({ formData, errors, onInputChange, onNext }) => {
         {customizationOptions.map((option) => (
           <div
             key={option.id}
-            onClick={() => handleCardClick(option)}
-            className={`bg-white p-6 rounded-xl border-2 cursor-pointer transition-all duration-200 hover:shadow-md ${
-              formData.customizationLevel === `${option.title} (${option.subtitle})`
+            onClick={() => !option.disabled && handleCardClick(option)}
+            className={`bg-white p-6 rounded-xl border-2 transition-all duration-200 ${
+              option.disabled
+                ? 'cursor-not-allowed opacity-50'
+                : 'cursor-pointer hover:shadow-md'
+            } ${
+              formData.customizationLevel === option.title && !option.disabled
                 ? 'border-[#42677D] shadow-md'
                 : 'border-gray-200 hover:border-[#42677D]'
             }`}
+            aria-disabled={option.disabled}
           >
             <div className="text-center">
-              <div 
+              <div
                 className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
                 style={{ backgroundColor: `${option.color}1A` }}
               >
@@ -63,7 +83,10 @@ const CustomizationStep = ({ formData, errors, onInputChange, onNext }) => {
               <h4 className="font-semibold text-gray-900 text-lg mb-1">{option.title}</h4>
               <p className="text-sm text-gray-500 mb-3">{option.subtitle}</p>
               <p className="text-sm text-gray-600">{option.description}</p>
-              {formData.customizationLevel === `${option.title} (${option.subtitle})` && (
+              {option.disabled && (
+                <div className="mt-4 text-xs text-gray-400">Coming soon</div>
+              )}
+              {formData.customizationLevel === option.title && !option.disabled && (
                 <div className="mt-4">
                   <div className="w-6 h-6 bg-[#42677D] rounded-full flex items-center justify-center mx-auto">
                     <i className="fas fa-check text-white text-sm"></i>

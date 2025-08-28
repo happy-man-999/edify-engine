@@ -264,7 +264,7 @@ const Signup = () => {
         throw new Error('Failed to initialize Stripe');
       }
 
-      const sessionId = await createSubscriptionSession(null, null, 'basic-plan', 'Edify Engine Basic Plan');
+      const sessionId = await createSubscriptionSession(null, null, formData.customizationLevel, 'Edify Engine Basic Plan');
       await redirectToCheckout(sessionId);
       
       // Note: User will be redirected to Stripe, then back to success page
@@ -331,6 +331,7 @@ const Signup = () => {
       case 7:
         return (
           <PaymentStep
+            formData={formData}
             isProcessingPayment={isProcessingPayment}
             onPayment={handlePayment}
           />

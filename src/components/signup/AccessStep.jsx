@@ -26,9 +26,6 @@ const accessOptions = [
 
 const AccessStep = ({ formData, errors, onInputChange, onNext }) => {
   const handleCardClick = (option) => {
-    if (option === 'Connect Domain' || option === "I'll decide later") {
-      return;
-    }
     onInputChange('accessMethod', option);
   };
 

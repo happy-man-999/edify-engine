@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { customizationOptions } from './CustomizationStep';
 
-const PaymentStep = ({ onPayment, isProcessingPayment }) => {
+const PaymentStep = ({ formData, onPayment, isProcessingPayment }) => {
   const [paymentSettings, setPaymentSettings] = useState({
     stripeMode: 'live',
     solanaMode: 'mainnet',
@@ -24,64 +25,42 @@ const PaymentStep = ({ onPayment, isProcessingPayment }) => {
   }, []);
 
   const isTestMode = paymentSettings.isTestMode || paymentSettings.stripeMode === 'test' || paymentSettings.solanaMode === 'devnet';
+  const plan = customizationOptions.find(option => option.title === formData.customizationLevel) || customizationOptions[0];
 
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">Membership</h2>
-        <p className="text-gray-600">Complete your setup and start building</p>
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">{plan.title}</h2>
+        <p className="text-gray-600">{plan.subtitle}</p>
       </div>
       
       <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-2xl border border-blue-200 mb-8">
-        {/*<div className="text-center mb-6">
-          <div className="w-16 h-16 bg-[#42677D] rounded-full flex items-center justify-center mx-auto mb-4">
-            <i className="fas fa-crown text-white text-2xl"></i>
+        {(plan.title === 'Premium' || plan.title === 'Enterprise') && (
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 bg-[#42677D] rounded-full flex items-center justify-center mx-auto mb-4">
+              <i className={`fas ${plan.title === 'Premium' ? 'fa-crown' : 'fa-building'} text-white text-2xl`}></i>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">{plan.title} Access</h3>
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">Premium Access</h3>
-        </div>*/}
+        )}
         
         <div className="space-y-4 mb-6">
-          <div className="flex items-start">
-            <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-0.5">
-              <i className="fas fa-check text-green-600 text-xs"></i>
+          {plan.details.map((detail, index) => (
+            <div key={index} className="flex items-start">
+              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-0.5">
+                <i className="fas fa-check text-green-600 text-xs"></i>
+              </div>
+              <p className="text-gray-700">
+                {detail}
+              </p>
             </div>
-            <p className="text-gray-700">
-              Unlimited access to Hyperfy world engine
-            </p>
-          </div>
-
-          <div className="flex items-start">
-            <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-0.5">
-              <i className="fas fa-check text-green-600 text-xs"></i>
-            </div>
-            <p className="text-gray-700">
-              Dedicated Server and Hosting for up to 3 worlds
-            </p>
-          </div>
-          
-          <div className="flex items-start">
-            <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-0.5">
-              <i className="fas fa-check text-green-600 text-xs"></i>
-            </div>
-            <p className="text-gray-700">
-              One-time payment of $19.99 per world deployment on a provided domain
-            </p>
-          </div>
-          
-          <div className="flex items-start">
-            <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-0.5">
-              <i className="fas fa-check text-green-600 text-xs"></i>
-            </div>
-            <p className="text-gray-700">
-              No coding necessary - drag and drop interface
-            </p>
-          </div>
+          ))}
         </div>
         
         <div className="border-t border-blue-200 pt-6">
           <div className="flex justify-between items-center mb-2">
             <span className="text-lg font-semibold text-gray-900">Total Amount:</span>
-            <span className="text-2xl font-bold text-[#42677D]">$24.00</span>
+            <span className="text-2xl font-bold text-[#42677D]">${plan.price.toFixed(2)}</span>
           </div>
           <p className="text-sm text-gray-500 text-center">
             Secure payment powered by Stripe

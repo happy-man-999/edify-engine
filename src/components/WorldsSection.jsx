@@ -148,7 +148,7 @@ const WorldsSection = () => {
     
     // Proceed with normal payment flow
     openPaymentModal({
-      amount: 19.99,
+      amount: 9.99,
       itemName: "New World",
       itemId: "new-world"
     }).then(async (result) => {
