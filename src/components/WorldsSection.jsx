@@ -225,7 +225,7 @@ const WorldsSection = () => {
           <h2 className="text-2xl font-bold text-gray-900">Your Worlds</h2>
           {!loading && !error && (
             <p className="text-sm text-gray-600 mt-1">
-              {userDroplets.length} of 3 worlds created
+              {userDroplets.length} of {user.plan === 'basic' ? 1 : 3} worlds created
               {remainingWorlds > 0 && ` • ${remainingWorlds} remaining`}
             </p>
           )}
