@@ -5,6 +5,7 @@ import { usePaymentModal } from "../hooks/usePaymentModal";
 import { usePaymentSuccess } from "../hooks/usePaymentSuccess";
 import { useErrorModal } from "../hooks/useErrorModal";
 import { useUserDroplets } from "../hooks/useUserDroplets";
+import { useAuth } from "../hooks/useAuth";
 import { shortAddress } from "../utils/format";
 import { showNotification } from "../store/uiSlice";
 import WorldCard from "./WorldCard";
@@ -63,11 +64,13 @@ const WorldsSection = () => {
   const { handleStripePaymentSuccess, handleSolanaPaymentSuccess } = usePaymentSuccess();
   const { showError } = useErrorModal();
   const { userDroplets, loading, error, refreshUserDroplets } = useUserDroplets();
+  const { user } = useAuth();
   
   // State for showing the domain selection modal
   const [showDomainModal, setShowDomainModal] = useState(false);
   const [selectedCustomDomain, setSelectedCustomDomain] = useState(null);
-  
+  const [selectedDropletId, setSelectedDropletId] = useState(null);
+
   // State for showing the informational message
   const [showActiveInfo, setShowActiveInfo] = useState(false);
   const previousDropletsRef = useRef([]);
@@ -138,14 +141,6 @@ const WorldsSection = () => {
       return;
     }
     
-    // Show domain selection modal first
-    setShowDomainModal(true);
-  };
-
-  const handleFreeDomainSelected = () => {
-    setShowDomainModal(false);
-    setSelectedCustomDomain(null);
-    
     // Proceed with normal payment flow
     openPaymentModal({
       amount: 9.99,
@@ -187,9 +182,12 @@ const WorldsSection = () => {
     openPaymentModal({
       amount: 2.99,
       itemName: "New World (Custom Domain)",
-      itemId: "new-world",
+      itemId: "custom-domain",
       subscriptionMode: true,
-      customDomain: domain
+      metadata: {
+        customDomain: domain,
+        dropletId: selectedDropletId
+      }
     }).then(async (result) => {
       if (!result || !result.paymentMethod) return;
       
@@ -206,13 +204,19 @@ const WorldsSection = () => {
     });
   };
 
+  const handleCustomDomainUpsell = (dropletId) => {
+    // Show domain selection modal in custom domain only mode
+    setShowDomainModal(true);
+    setSelectedDropletId(dropletId);
+  };
+
   const handleViewAll = () => {
-    navigate('/admin/droplets');
+    //navigate('/admin/droplets');
   };
 
   // Check if user has reached the world limit
-  const hasReachedWorldLimit = userDroplets.length >= 3;
-  const remainingWorlds = 3 - userDroplets.length;
+  const hasReachedWorldLimit = !user || user && user.plan === 'basic' && userDroplets.length >= 1 || user && user.plan === 'premium' && userDroplets.length >= 3;
+  const remainingWorlds = !user ? 0 : (user.plan === 'basic' ? 1 : 3) - userDroplets.length;
 
   return (
     <section className="mb-12">
@@ -291,6 +295,7 @@ const WorldsSection = () => {
               key={world.id} 
               world={world} 
               onRefresh={refreshUserDroplets}
+              onCustomDomainUpsell={() => handleCustomDomainUpsell(world.dropletId)}
             />
           ))}
           
@@ -332,7 +337,7 @@ const WorldsSection = () => {
                 : 'text-gray-500'
             }`}>
               {hasReachedWorldLimit 
-                ? 'You have reached the maximum of 3 worlds. Delete an existing world to create a new one.'
+                ? 'You have reached the maximum number of worlds. Delete an existing world to create a new one.'
                 : 'Start building your next virtual experience'
               }
             </p>
@@ -361,7 +366,7 @@ const WorldsSection = () => {
           </button>
           {hasReachedWorldLimit && (
             <p className="text-sm text-gray-500 mt-2">
-              You have reached the maximum of 3 worlds. Delete an existing world to create a new one.
+              You have reached the maximum number of worlds. Delete an existing world to create a new one.
             </p>
           )}
         </div>
@@ -372,7 +377,6 @@ const WorldsSection = () => {
         open={showDomainModal}
         onClose={() => setShowDomainModal(false)}
         onDomainSelected={handleCustomDomainSelected}
-        onFreeDomainSelected={handleFreeDomainSelected}
       />
     </section>
   );

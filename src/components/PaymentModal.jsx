@@ -12,7 +12,7 @@ const PaymentModal = ({
   itemName = 'Purchase',
   itemId = null,
   subscriptionMode = false,
-  customDomain = null
+  metadata = {}
 }) => {
   const [selectedMethod, setSelectedMethod] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -50,7 +50,7 @@ const PaymentModal = ({
         itemName,
         itemId,
         isSubscription: subscriptionMode,
-        customDomain
+        metadata
       });
 
       // Use the new custom event pattern

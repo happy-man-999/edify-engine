@@ -4,20 +4,12 @@ import { useErrorModal } from '../hooks/useErrorModal';
 const DomainSelectionModal = ({ 
   open, 
   onClose, 
-  onDomainSelected,
-  onFreeDomainSelected 
+  onDomainSelected
 }) => {
-  const [selectedOption, setSelectedOption] = useState('free');
   const [customDomain, setCustomDomain] = useState('');
   const [isCheckingDomain, setIsCheckingDomain] = useState(false);
   const [domainAvailable, setDomainAvailable] = useState(null);
   const { showError } = useErrorModal();
-
-  const handleOptionSelect = (option) => {
-    setSelectedOption(option);
-    setCustomDomain('');
-    setDomainAvailable(null);
-  };
 
   const checkDomainAvailability = async () => {
     if (!customDomain.trim()) {
@@ -26,9 +18,41 @@ const DomainSelectionModal = ({
     }
 
     // Basic domain validation
-    const domainRegex = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$/;
+    // Validate domain format - allows normal domains like example.com, sub.example.com
+    const domainRegex = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
     if (!domainRegex.test(customDomain.trim())) {
-      showError('Domain must be 2-63 characters long and contain only letters, numbers, and hyphens. Cannot start or end with a hyphen.');
+      showError('Domain must be a valid domain name (e.g., example.com, app.example.com). Each part must be 1-63 characters long and contain only letters, numbers, and hyphens. Cannot start or end with a hyphen.');
+      return;
+    }
+    
+    // Additional validation for domain length and format
+    const domainParts = customDomain.trim().split('.');
+    if (domainParts.length < 2) {
+      showError('Domain must have at least 2 parts (e.g., example.com)');
+      return;
+    }
+    
+    if (domainParts.length > 5) {
+      showError('Domain cannot have more than 5 parts');
+      return;
+    }
+    
+    // Check each part length
+    for (let i = 0; i < domainParts.length; i++) {
+      const part = domainParts[i];
+      if (part.length < 1 || part.length > 63) {
+        showError(`Domain part "${part}" must be 1-63 characters long`);
+        return;
+      }
+      if (part.startsWith('-') || part.endsWith('-')) {
+        showError(`Domain part "${part}" cannot start or end with a hyphen`);
+        return;
+      }
+    }
+    
+    // Check total domain length
+    if (customDomain.trim().length > 253) {
+      showError('Total domain length cannot exceed 253 characters');
       return;
     }
 
@@ -59,20 +83,15 @@ const DomainSelectionModal = ({
   };
 
   const handleContinue = () => {
-    if (selectedOption === 'custom' && !domainAvailable) {
+    if (!domainAvailable) {
       showError('Please check domain availability first');
       return;
     }
 
-    if (selectedOption === 'free') {
-      onFreeDomainSelected();
-    } else {
-      onDomainSelected(customDomain.trim());
-    }
+    onDomainSelected(customDomain.trim());
   };
 
   const handleClose = () => {
-    setSelectedOption('free');
     setCustomDomain('');
     setDomainAvailable(null);
     onClose();
@@ -86,7 +105,7 @@ const DomainSelectionModal = ({
         {/* Header */}
         <div className="bg-gradient-to-r from-[#42677D] to-[#5E8EA9] p-6 text-white">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold">Choose Your Domain</h2>
+            <h2 className="text-xl font-bold">Custom Domain</h2>
             <button
               onClick={handleClose}
               className="text-white/80 hover:text-white transition-colors text-2xl"
@@ -95,72 +114,14 @@ const DomainSelectionModal = ({
             </button>
           </div>
           <p className="text-sm text-white/90 mt-2">
-            Select how you want to access your new world
+            Choose your custom domain for this world
           </p>
         </div>
 
         {/* Content */}
         <div className="p-6">
           <div className="space-y-4 mb-6">
-            {/* Free Domain Option */}
-            <div
-              className={`border-2 rounded-lg p-4 transition-all cursor-pointer ${
-                selectedOption === 'free'
-                  ? 'border-[#42677D] bg-[#42677D]/5'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
-              onClick={() => handleOptionSelect('free')}
-            >
-              <div className="flex items-center space-x-3">
-                <div className={`w-4 h-4 rounded-full border-2 ${
-                  selectedOption === 'free'
-                    ? 'border-[#42677D] bg-[#42677D]'
-                    : 'border-gray-300'
-                }`}>
-                  {selectedOption === 'free' && (
-                    <div className="w-2 h-2 bg-white rounded-full m-0.5"></div>
-                  )}
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-medium text-gray-800">Free Domain</h4>
-                  <p className="text-sm text-gray-600">
-                    We'll assign you a free subdomain (e.g., abc123.edifyengine.com)
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Custom Domain Option */}
-            <div
-              className={`border-2 rounded-lg p-4 transition-all cursor-pointer ${
-                selectedOption === 'custom'
-                  ? 'border-[#42677D] bg-[#42677D]/5'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
-              onClick={() => handleOptionSelect('custom')}
-            >
-              <div className="flex items-center space-x-3">
-                <div className={`w-4 h-4 rounded-full border-2 ${
-                  selectedOption === 'custom'
-                    ? 'border-[#42677D] bg-[#42677D]'
-                    : 'border-gray-300'
-                }`}>
-                  {selectedOption === 'custom' && (
-                    <div className="w-2 h-2 bg-white rounded-full m-0.5"></div>
-                  )}
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-medium text-gray-800">Your Own Domain</h4>
-                  <p className="text-sm text-gray-600">
-                    Choose your own subdomain (e.g., myworld.edifyengine.com)
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Custom Domain Input */}
-          {selectedOption === 'custom' && (
+            {/* Custom Domain Input */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Your Subdomain
@@ -170,7 +131,7 @@ const DomainSelectionModal = ({
                   type="text"
                   value={customDomain}
                   onChange={(e) => setCustomDomain(e.target.value)}
-                  placeholder="myworld"
+                  placeholder="myworld.com"
                   className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#42677D] focus:border-transparent"
                   onKeyPress={(e) => e.key === 'Enter' && checkDomainAvailability()}
                 />
@@ -186,7 +147,7 @@ const DomainSelectionModal = ({
                   )}
                 </button>
               </div>
-              
+                
               {/* Domain Availability Status */}
               {domainAvailable !== null && (
                 <div className={`mt-2 text-sm ${
@@ -194,33 +155,33 @@ const DomainSelectionModal = ({
                 }`}>
                   <i className={`fas fa-${domainAvailable ? 'check-circle' : 'times-circle'} mr-1`}></i>
                   {domainAvailable 
-                    ? `Domain "${customDomain}.edifyengine.com" is available!`
-                    : `Domain "${customDomain}.edifyengine.com" is already taken. Please try another.`
+                    ? `Domain "${customDomain}" is available!`
+                    : `Domain "${customDomain}" is already taken. Please try another.`
                   }
                 </div>
               )}
-              
+                
               <p className="text-xs text-gray-500 mt-2">
-                Your world will be accessible at: {customDomain.trim() || 'myworld'}.edifyengine.com
+                Your world will be accessible at: {customDomain.trim() || 'myworld.com'}
               </p>
             </div>
-          )}
 
-          {/* Action Buttons */}
-          <div className="flex space-x-3">
-            <button
-              onClick={handleClose}
-              className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleContinue}
-              disabled={selectedOption === 'custom' && !domainAvailable}
-              className="flex-1 px-4 py-3 bg-[#42677D] text-white rounded-lg hover:bg-[#355263] transition-colors disabled:opacity-50"
-            >
-              Continue
-            </button>
+            {/* Action Buttons */}
+            <div className="flex space-x-3">
+              <button
+                onClick={handleClose}
+                className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleContinue}
+                disabled={!domainAvailable}
+                className="flex-1 px-4 py-3 bg-[#42677D] text-white rounded-lg hover:bg-[#355263] transition-colors disabled:opacity-50"
+              >
+                Continue
+              </button>
+            </div>
           </div>
         </div>
       </div>

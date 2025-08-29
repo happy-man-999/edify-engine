@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDroplets } from '../hooks/useDroplets';
 
-const WorldCard = ({ world, onRefresh }) => {
+const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
   const { syncDroplet } = useDroplets();
   const [isSyncing, setIsSyncing] = useState(false);
 
@@ -203,6 +203,21 @@ const WorldCard = ({ world, onRefresh }) => {
               <i className="fas fa-sync text-lg"></i>
             )}
           </button>
+
+          {/* Custom Domain Upsell Button */}
+          {world.status === 'active' && world.name && onCustomDomainUpsell && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onCustomDomainUpsell();
+              }}
+              className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-full p-3 text-white hover:bg-white/40 hover:border-white/50 transition-all duration-200 shadow-lg hover:scale-110 transform focus:outline-none focus:ring-2 focus:ring-white/50"
+              title="Upgrade to Custom Domain"
+              aria-label="Upgrade to Custom Domain"
+            >
+              <i className="fas fa-crown text-lg"></i>
+            </button>
+          )}
         </div>
       </div>
     </div>

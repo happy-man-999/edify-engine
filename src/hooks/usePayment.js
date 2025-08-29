@@ -41,7 +41,7 @@ export const usePayment = () => {
     itemName = '',
     itemId = null,
     isSubscription = false,
-    customDomain = null
+    metadata = {}
   }) => {
     if (!user) {
       throw new Error('User must be authenticated to make payments');
@@ -63,7 +63,7 @@ export const usePayment = () => {
 
       if (paymentMethod === 'stripe') {
         if (isSubscription) {
-          result = await processSubscriptionPayment(itemId, itemName, {customDomain});
+          result = await processSubscriptionPayment(itemId, itemName, metadata);
         } else {
           result = await processStripePayment(amount, itemId, itemName);
         }
@@ -94,7 +94,7 @@ export const usePayment = () => {
     }
   };
 
-  const processSubscriptionPayment = async (itemId, itemName, {customDomain}) => {
+  const processSubscriptionPayment = async (itemId, itemName, metadata) => {
     // Check if settings are loaded
     if (settingsLoading) {
       throw new Error('Settings are still loading. Please try again.');
@@ -110,7 +110,7 @@ export const usePayment = () => {
     const successUrl = `${currentUrl}?payment=success&session_id={CHECKOUT_SESSION_ID}`;
     const cancelUrl = `${currentUrl}?payment=cancelled`;
     
-    const sessionId = await createSubscriptionSession(successUrl, cancelUrl, itemId, itemName, {customDomain});
+    const sessionId = await createSubscriptionSession(successUrl, cancelUrl, itemId, itemName, metadata);
     
     // Redirect to Stripe checkout
     const checkoutResult = await redirectToCheckout(sessionId);
