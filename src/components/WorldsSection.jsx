@@ -217,6 +217,7 @@ const WorldsSection = () => {
   // Check if user has reached the world limit
   const hasReachedWorldLimit = !user || user && user.plan === 'basic' && userDroplets.length >= 1 || user && user.plan === 'premium' && userDroplets.length >= 3;
   const remainingWorlds = !user ? 0 : (user.plan === 'basic' ? 1 : 3) - userDroplets.length;
+  const dropletLimit = !user ? 0 : user.plan === 'basic' ? 1 : 3;
 
   return (
     <section className="mb-12">
@@ -225,7 +226,7 @@ const WorldsSection = () => {
           <h2 className="text-2xl font-bold text-gray-900">Your Worlds</h2>
           {!loading && !error && (
             <p className="text-sm text-gray-600 mt-1">
-              {userDroplets.length} of {user.plan === 'basic' ? 1 : 3} worlds created
+              {userDroplets.length} of {dropletLimit} worlds created
               {remainingWorlds > 0 && ` • ${remainingWorlds} remaining`}
             </p>
           )}
