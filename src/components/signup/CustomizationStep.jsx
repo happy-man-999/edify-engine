@@ -47,7 +47,7 @@ export const customizationOptions = [
 
 const CustomizationStep = ({ formData, errors, onInputChange, onNext }) => {
   const handleCardClick = (option) => {
-    onInputChange('customizationLevel', option.title);
+    onInputChange('customizationLevel', `${option.id}-plan`);
   };
 
   return (
@@ -67,7 +67,7 @@ const CustomizationStep = ({ formData, errors, onInputChange, onNext }) => {
                 ? 'cursor-not-allowed opacity-50'
                 : 'cursor-pointer hover:shadow-md'
             } ${
-              formData.customizationLevel === option.title && !option.disabled
+              formData.customizationLevel === `${option.id}-plan` && !option.disabled
                 ? 'border-[#42677D] shadow-md'
                 : 'border-gray-200 hover:border-[#42677D]'
             }`}
@@ -86,7 +86,7 @@ const CustomizationStep = ({ formData, errors, onInputChange, onNext }) => {
               {option.disabled && (
                 <div className="mt-4 text-xs text-gray-400">Coming soon</div>
               )}
-              {formData.customizationLevel === option.title && !option.disabled && (
+              {formData.customizationLevel === `${option.id}-plan` && !option.disabled && (
                 <div className="mt-4">
                   <div className="w-6 h-6 bg-[#42677D] rounded-full flex items-center justify-center mx-auto">
                     <i className="fas fa-check text-white text-sm"></i>

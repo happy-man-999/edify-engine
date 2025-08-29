@@ -25,7 +25,7 @@ const PaymentStep = ({ formData, onPayment, isProcessingPayment }) => {
   }, []);
 
   const isTestMode = paymentSettings.isTestMode || paymentSettings.stripeMode === 'test' || paymentSettings.solanaMode === 'devnet';
-  const plan = customizationOptions.find(option => option.title === formData.customizationLevel) || customizationOptions[0];
+  const plan = customizationOptions.find(option => `${option.id}-plan` === formData.customizationLevel) || customizationOptions[0];
 
   return (
     <div className="max-w-2xl mx-auto">
