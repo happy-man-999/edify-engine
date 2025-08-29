@@ -14,6 +14,7 @@ const SettingsConfigs = () => {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [isUpdatingSnapshot, setIsUpdatingSnapshot] = useState(false);
   const [message, setMessage] = useState('');
 
   // Fetch settings on component mount
@@ -174,6 +175,123 @@ const SettingsConfigs = () => {
     }
   };
 
+  const handleUpdateSnapshot = async () => {
+    try {
+      setIsUpdatingSnapshot(true);
+      setMessage('Initiating snapshot update... This may take several minutes.');
+      
+      const response = await fetch('/api/admin/update-snapshot', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to initiate snapshot update');
+      }
+
+      const data = await response.json();
+      console.log('Snapshot update initiated:', data);
+      
+      if (data.actionId) {
+        // Start polling for status
+        pollSnapshotStatus(data.actionId);
+      } else {
+        throw new Error('No action ID received from server');
+      }
+      
+    } catch (error) {
+      console.error('Error updating snapshot:', error);
+      setMessage(error.message || 'Failed to update snapshot');
+      setIsUpdatingSnapshot(false);
+      
+      // Clear error message after 5 seconds
+      setTimeout(() => setMessage(''), 5000);
+    }
+  };
+
+  const pollSnapshotStatus = async (actionId) => {
+    const maxAttempts = 60; // 5 minutes with 5-second intervals
+    let attempts = 0;
+    
+    const poll = async () => {
+      try {
+        attempts++;
+        setMessage(`Checking snapshot status... (Attempt ${attempts}/${maxAttempts})`);
+        
+        const response = await fetch(`/api/user/status/${actionId}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to check snapshot status');
+        }
+
+        const data = await response.json();
+        console.log('Snapshot status:', data);
+        
+        if (data.status === 'completed') {
+          // Update the local settings with the new snapshot ID
+          if (data.result && data.result.snapshotId) {
+            setSettings(prev => ({
+              ...prev,
+              defaultSnapshotId: data.result.snapshotId
+            }));
+            
+            setMessage(`Snapshot updated successfully! New snapshot ID: ${data.result.snapshotId}`);
+          } else {
+            setMessage('Snapshot updated successfully!');
+          }
+          setIsUpdatingSnapshot(false);
+          
+          // Clear message after 5 seconds
+          setTimeout(() => setMessage(''), 5000);
+          return;
+        } else if (data.status === 'failed') {
+          const errorMsg = data.error ? data.error.message : 'Unknown error occurred';
+          setMessage(`Snapshot update failed: ${errorMsg}`);
+          setIsUpdatingSnapshot(false);
+          
+          // Clear error message after 5 seconds
+          setTimeout(() => setMessage(''), 5000);
+          return;
+        } else if (data.status === 'in_progress') {
+          // Show progress message if available
+          if (data.progressMessage) {
+            setMessage(`${data.progressMessage} (${data.progress || 0}%)`);
+          }
+          
+          if (attempts >= maxAttempts) {
+            setMessage('Snapshot update is taking longer than expected. Please check the server logs.');
+            setIsUpdatingSnapshot(false);
+            return;
+          }
+          
+          // Continue polling
+          setTimeout(poll, 5000);
+        }
+      } catch (error) {
+        console.error('Error polling snapshot status:', error);
+        
+        if (attempts >= maxAttempts) {
+          setMessage('Failed to check snapshot status. Please check the server logs.');
+          setIsUpdatingSnapshot(false);
+          return;
+        }
+        
+        // Retry after 5 seconds
+        setTimeout(poll, 5000);
+      }
+    };
+    
+    // Start polling
+    poll();
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -270,6 +388,36 @@ const SettingsConfigs = () => {
                 placeholder="edifyengine.com"
               />
               <p className="text-xs text-gray-500 mt-1">Default domain for droplet subdomains</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Snapshot Management
+              </label>
+              <button
+                onClick={handleUpdateSnapshot}
+                disabled={isUpdatingSnapshot}
+                className={`w-full px-4 py-2 rounded-md font-medium transition-colors ${
+                  isUpdatingSnapshot
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                }`}
+              >
+                {isUpdatingSnapshot ? (
+                  <>
+                    <i className="fas fa-spinner fa-spin mr-2"></i>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-camera mr-2"></i>
+                    Update Snapshot
+                  </>
+                )}
+              </button>
+              <p className="text-xs text-gray-500 mt-1">
+                Creates a new snapshot from the sample droplet and updates the default snapshot ID
+              </p>
             </div>
           </div>
         </div>
