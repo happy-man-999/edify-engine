@@ -10,6 +10,7 @@ import { shortAddress } from "../utils/format";
 import { showNotification } from "../store/uiSlice";
 import WorldCard from "./WorldCard";
 import DomainSelectionModal from "./DomainSelectionModal";
+import UpgradePlanModal from "./UpgradePlanModal";
 
 /**
  * WorldsSection Component
@@ -74,6 +75,9 @@ const WorldsSection = () => {
   // State for showing the informational message
   const [showActiveInfo, setShowActiveInfo] = useState(false);
   const previousDropletsRef = useRef([]);
+
+  // State for showing the upgrade plan modal
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   
   // Check for pending Stripe payment success on component mount
   useEffect(() => {
@@ -210,6 +214,10 @@ const WorldsSection = () => {
     setSelectedDropletId(dropletId);
   };
 
+  const handleUpgradePlan = () => {
+    setShowUpgradeModal(true);
+  };
+
   const handleViewAll = () => {
     //navigate('/admin/droplets');
   };
@@ -300,49 +308,45 @@ const WorldsSection = () => {
             />
           ))}
           
-          {/* Create New World button - only show when there are existing worlds */}
-          <div 
-            onClick={hasReachedWorldLimit ? undefined : handleCreateWorld} 
-            className={`professional-card border-2 border-dashed transition-all duration-300 flex flex-col items-center justify-center p-8 relative overflow-hidden ${
-              hasReachedWorldLimit 
-                ? 'border-gray-200 bg-gray-50 cursor-not-allowed' 
-                : 'border-gray-300 hover:border-[#42677D] cursor-pointer'
-            }`}
-          >
-            <div className={`absolute inset-0 transition-opacity duration-300 ${
-              hasReachedWorldLimit 
-                ? 'bg-gray-100' 
-                : 'bg-[#42677D]/5 opacity-0 hover:opacity-100'
-            }`}></div>
-            <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 relative z-10 ${
-              hasReachedWorldLimit 
-                ? 'bg-gray-200' 
-                : 'bg-[#42677D]/10'
-            }`}>
-              <i className={`fas fa-plus ${
-                hasReachedWorldLimit 
-                  ? 'text-gray-400' 
-                  : 'text-[#42677D]'
-              }`}></i>
+          {/* Create New World button or Upgrade Plan button */}
+          {hasReachedWorldLimit ? (
+            // Upgrade Plan Button
+            <div 
+              onClick={handleUpgradePlan}
+              className="professional-card border-2 border-dashed border-[#42677D] bg-gradient-to-br from-[#42677D]/5 to-[#5E8EA9]/5 transition-all duration-300 flex flex-col items-center justify-center p-8 relative overflow-hidden cursor-pointer hover:shadow-lg hover:from-[#42677D]/10 hover:to-[#5E8EA9]/10"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-[#42677D]/5 to-[#5E8EA9]/5 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 relative z-10 bg-[#42677D]/10">
+                <i className="fas fa-arrow-up text-[#42677D] text-xl"></i>
+              </div>
+              <h3 className="font-semibold mb-1 relative z-10 text-[#42677D]">
+                {user ? 'Upgrade Plan' : 'Choose Plan'}
+              </h3>
+              <p className="text-sm text-center relative z-10 text-[#42677D]">
+                {user 
+                  ? 'Unlock more worlds and expand your universe'
+                  : 'Select a plan to start building your virtual worlds'
+                }
+              </p>
             </div>
-            <h3 className={`font-semibold mb-1 relative z-10 ${
-              hasReachedWorldLimit 
-                ? 'text-gray-500' 
-                : 'text-gray-900'
-            }`}>
-              {hasReachedWorldLimit ? 'World Limit Reached' : 'Create New World'}
-            </h3>
-            <p className={`text-sm text-center relative z-10 ${
-              hasReachedWorldLimit 
-                ? 'text-gray-400' 
-                : 'text-gray-500'
-            }`}>
-              {hasReachedWorldLimit 
-                ? 'You have reached the maximum number of worlds. Delete an existing world to create a new one.'
-                : 'Start building your next virtual experience'
-              }
-            </p>
-          </div>
+          ) : (
+            // Create New World Button or Sign In Button
+            <div 
+              onClick={user ? handleCreateWorld : () => navigate('/auth')} 
+              className="professional-card border-2 border-dashed border-gray-300 hover:border-[#42677D] transition-all duration-300 flex flex-col items-center justify-center p-8 relative overflow-hidden cursor-pointer"
+            >
+              <div className="absolute inset-0 bg-[#42677D]/5 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 relative z-10 bg-[#42677D]/10">
+                <i className={`fas ${user ? 'fa-plus' : 'fa-sign-in-alt'} text-[#42677D]`}></i>
+              </div>
+              <h3 className="font-semibold mb-1 relative z-10 text-gray-900">
+                {user ? 'Create New World' : 'Sign In'}
+              </h3>
+              <p className="text-sm text-center relative z-10 text-gray-500">
+                {user ? 'Start building your next virtual experience' : 'Sign in to create your virtual worlds'}
+              </p>
+            </div>
+          )}
         </div>
       )}
       
@@ -354,20 +358,27 @@ const WorldsSection = () => {
           </div>
           <h3 className="text-xl font-semibold text-gray-900 mb-2">No worlds yet</h3>
           <p className="text-gray-600 mb-6">Create your first world to get started</p>
-          <button
-            onClick={handleCreateWorld}
-            disabled={hasReachedWorldLimit}
-            className={`px-6 py-3 rounded-lg transition-colors ${
-              hasReachedWorldLimit
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-[#42677D] text-white hover:bg-[#5E8EA9]'
-            }`}
-          >
-            {hasReachedWorldLimit ? 'World Limit Reached' : 'Create Your First World'}
-          </button>
+          {hasReachedWorldLimit ? (
+            <button
+              onClick={user ? handleCreateWorld : () => navigate('/signin')}
+              className="px-6 py-3 rounded-lg transition-colors bg-[#42677D] text-white hover:bg-[#5E8EA9]"
+            >
+              {user ? 'Upgrade Plan to Create More Worlds' : 'Sign in'}
+            </button>
+          ) : (
+            <button
+              onClick={user ? handleCreateWorld : () => navigate('/signin')}
+              className="px-6 py-3 rounded-lg transition-colors bg-[#42677D] text-white hover:bg-[#5E8EA9]"
+            >
+              {user ? 'Create Your First World' : 'Sign In'}
+            </button>
+          )}
           {hasReachedWorldLimit && (
             <p className="text-sm text-gray-500 mt-2">
-              You have reached the maximum number of worlds. Delete an existing world to create a new one.
+              {user 
+                ? 'You have reached the maximum number of worlds. Upgrade your plan to create more worlds.'
+                : 'Sign in to start building your virtual worlds.'
+              }
             </p>
           )}
         </div>
@@ -378,6 +389,13 @@ const WorldsSection = () => {
         open={showDomainModal}
         onClose={() => setShowDomainModal(false)}
         onDomainSelected={handleCustomDomainSelected}
+      />
+
+      {/* Upgrade Plan Modal */}
+      <UpgradePlanModal
+        open={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        currentPlan={user?.plan}
       />
     </section>
   );

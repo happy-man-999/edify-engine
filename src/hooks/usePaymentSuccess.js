@@ -1,5 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { showNotification } from '../store/uiSlice';
+import { checkAuth } from '../store/authSlice';
 import { useErrorModal } from './useErrorModal';
 import { useLoadingSpinner } from './useLoadingSpinner';
 import { useWebhook, useSolanaWebhook } from './useWebhook';
@@ -176,9 +177,19 @@ export const usePaymentSuccess = () => {
         } else if (result.itemType === 'basic-plan') {
           // Handle basic plan success
           dispatch(showNotification(`Basic plan activated successfully!`));
+          // Refresh user data to get updated plan information
+          const token = localStorage.getItem('token');
+          if (token) {
+            dispatch(checkAuth(token));
+          }
         } else if (result.itemType === 'premium-plan') {
           // Handle premium plan success
           dispatch(showNotification(`Premium plan activated successfully!`));
+          // Refresh user data to get updated plan information
+          const token = localStorage.getItem('token');
+          if (token) {
+            dispatch(checkAuth(token));
+          }
         } else {
           // Generic success message
           dispatch(showNotification(`Payment successful! ${result.message || ''}`));
