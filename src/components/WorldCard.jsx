@@ -81,7 +81,11 @@ const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
   const handleVisitClick = (e) => {
     e.stopPropagation();
     if (world.name && world.status === 'active') {
-      window.open(`https://${world.name}.edifyengine.com`, '_blank');
+      // Check if name is a full domain (contains dots) or just a subdomain
+      const url = world.name.includes('.') 
+        ? `https://${world.name}` 
+        : `https://${world.name}.edifyengine.com`;
+      window.open(url, '_blank');
     }
   };
 

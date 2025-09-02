@@ -389,6 +389,7 @@ const WorldsSection = () => {
         open={showDomainModal}
         onClose={() => setShowDomainModal(false)}
         onDomainSelected={handleCustomDomainSelected}
+        dropletId={selectedDropletId}
       />
 
       {/* Upgrade Plan Modal */}
