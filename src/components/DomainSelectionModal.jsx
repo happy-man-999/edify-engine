@@ -195,7 +195,7 @@ const DomainSelectionModal = ({
             {/* Custom Domain Input */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Your Subdomain
+                Your Domain
               </label>
               <div className="flex space-x-2">
                 <input
@@ -247,7 +247,7 @@ const DomainSelectionModal = ({
                       </code>
                     </div>
                     <p className="text-xs text-blue-600 mt-1">
-                      This is the IP address of your specific world (droplet)
+                      This is the IP address of your specific world
                     </p>
                   </div>
 
