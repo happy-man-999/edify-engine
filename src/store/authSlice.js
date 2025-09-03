@@ -137,8 +137,10 @@ export const handleGoogleAuthCompletion = createAsyncThunk(
       if (response.ok) {
         const data = await response.json();
         
-        // Check signup progress after Google auth
-        await dispatch(checkSignupProgress());
+        // Check signup progress after Google auth (skip for contributor role)
+        if (data.user?.role !== 'contributor') {
+          await dispatch(checkSignupProgress());
+        }
         
         return { success: true, user: data.user, token: token };
       } else {

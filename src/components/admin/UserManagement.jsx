@@ -281,6 +281,7 @@ const UserManagement = () => {
               <option value="all">All Roles</option>
               <option value="lead">Lead</option>
               <option value="user">User</option>
+              <option value="contributor">Contributor</option>
               <option value="admin">Admin</option>
             </select>
           </div>
@@ -411,6 +412,8 @@ const UserManagement = () => {
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           user.role === 'admin'
                             ? 'bg-red-100 text-red-800'
+                            : user.role === 'contributor'
+                            ? 'bg-purple-100 text-purple-800'
                             : user.role === 'lead'
                             ? 'bg-yellow-100 text-yellow-800'
                             : 'bg-blue-100 text-blue-800'
@@ -427,12 +430,28 @@ const UserManagement = () => {
                           {currentUser?._id === user._id ? 'Cannot change own role' : 'Make User'}
                         </button>
                       )}
+                      {user.role === 'contributor' && (
+                        <button
+                          onClick={() => handleRoleUpdate(user._id, 'admin')}
+                          className="text-xs text-gray-500 hover:text-gray-700"
+                        >
+                          Make Admin
+                        </button>
+                      )}
                       {user.role === 'user' && (
                         <button
                           onClick={() => handleRoleUpdate(user._id, 'admin')}
                           className="text-xs text-gray-500 hover:text-gray-700"
                         >
                           Make Admin
+                        </button>
+                      )}
+                      {user.role === 'lead' && (
+                        <button
+                          onClick={() => handleRoleUpdate(user._id, 'contributor')}
+                          className="text-xs text-gray-500 hover:text-gray-700"
+                        >
+                          Make Contributor
                         </button>
                       )}
                     </td>

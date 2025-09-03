@@ -15,9 +15,10 @@ import GlobalStyles from '../components/GlobalStyles';
 import { useErrorModal } from '../hooks/useErrorModal';
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { showError } = useErrorModal();
-  const { isAuthenticated, handleGoogleAuthCompletion, saveSignupProgress, signupProgress } = useAuth();
+  const { isAuthenticated, user, handleGoogleAuthCompletion, saveSignupProgress, signupProgress } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -43,6 +44,12 @@ const Signup = () => {
 
     // After sign in, not yet completed signup progress.
     if (isAuthenticated) {
+      // Skip onboarding for contributor role users
+      if (user?.role === 'contributor') {
+        navigate('/home');
+        return;
+      }
+      
       if (!signupProgress) {
         setCurrentStep(3);
       }

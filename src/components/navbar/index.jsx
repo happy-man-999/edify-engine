@@ -1,19 +1,28 @@
 import React from "react";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
-import { homepageTabs, storeTabs } from './tabs';
+import { tabs as allTabs } from './tabs';
 import HomepageAction from './HomepageAction'
 import StoreAction from './StoreAction'
 import { useAuth } from '../../hooks/useAuth';
 
 const NavbarTabs = () => {
   const location = useLocation();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   
-  let tabs = location.pathname === '/store' ? storeTabs : homepageTabs;
+  let tabs = allTabs;
   
   // Filter out "Sign In" tab if user is authenticated
   if (isAuthenticated) {
     tabs = tabs.filter(tab => tab.title !== "Sign In");
+    
+    // Add role-based tabs
+    if (user?.role === 'contributor') {
+      tabs.push({ title: "Contribute", href: "/contribute" });
+    }
+    
+    if (user?.role === 'admin') {
+      tabs.push({ title: "Admin Dashboard", href: "/admin" });
+    }
   }
   
   return (

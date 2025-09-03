@@ -1,5 +1,5 @@
 import React from "react";
-import { homepageTabs } from "./navbar/tabs";
+import { tabs } from "./navbar/tabs";
 
 const Footer = () => (
   <footer className="glass border-t border-gray-200 py-6">
@@ -12,7 +12,7 @@ const Footer = () => (
           <span className="font-semibold text-gray-900">Edify Engine</span>
         </div>
         <div className="flex space-x-6">
-          {homepageTabs.filter(tab => tab.title !== "Sign In").map((tab) => (
+          {tabs.filter(tab => tab.title !== "Sign In").map((tab) => (
             <a 
               key={tab.title} 
               href={tab.href} 

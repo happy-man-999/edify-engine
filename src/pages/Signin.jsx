@@ -53,7 +53,10 @@ const Signin = () => {
         // Check signup progress after successful signin
         const progressData = await checkSignupProgress();
         
-        if (progressData && progressData.shouldRedirectToSignup) {
+        // Skip onboarding for contributor role users
+        if (result.user?.role === 'contributor') {
+          navigate('/home');
+        } else if (progressData && progressData.shouldRedirectToSignup) {
           // User hasn't completed signup, redirect to signup
           navigate('/signup');
         } else {

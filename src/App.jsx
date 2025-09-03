@@ -20,6 +20,7 @@ import Signin from './pages/Signin';
 import SignupSuccess from './pages/SignupSuccess';
 import AuthCallback from './pages/AuthCallback';
 import Admin from './pages/Admin';
+import Contribute from './pages/Contribute';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -114,6 +115,8 @@ function App() {
                   <Route path="/store" element={<Navbar />} />
                   <Route path="/cart" element={<Navbar />} />
                   <Route path="/checkout" element={<Navbar />} />
+                  <Route path="/contribute" element={<Navbar />} />
+                  <Route path="/admin" element={<Navbar />} />
                 </Routes>
                 <Routes>
                   <Route path="/" element={<LandingPage />} />
@@ -126,11 +129,13 @@ function App() {
                   <Route path="/signup-success" element={<SignupSuccess />} />
                   <Route path="/auth-callback" element={<AuthCallback />} />
                   <Route path="/admin" element={<Admin />} />
+                  <Route path="/contribute" element={<Contribute />} />
                 </Routes>
 
                 <Routes>
                   <Route path="/home" element={<Footer />} />
                   <Route path="/store" element={<StoreFooter />} />
+                  <Route path="/contribute" element={<Footer />} />
                 </Routes>
                 <LoadingSpinner />
                 {notification && <Notification message={notification} onClose={() => dispatch(clearNotification())} />}

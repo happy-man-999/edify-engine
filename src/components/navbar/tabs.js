@@ -1,13 +1,5 @@
-export const homepageTabs = [
+export const tabs = [
   { title: "Home", href: "/home" },
-  //{ title: "Explore", href: "#" },
-  { title: "Store", href: "/store" },
-  { title: "Learn", href: "#" },
-  { title: "Sign In", href: "/signin" },
-]
-export const storeTabs = [
-  { title: "Home", href: "/home" },
-  //{ title: "Explore", href: "#" },
   { title: "Store", href: "/store" },
   { title: "Learn", href: "#" },
   { title: "Sign In", href: "/signin" },
