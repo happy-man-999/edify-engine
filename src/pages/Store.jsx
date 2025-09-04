@@ -131,12 +131,16 @@ const Store = () => {
 
 
 
+  /*
   // Tab content
   let tabContent = null;
   if (activeTab === "Featured") tabContent = <FeaturedSection currency={currency} onAddToCart={handleAddToCart} onItemSelect={handleItemSelect} />;
   else if (activeTab === "Apps") tabContent = <AppsSection currency={currency} onAddToCart={handleAddToCart} onItemSelect={handleItemSelect} />;
   else if (activeTab === "Bundles") tabContent = <BundlesSection currency={currency} onAddToCart={handleAddToCart} onItemSelect={handleItemSelect} />;
   else tabContent = <div className="text-center text-gray-500 py-16">Coming soon...</div>;
+  */
+  // Tab content - All tabs show "Coming soon..."
+  const tabContent = <div className="text-center text-gray-500 py-16">Coming soon...</div>;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
