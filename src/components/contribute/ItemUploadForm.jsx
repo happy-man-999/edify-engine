@@ -171,8 +171,17 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
         onSuccess?.(newItem);
         onClose();
       } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to upload item');
+        // Check if response is JSON
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || errorData.details || 'Failed to upload item');
+        } else {
+          // If not JSON, it might be an HTML error page
+          const errorText = await response.text();
+          console.error('Non-JSON error response:', errorText);
+          throw new Error(`Server error (${response.status}): ${response.statusText}`);
+        }
       }
     } catch (error) {
       console.error('Upload error:', error);
