@@ -23,10 +23,16 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
     title: '',
     description: '',
     type: 'app',
+    category: 'other',
     priceUSD: 0,
     coverImage: null,
     sceneAssets: null,
-    downloadAssets: null
+    downloadAssets: null,
+    features: [],
+    tags: [],
+    platforms: [],
+    visibility: 'private',
+    installationInstructions: ''
   });
   
   const [errors, setErrors] = useState({});
@@ -57,11 +63,76 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
     { value: '3d-object', label: '3D Object' }
   ];
 
+  const categories = [
+    { value: 'gaming', label: 'Gaming' },
+    { value: 'education', label: 'Education' },
+    { value: 'business', label: 'Business' },
+    { value: 'entertainment', label: 'Entertainment' },
+    { value: 'social', label: 'Social' },
+    { value: 'creative', label: 'Creative' },
+    { value: 'other', label: 'Other' }
+  ];
+
+  const platforms = [
+    { value: 'desktop', label: 'Desktop' },
+    { value: 'mobile', label: 'Mobile' },
+    { value: 'vr', label: 'VR' }
+  ];
+
+  const visibilityOptions = [
+    { value: 'featured', label: 'Featured' },
+    { value: 'limitedEdition', label: 'Limited Edition' },
+    { value: 'private', label: 'Private/Unlisted' }
+  ];
+
+  const reservedTags = ['premium', 'staffPick', 'onSale'];
+
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
+  };
+
+  const handleFeatureAdd = (feature) => {
+    if (feature.trim() && formData.features.length < 5) {
+      setFormData(prev => ({
+        ...prev,
+        features: [...prev.features, feature.trim()]
+      }));
+    }
+  };
+
+  const handleFeatureRemove = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      features: prev.features.filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleTagAdd = (tag) => {
+    if (tag.trim() && !formData.tags.includes(tag.trim())) {
+      setFormData(prev => ({
+        ...prev,
+        tags: [...prev.tags, tag.trim()]
+      }));
+    }
+  };
+
+  const handleTagRemove = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      tags: prev.tags.filter((_, i) => i !== index)
+    }));
+  };
+
+  const handlePlatformToggle = (platform) => {
+    setFormData(prev => ({
+      ...prev,
+      platforms: prev.platforms.includes(platform)
+        ? prev.platforms.filter(p => p !== platform)
+        : [...prev.platforms, platform]
+    }));
   };
 
   const handleFileChange = (e) => {
@@ -122,12 +193,24 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
       newErrors.description = 'Description is required';
     }
 
+    if (!formData.category) {
+      newErrors.category = 'Category is required';
+    }
+
     if (formData.priceUSD < 0) {
       newErrors.priceUSD = 'Price must be non-negative';
     }
 
     if (!formData.coverImage) {
       newErrors.coverImage = 'Cover image is required';
+    }
+
+    if (formData.platforms.length === 0) {
+      newErrors.platforms = 'At least one platform must be selected';
+    }
+
+    if (formData.features.length > 5) {
+      newErrors.features = 'Maximum 5 features allowed';
     }
 
     // For 3D objects, both scene assets (GLB) and download assets (HYP) are required
@@ -165,8 +248,14 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
       formDataToSend.append('title', formData.title);
       formDataToSend.append('description', formData.description);
       formDataToSend.append('type', formData.type);
+      formDataToSend.append('category', formData.category);
       formDataToSend.append('priceUSD', formData.priceUSD);
       formDataToSend.append('coverImage', formData.coverImage);
+      formDataToSend.append('features', JSON.stringify(formData.features));
+      formDataToSend.append('tags', JSON.stringify(formData.tags));
+      formDataToSend.append('platforms', JSON.stringify(formData.platforms));
+      formDataToSend.append('visibility', formData.visibility);
+      formDataToSend.append('installationInstructions', formData.installationInstructions);
       
       // Add scene assets for 3D objects (GLB file for preview)
       if (formData.type === '3d-object' && formData.sceneAssets) {
@@ -281,6 +370,25 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
               {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
             </div>
 
+            {/* Category */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Category *
+              </label>
+              <select
+                value={formData.category}
+                onChange={(e) => handleInputChange('category', e.target.value)}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  errors.category ? 'border-red-500' : 'border-gray-300'
+                }`}
+              >
+                {categories.map(category => (
+                  <option key={category.value} value={category.value}>{category.label}</option>
+                ))}
+              </select>
+              {errors.category && <p className="text-red-500 text-sm mt-1">{errors.category}</p>}
+            </div>
+
             {/* Pricing */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -298,6 +406,27 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
                 placeholder="0.00"
               />
               {errors.priceUSD && <p className="text-red-500 text-sm mt-1">{errors.priceUSD}</p>}
+            </div>
+
+            {/* Platforms */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Platforms *
+              </label>
+              <div className="space-y-2">
+                {platforms.map(platform => (
+                  <label key={platform.value} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={formData.platforms.includes(platform.value)}
+                      onChange={() => handlePlatformToggle(platform.value)}
+                      className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <span className="text-sm text-gray-700">{platform.label}</span>
+                  </label>
+                ))}
+              </div>
+              {errors.platforms && <p className="text-red-500 text-sm mt-1">{errors.platforms}</p>}
             </div>
 
             {/* Cover Image Upload */}
@@ -347,6 +476,138 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
                   </div>
                 </div>
               )}
+            </div>
+
+            {/* Features */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Features (up to 5)
+              </label>
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Add a feature..."
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleFeatureAdd(e.target.value);
+                        e.target.value = '';
+                      }
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      const input = e.target.previousElementSibling;
+                      handleFeatureAdd(input.value);
+                      input.value = '';
+                    }}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {formData.features.map((feature, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800"
+                    >
+                      {feature}
+                      <button
+                        type="button"
+                        onClick={() => handleFeatureRemove(index)}
+                        className="ml-2 text-blue-600 hover:text-blue-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500">
+                  {formData.features.length}/5 features added
+                </p>
+              </div>
+              {errors.features && <p className="text-red-500 text-sm mt-1">{errors.features}</p>}
+            </div>
+
+            {/* Tags */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tags
+              </label>
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Add a tag..."
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleTagAdd(e.target.value);
+                        e.target.value = '';
+                      }
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      const input = e.target.previousElementSibling;
+                      handleTagAdd(input.value);
+                      input.value = '';
+                    }}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {formData.tags.map((tag, index) => (
+                    <span
+                      key={index}
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-sm ${
+                        reservedTags.includes(tag.toLowerCase())
+                          ? 'bg-red-100 text-red-800'
+                          : 'bg-gray-100 text-gray-800'
+                      }`}
+                    >
+                      {tag}
+                      <button
+                        type="button"
+                        onClick={() => handleTagRemove(index)}
+                        className="ml-2 hover:opacity-75"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500">
+                  Reserved tags: premium, staffPick, onSale (admin only)
+                </p>
+              </div>
+            </div>
+
+            {/* Visibility */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Visibility *
+              </label>
+              <select
+                value={formData.visibility}
+                onChange={(e) => handleInputChange('visibility', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {visibilityOptions.map(option => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+              <p className="text-xs text-gray-500 mt-1">
+                Private/Unlisted allows testing before going live
+              </p>
             </div>
 
             {/* 3D Scene Assets Upload - Only for 3D Objects */}
@@ -452,6 +713,46 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
                 )}
               </div>
             )}
+
+            {/* File & Technical Info */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                File & Technical Info
+              </label>
+              <div className="space-y-4">
+                {/* File Size Display */}
+                <div>
+                  <label className="block text-sm text-gray-600 mb-1">
+                    File Size (Auto-detected)
+                  </label>
+                  <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-700">
+                    {formData.type === '3d-object' && formData.downloadAssets 
+                      ? `${(formData.downloadAssets.size / (1024 * 1024)).toFixed(2)} MB`
+                      : formData.coverImage 
+                        ? `${(formData.coverImage.size / (1024 * 1024)).toFixed(2)} MB`
+                        : 'No file selected'
+                    }
+                  </div>
+                </div>
+                
+                {/* Installation Instructions */}
+                <div>
+                  <label className="block text-sm text-gray-600 mb-1">
+                    Installation Instructions (Optional)
+                  </label>
+                  <textarea
+                    value={formData.installationInstructions}
+                    onChange={(e) => handleInputChange('installationInstructions', e.target.value)}
+                    rows={4}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter installation instructions..."
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Provide step-by-step instructions for users to install and use your item
+                  </p>
+                </div>
+              </div>
+            </div>
 
             {/* Coming Soon Message for Non-3D Objects */}
             {formData.type !== '3d-object' && (
