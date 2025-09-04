@@ -25,7 +25,8 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
     type: 'app',
     priceUSD: 0,
     coverImage: null,
-    sceneAssets: null
+    sceneAssets: null,
+    downloadAssets: null
   });
   
   const [errors, setErrors] = useState({});
@@ -100,6 +101,16 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
     }
   };
 
+  const handleDownloadFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prev => ({ ...prev, downloadAssets: file }));
+      if (errors.downloadAssets) {
+        setErrors(prev => ({ ...prev, downloadAssets: '' }));
+      }
+    }
+  };
+
   const validateForm = () => {
     const newErrors = {};
 
@@ -119,9 +130,14 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
       newErrors.coverImage = 'Cover image is required';
     }
 
-    // For 3D objects, scene assets are required
-    if (formData.type === '3d-object' && !formData.sceneAssets) {
-      newErrors.sceneAssets = '3D scene assets are required for 3D objects';
+    // For 3D objects, both scene assets (GLB) and download assets (HYP) are required
+    if (formData.type === '3d-object') {
+      if (!formData.sceneAssets) {
+        newErrors.sceneAssets = '3D scene assets (GLB file) are required for 3D objects';
+      }
+      if (!formData.downloadAssets) {
+        newErrors.downloadAssets = 'Download assets (HYP file) are required for 3D objects';
+      }
     }
 
     setErrors(newErrors);
@@ -152,9 +168,14 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
       formDataToSend.append('priceUSD', formData.priceUSD);
       formDataToSend.append('coverImage', formData.coverImage);
       
-      // Add scene assets for 3D objects
+      // Add scene assets for 3D objects (GLB file for preview)
       if (formData.type === '3d-object' && formData.sceneAssets) {
         formDataToSend.append('sceneAssets', formData.sceneAssets);
+      }
+      
+      // Add download assets for 3D objects (HYP file for download)
+      if (formData.type === '3d-object' && formData.downloadAssets) {
+        formDataToSend.append('downloadAssets', formData.downloadAssets);
       }
 
       const response = await fetch('/api/items', {
@@ -330,27 +351,54 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
 
             {/* 3D Scene Assets Upload - Only for 3D Objects */}
             {formData.type === '3d-object' && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  3D Scene Assets (.glb format) *
-                </label>
-                <input
-                  type="file"
-                  accept=".glb"
-                  onChange={handleSceneFileChange}
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    errors.sceneAssets ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                />
-                <p className="text-sm text-gray-600 mt-1">
-                  Upload 3D scene assets including terrain, skybox, lamps, trees, structures, etc.
-                </p>
-                {errors.sceneAssets && <p className="text-red-500 text-sm mt-1">{errors.sceneAssets}</p>}
-                {formData.sceneAssets && (
+              <div className="space-y-6">
+                {/* GLB File Upload for Preview */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    3D Scene Assets (.glb format) *
+                  </label>
+                  <input
+                    type="file"
+                    accept=".glb"
+                    onChange={handleSceneFileChange}
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      errors.sceneAssets ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                  />
                   <p className="text-sm text-gray-600 mt-1">
-                    Selected: {formData.sceneAssets.name}
+                    Upload 3D scene assets for preview display (GLB format)
                   </p>
-                )}
+                  {errors.sceneAssets && <p className="text-red-500 text-sm mt-1">{errors.sceneAssets}</p>}
+                  {formData.sceneAssets && (
+                    <p className="text-sm text-gray-600 mt-1">
+                      Selected: {formData.sceneAssets.name}
+                    </p>
+                  )}
+                </div>
+
+                {/* HYP File Upload for Download */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Download Assets (.hyp format) *
+                  </label>
+                  <input
+                    type="file"
+                    accept=".hyp"
+                    onChange={handleDownloadFileChange}
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      errors.downloadAssets ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                  />
+                  <p className="text-sm text-gray-600 mt-1">
+                    Upload downloadable assets for users (HYP format)
+                  </p>
+                  {errors.downloadAssets && <p className="text-red-500 text-sm mt-1">{errors.downloadAssets}</p>}
+                  {formData.downloadAssets && (
+                    <p className="text-sm text-gray-600 mt-1">
+                      Selected: {formData.downloadAssets.name}
+                    </p>
+                  )}
+                </div>
                 
                 {/* 3D Scene Preview */}
                 {scenePreview && (
