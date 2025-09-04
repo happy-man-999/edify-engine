@@ -85,8 +85,6 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
     { value: 'private', label: 'Private/Unlisted' }
   ];
 
-  const reservedTags = ['premium', 'staffPick', 'onSale'];
-
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
@@ -568,11 +566,7 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
                   {formData.tags.map((tag, index) => (
                     <span
                       key={index}
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-sm ${
-                        reservedTags.includes(tag.toLowerCase())
-                          ? 'bg-red-100 text-red-800'
-                          : 'bg-gray-100 text-gray-800'
-                      }`}
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-sm`}
                     >
                       {tag}
                       <button
@@ -585,9 +579,6 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
                     </span>
                   ))}
                 </div>
-                <p className="text-xs text-gray-500">
-                  Reserved tags: premium, staffPick, onSale (admin only)
-                </p>
               </div>
             </div>
 
