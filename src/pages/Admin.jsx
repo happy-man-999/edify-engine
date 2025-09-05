@@ -6,6 +6,7 @@ import DropletManagement from '../components/admin/DropletManagement';
 import PaymentActivity from '../components/admin/PaymentActivity';
 import LogsStatus from '../components/admin/LogsStatus';
 import SettingsConfigs from '../components/admin/SettingsConfigs';
+import ItemsManagement from '../components/admin/ItemsManagement';
 import GlobalStyles from '../components/GlobalStyles';
 
 const Admin = () => {
@@ -38,6 +39,7 @@ const Admin = () => {
     { id: 'users', label: 'User Management', icon: 'fas fa-users' },
     { id: 'droplets', label: 'Droplet Management', icon: 'fas fa-server' },
     { id: 'payments', label: 'Payment Activity', icon: 'fas fa-credit-card' },
+    { id: 'items', label: 'Items Management', icon: 'fas fa-box' },
     { id: 'logs', label: 'Logs & Status', icon: 'fas fa-chart-line' },
     { id: 'settings', label: 'Settings & Configs', icon: 'fas fa-cog' },
   ];
@@ -46,6 +48,8 @@ const Admin = () => {
     switch (activeTab) {
       case 'users':
         return <UserManagement />;
+      case 'items':
+        return <ItemsManagement />;
       case 'droplets':
         return <DropletManagement />;
       case 'payments':
