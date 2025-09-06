@@ -16,7 +16,7 @@ const Model = ({ url, onLoad }) => {
   return <primitive object={scene} scale={1} />;
 };
 
-const ThreeDPreviewModal = ({ item, onClose }) => {
+const ThreeDPreviewModal = ({ item, onClose, onDownload }) => {
   const canvasRef = useRef(null);
   const { showPrice } = useCurrency();
   const [loading, setLoading] = useState(true);
@@ -70,18 +70,6 @@ const ThreeDPreviewModal = ({ item, onClose }) => {
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose();
-    }
-  };
-
-  const handleDownload = () => {
-    if (item.downloadAssets) {
-      // Create a temporary link to download the file
-      const link = document.createElement('a');
-      link.href = item.downloadAssets;
-      link.download = `${item.title}.hyp`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     }
   };
 
@@ -234,8 +222,7 @@ const ThreeDPreviewModal = ({ item, onClose }) => {
               <div className="pt-4 border-t border-gray-200">
                 <div className="flex gap-3">
                   <button
-                    onClick={handleDownload}
-                    disabled={!item.downloadAssets}
+                    onClick={onDownload}
                     className="flex-1 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center"
                   >
                     <i className="fas fa-download mr-2"></i>

@@ -217,6 +217,7 @@ const ThreeDObjectsSection = ({ currency, onAddToCart, onItemSelect }) => {
         <ThreeDPreviewModal
           item={previewItem}
           onClose={() => setPreviewItem(null)}
+          onDownload={() => onItemSelect(previewItem)}
         />
       )}
     </>

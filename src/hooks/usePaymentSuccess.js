@@ -36,6 +36,31 @@ export const usePaymentSuccess = () => {
   const { lastEvent: stripeWebhookEvent } = useWebhook(userId, true);
   const { lastEvent: solanaWebhookEvent } = useSolanaWebhook(userId, true);
   
+  // Function to handle file downloads
+  const handleDownload = useCallback((downloadUrl, fileName) => {
+    try {
+      // Create a temporary anchor element to trigger download
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = fileName || 'download';
+      link.target = '_blank';
+      
+      // Set additional attributes to ensure proper filename
+      link.setAttribute('download', fileName || 'download');
+      
+      // Append to body, click, and remove
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Show success notification
+      dispatch(showNotification(`Download started for ${fileName || 'item'}`));
+    } catch (error) {
+      console.error('Error starting download:', error);
+      dispatch(showNotification('Download failed. Please try again.'));
+    }
+  }, [dispatch]);
+  
   // Use refs to store stable function references
   const hideSpinnerRef = useRef(hideSpinner);
   const showErrorRef = useRef(showError);
@@ -172,8 +197,14 @@ export const usePaymentSuccess = () => {
             dispatch(showNotification(`New world created successfully!`));
           }
         } else if (result.itemType === 'item-purchase') {
+          console.log(result);
           // Handle item purchase success
           dispatch(showNotification(`Item purchased successfully! ${result.itemName || ''}`));
+          
+          // Handle download if downloadUrl is available
+          if (result.downloadUrl) {
+            handleDownload(result.downloadUrl, result.itemName || 'item');
+          }
         } else if (result.itemType === 'basic-plan') {
           // Handle basic plan success
           dispatch(showNotification(`Basic plan activated successfully!`));
@@ -264,6 +295,11 @@ export const usePaymentSuccess = () => {
         } else if (result.itemType === 'item-purchase') {
           // Handle item purchase success
           dispatch(showNotification(`Item purchased successfully! ${result.itemName || ''}`));
+          
+          // Handle download if downloadUrl is available
+          if (result.downloadUrl) {
+            handleDownload(result.downloadUrl, result.itemName || 'item');
+          }
         } else {
           // Generic success message
           dispatch(showNotification(`Payment successful! Signature: ${signature.slice(0, 8)}...`));

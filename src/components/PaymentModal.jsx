@@ -248,8 +248,8 @@ const PaymentModal = ({
               </h3>
               <p className="text-gray-600 mb-6">
                 {subscriptionMode 
-                  ? `You are about to subscribe for ${selectedMethod === 'stripe' ? `USD ${displayAmount}` : `SOL ${convertUsdToSol(displayAmount).toFixed(2)}`} per month.`
-                  : `You are about to pay ${selectedMethod === 'stripe' ? `USD ${displayAmount}` : `SOL ${convertUsdToSol(displayAmount).toFixed(2)}`}.`
+                  ? `You are about to subscribe for ${selectedMethod === 'stripe' ? `USD ${displayAmount}` : `SOL ${convertUsdToSol(displayAmount).toFixed(2)}`} per month. `
+                  : `You are about to pay ${selectedMethod === 'stripe' ? `USD ${displayAmount}` : `SOL ${convertUsdToSol(displayAmount).toFixed(2)}`}. `
                 }
                 This action cannot be undone.
               </p>
