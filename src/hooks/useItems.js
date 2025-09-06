@@ -26,7 +26,7 @@ export const useItems = () => {
         }
       });
       
-      const response = await fetch('/api/items?${queryParams}');
+      const response = await fetch(`/api/items?${queryParams}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -48,7 +48,7 @@ export const useItems = () => {
       setLoading(true);
       setError(null);
       
-      const response = await fetch('/api/items/type/${type}');
+      const response = await fetch(`/api/items/type/${type}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -158,6 +158,11 @@ export const useItems = () => {
     return items.filter(item => item.type === 'service');
   }, [items]);
 
+  // Get 3D objects
+  const get3DObjects = useCallback(() => {
+    return items.filter(item => item.type === '3d-object');
+  }, [items]);
+
   // Initial fetch on mount
   useEffect(() => {
     fetchItems();
@@ -179,6 +184,7 @@ export const useItems = () => {
     getApps,
     getBundles,
     getTemplates,
-    getServices
+    getServices,
+    get3DObjects
   };
 }; 
