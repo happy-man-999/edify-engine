@@ -646,9 +646,12 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
                   </p>
                   {errors.downloadAssets && <p className="text-red-500 text-sm mt-1">{errors.downloadAssets}</p>}
                   {formData.downloadAssets && (
-                    <p className="text-sm text-gray-600 mt-1">
-                      Selected: {formData.downloadAssets.name}
-                    </p>
+                    <div className="text-sm text-gray-600 mt-1">
+                      <p>Selected: {formData.downloadAssets.name}</p>
+                      <p className="font-medium text-blue-600">
+                        Size: {(formData.downloadAssets.size / (1024 * 1024)).toFixed(2)} MB
+                      </p>
+                    </div>
                   )}
                 </div>
                 
@@ -714,14 +717,16 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
                 {/* File Size Display */}
                 <div>
                   <label className="block text-sm text-gray-600 mb-1">
-                    File Size (Auto-detected)
+                    {formData.type === '3d-object' ? 'HYP File Size (Auto-detected)' : 'File Size (Auto-detected)'}
                   </label>
                   <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-700">
                     {formData.type === '3d-object' && formData.downloadAssets 
-                      ? `${(formData.downloadAssets.size / (1024 * 1024)).toFixed(2)} MB`
-                      : formData.coverImage 
-                        ? `${(formData.coverImage.size / (1024 * 1024)).toFixed(2)} MB`
-                        : 'No file selected'
+                      ? `${(formData.downloadAssets.size / (1024 * 1024)).toFixed(2)} MB (HYP file)`
+                      : formData.type === '3d-object' && !formData.downloadAssets
+                        ? 'No HYP file selected'
+                        : formData.coverImage 
+                          ? `${(formData.coverImage.size / (1024 * 1024)).toFixed(2)} MB`
+                          : 'No file selected'
                     }
                   </div>
                 </div>

@@ -7,6 +7,7 @@ import FeaturedSection from "../components/store/FeaturedSection";
 import AppsSection from "../components/store/AppsSection";
 import BundlesSection from "../components/store/BundlesSection";
 import ThreeDObjectsSection from "../components/store/ThreeDObjectsSection";
+import MyPurchasesSection from "../components/store/MyPurchasesSection";
 import { useErrorModal } from "../hooks/useErrorModal";
 import { useDispatch } from "react-redux";
 import { showNotification } from "../store/uiSlice";
@@ -138,6 +139,7 @@ const Store = () => {
   else if (activeTab === "Apps") tabContent = <AppsSection currency={currency} onAddToCart={handleAddToCart} onItemSelect={handleItemSelect} />;
   else if (activeTab === "Bundles") tabContent = <BundlesSection currency={currency} onAddToCart={handleAddToCart} onItemSelect={handleItemSelect} />;
   else if (activeTab === "3D Objects") tabContent = <ThreeDObjectsSection currency={currency} onAddToCart={handleAddToCart} onItemSelect={handleItemSelect} />;
+  else if (activeTab === "My Purchases") tabContent = <MyPurchasesSection onItemSelect={handleItemSelect} onBrowseStore={() => setActiveTab("Featured")} />;
   else tabContent = <div className="text-center text-gray-500 py-16">Coming soon...</div>;
 
   return (
