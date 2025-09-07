@@ -16,17 +16,20 @@ export const useCurrency = () => {
     const fetchSolPrice = async () => {
       try {
         setLoading(true);
-        const response = await fetch(
-          'https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd'
-        );
+        const response = await fetch('/api/solana/sol-price');
         
         if (!response.ok) {
           throw new Error('Failed to fetch SOL price');
         }
         
         const data = await response.json();
-        setSolPrice(data.solana.usd);
-        setError(null);
+        
+        if (data.success) {
+          setSolPrice(data.price);
+          setError(null);
+        } else {
+          throw new Error(data.message || 'Failed to fetch SOL price');
+        }
       } catch (err) {
         console.error('Error fetching SOL price:', err);
         setError(err.message);
