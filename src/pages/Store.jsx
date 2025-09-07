@@ -15,6 +15,8 @@ import { useCart } from "../hooks/useCart";
 import { useCurrency } from "../hooks/useCurrency";
 import { usePaymentModal } from "../hooks/usePaymentModal";
 import { usePaymentSuccess } from "../hooks/usePaymentSuccess";
+import { useWalletWithRedirects } from "../hooks/useWalletWithRedirects";
+import { useSolBalance } from "../hooks/useSolBalance";
 import { shortAddress } from "../utils/format";
 import PaymentProcessingStatus from "../components/PaymentProcessingStatus";
 import { useCallback } from "react";
@@ -29,6 +31,8 @@ const Store = () => {
   const location = useLocation();
   const { itemCount, addItem } = useCart();
   const { currency, toggleCurrency } = useCurrency();
+  const { connected } = useWalletWithRedirects();
+  const { balance: solBalance, loading: balanceLoading } = useSolBalance();
   
   // Get the global payment modal function
   const { openPaymentModal } = usePaymentModal();
@@ -161,7 +165,10 @@ const Store = () => {
             onCartClick={handleCartClick}
             cartCount={itemCount} 
             currency={currency} 
-            onCurrencyToggle={handleCurrencyToggle} 
+            onCurrencyToggle={handleCurrencyToggle}
+            walletConnected={connected}
+            solBalance={solBalance}
+            balanceLoading={balanceLoading}
           />
           <StoreTabs activeTab={activeTab} onTabClick={setActiveTab} />
           <StoreCategories onCategoryClick={() => {}} />
