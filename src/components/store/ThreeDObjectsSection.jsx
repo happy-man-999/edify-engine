@@ -14,69 +14,8 @@ const ThreeDObjectsSection = ({ currency, onAddToCart, onItemSelect }) => {
   
   const threeDObjects = get3DObjects();
   
-  // Temporary test 3D objects to ensure functionality works
-  const test3DObjects = [
-    {
-      _id: '3d-1',
-      id: '3d-1',
-      title: 'Modern Chair',
-      description: 'A sleek and modern 3D chair model perfect for interior design projects',
-      type: '3d-object',
-      category: 'creative',
-      priceUSD: 12.99,
-      image: 'https://via.placeholder.com/300x200/8B5CF6/FFFFFF?text=Modern+Chair',
-      rating: 4.8,
-      reviewCount: 24,
-      fileSize: '2.3 MB',
-      features: ['High poly count', 'PBR materials', 'Multiple LODs', 'UV mapped'],
-      supportedPlatforms: ['desktop', 'mobile', 'vr'],
-      sceneAssets: 'https://nyc3.digitaloceanspaces.com/local-store-items/3d-objects/chair.glb',
-      downloadAssets: 'https://nyc3.digitaloceanspaces.com/local-store-items/3d-objects/chair.hyp',
-      isActive: true,
-      status: 'approved'
-    },
-    {
-      _id: '3d-2',
-      id: '3d-2',
-      title: 'Sci-Fi Spaceship',
-      description: 'Detailed spaceship model with futuristic design and glowing elements',
-      type: '3d-object',
-      category: 'gaming',
-      priceUSD: 29.99,
-      image: 'https://via.placeholder.com/300x200/06B6D4/FFFFFF?text=Spaceship',
-      rating: 4.6,
-      reviewCount: 18,
-      fileSize: '5.7 MB',
-      features: ['Animated parts', 'Particle effects', 'Modular design', 'Game ready'],
-      supportedPlatforms: ['desktop', 'vr'],
-      sceneAssets: 'https://nyc3.digitaloceanspaces.com/local-store-items/3d-objects/spaceship.glb',
-      downloadAssets: 'https://nyc3.digitaloceanspaces.com/local-store-items/3d-objects/spaceship.hyp',
-      isActive: true,
-      status: 'approved'
-    },
-    {
-      _id: '3d-3',
-      id: '3d-3',
-      title: 'Medieval Castle',
-      description: 'Massive castle model with detailed architecture and realistic textures',
-      type: '3d-object',
-      category: 'gaming',
-      priceUSD: 49.99,
-      image: 'https://via.placeholder.com/300x200/F59E0B/FFFFFF?text=Castle',
-      rating: 4.9,
-      reviewCount: 31,
-      fileSize: '12.4 MB',
-      features: ['Modular pieces', 'Historical accuracy', '4K textures', 'Interior included'],
-      supportedPlatforms: ['desktop', 'vr'],
-      sceneAssets: 'https://nyc3.digitaloceanspaces.com/local-store-items/3d-objects/castle.glb',
-      downloadAssets: 'https://nyc3.digitaloceanspaces.com/local-store-items/3d-objects/castle.hyp',
-      isActive: true,
-      status: 'approved'
-    }
-  ];
-  
   // Use test objects if no 3D objects are loaded
-  const displayObjects = threeDObjects.length > 0 ? threeDObjects : test3DObjects;
+  const displayObjects = threeDObjects;
   
   const handlePreviewClick = (item) => {
     if (item.sceneAssets) {

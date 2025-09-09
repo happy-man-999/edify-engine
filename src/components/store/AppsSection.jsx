@@ -10,60 +10,8 @@ const AppsSection = ({ currency, onAddToCart, onItemSelect }) => {
   const { getApps, loading, error } = useItems();
   const apps = getApps();
   
-  // Temporary test items to ensure cart functionality works
-  const testApps = [
-    {
-      id: 'app-1',
-      title: 'Analytics Dashboard',
-      description: 'Real-time data visualization for your virtual worlds',
-      type: 'app',
-      category: 'business',
-      priceUSD: 3.99,
-      image: 'https://via.placeholder.com/300x200/42677D/FFFFFF?text=Analytics',
-      rating: 4.0,
-      reviewCount: 42,
-      isActive: true
-    },
-    {
-      id: 'app-2',
-      title: 'Multiplayer System',
-      description: 'Seamless multiplayer integration for your experiences',
-      type: 'app',
-      category: 'gaming',
-      priceUSD: 59.99,
-      image: 'https://via.placeholder.com/300x200/0EA47A/FFFFFF?text=Multiplayer',
-      rating: 3.5,
-      reviewCount: 28,
-      isActive: true
-    },
-    {
-      id: 'app-3',
-      title: 'AI Assistant',
-      description: 'Complete inventory management for virtual items',
-      type: 'app',
-      category: 'creative',
-      priceUSD: 49.99,
-      image: 'https://via.placeholder.com/300x200/5E8EA9/FFFFFF?text=AI+Assistant',
-      rating: 4.5,
-      reviewCount: 35,
-      isActive: true
-    },
-    {
-      id: 'app-4',
-      title: '3D Model Library',
-      description: 'Extensive collection of 3D models and assets',
-      type: 'app',
-      category: 'creative',
-      priceUSD: 24.99,
-      image: 'https://via.placeholder.com/300x200/42677D/FFFFFF?text=3D+Models',
-      rating: 4.2,
-      reviewCount: 67,
-      isActive: true
-    }
-  ];
-  
   // Use test apps if no apps are loaded
-  const displayApps = apps.length > 0 ? apps : testApps;
+  const displayApps = apps;
   
   if (loading) {
     return (
