@@ -211,13 +211,17 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
       newErrors.features = 'Maximum 5 features allowed';
     }
 
-    // For 3D objects, both scene assets (GLB) and download assets (HYP) are required
-    if (formData.type === '3d-object') {
+    // For 3D objects and apps, both scene assets (GLB) and download assets (HYP) are required
+    if (formData.type === '3d-object' || formData.type === 'app') {
       if (!formData.sceneAssets) {
-        newErrors.sceneAssets = '3D scene assets (GLB file) are required for 3D objects';
+        newErrors.sceneAssets = formData.type === '3d-object' 
+          ? '3D scene assets (GLB file) are required for 3D objects'
+          : 'Application preview assets (GLB file) are required for applications';
       }
       if (!formData.downloadAssets) {
-        newErrors.downloadAssets = 'Download assets (HYP file) are required for 3D objects';
+        newErrors.downloadAssets = formData.type === '3d-object'
+          ? 'Download assets (HYP file) are required for 3D objects'
+          : 'Download assets (HYP file) are required for applications';
       }
     }
 
@@ -232,8 +236,8 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
       return;
     }
 
-    // Show "coming soon" for non-3D object types
-    if (formData.type !== '3d-object') {
+    // Show "coming soon" for unsupported types
+    if (formData.type !== '3d-object' && formData.type !== 'app') {
       dispatch(showNotification('This item type is coming soon!', 'info'));
       return;
     }
@@ -255,13 +259,13 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
       formDataToSend.append('visibility', formData.visibility);
       formDataToSend.append('installationInstructions', formData.installationInstructions);
       
-      // Add scene assets for 3D objects (GLB file for preview)
-      if (formData.type === '3d-object' && formData.sceneAssets) {
+      // Add scene assets for 3D objects and apps (GLB file for preview)
+      if ((formData.type === '3d-object' || formData.type === 'app') && formData.sceneAssets) {
         formDataToSend.append('sceneAssets', formData.sceneAssets);
       }
       
-      // Add download assets for 3D objects (HYP file for download)
-      if (formData.type === '3d-object' && formData.downloadAssets) {
+      // Add download assets for 3D objects and apps (HYP file for download)
+      if ((formData.type === '3d-object' || formData.type === 'app') && formData.downloadAssets) {
         formDataToSend.append('downloadAssets', formData.downloadAssets);
       }
 
@@ -601,13 +605,13 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
               </p>
             </div>
 
-            {/* 3D Scene Assets Upload - Only for 3D Objects */}
-            {formData.type === '3d-object' && (
+            {/* Scene Assets Upload - For 3D Objects and Applications */}
+            {(formData.type === '3d-object' || formData.type === 'app') && (
               <div className="space-y-6">
                 {/* GLB File Upload for Preview */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    3D Scene Assets (.glb format) *
+                    {formData.type === '3d-object' ? '3D Scene Assets (.glb format)' : 'Application Preview Assets (.glb format)'} *
                   </label>
                   <input
                     type="file"
@@ -618,7 +622,10 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
                     }`}
                   />
                   <p className="text-sm text-gray-600 mt-1">
-                    Upload 3D scene assets for preview display (GLB format)
+                    {formData.type === '3d-object' 
+                      ? 'Upload 3D scene assets for preview display (GLB format)'
+                      : 'Upload application preview assets for display (GLB format)'
+                    }
                   </p>
                   {errors.sceneAssets && <p className="text-red-500 text-sm mt-1">{errors.sceneAssets}</p>}
                   {formData.sceneAssets && (
@@ -655,10 +662,12 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
                   )}
                 </div>
                 
-                {/* 3D Scene Preview */}
+                {/* Scene Preview */}
                 {scenePreview && (
                   <div className="mt-4">
-                    <p className="text-sm font-medium text-gray-700 mb-2">3D Scene Preview:</p>
+                    <p className="text-sm font-medium text-gray-700 mb-2">
+                      {formData.type === '3d-object' ? '3D Scene Preview:' : 'Application Preview:'}
+                    </p>
                     <div className="relative inline-block w-full">
                       <div className="w-full h-64 bg-gray-100 rounded-lg border border-gray-200 shadow-sm overflow-hidden relative">
                         {/* Loading Overlay */}
@@ -717,12 +726,12 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
                 {/* File Size Display */}
                 <div>
                   <label className="block text-sm text-gray-600 mb-1">
-                    {formData.type === '3d-object' ? 'HYP File Size (Auto-detected)' : 'File Size (Auto-detected)'}
+                    {(formData.type === '3d-object' || formData.type === 'app') ? 'HYP File Size (Auto-detected)' : 'File Size (Auto-detected)'}
                   </label>
                   <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-700">
-                    {formData.type === '3d-object' && formData.downloadAssets 
+                    {(formData.type === '3d-object' || formData.type === 'app') && formData.downloadAssets 
                       ? `${(formData.downloadAssets.size / (1024 * 1024)).toFixed(2)} MB (HYP file)`
-                      : formData.type === '3d-object' && !formData.downloadAssets
+                      : (formData.type === '3d-object' || formData.type === 'app') && !formData.downloadAssets
                         ? 'No HYP file selected'
                         : formData.coverImage 
                           ? `${(formData.coverImage.size / (1024 * 1024)).toFixed(2)} MB`
@@ -750,15 +759,15 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
               </div>
             </div>
 
-            {/* Coming Soon Message for Non-3D Objects */}
-            {formData.type !== '3d-object' && (
+            {/* Coming Soon Message for Unsupported Types */}
+            {formData.type !== '3d-object' && formData.type !== 'app' && (
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                 <div className="flex items-center">
                   <i className="fas fa-clock text-yellow-600 mr-2"></i>
                   <p className="text-yellow-800 font-medium">Coming Soon!</p>
                 </div>
                 <p className="text-yellow-700 text-sm mt-1">
-                  This item type is not yet available for upload. Only 3D Objects are currently supported.
+                  This item type is not yet available for upload. Only 3D Objects and Applications are currently supported.
                 </p>
               </div>
             )}
