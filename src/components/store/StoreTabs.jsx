@@ -1,13 +1,13 @@
 import React from "react";
 
 const tabs = [
-  "Featured",
+  //"Featured",
   "Apps",
-  "Bundles",
-  "World Templates",
+  //"Bundles",
+  //"World Templates",
   "3D Objects",
-  "Textures",
-  "Animations",
+  //"Textures",
+  //"Animations",
   "My Purchases"
 ];
 

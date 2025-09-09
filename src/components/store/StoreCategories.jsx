@@ -1,13 +1,13 @@
 import React from "react";
 
 const categories = [
-  { icon: null, label: "All Categories" },
+  /*{ icon: null, label: "All Categories" },
   { icon: "fa-home", label: "Architecture" },
   { icon: "fa-tree", label: "Nature" },
   { icon: "fa-car", label: "Vehicles" },
   { icon: "fa-user", label: "Characters" },
   { icon: "fa-utensils", label: "Furniture" },
-  { icon: "fa-gem", label: "Premium" }
+  { icon: "fa-gem", label: "Premium" }*/
 ];
 
 const StoreCategories = ({ onCategoryClick }) => (

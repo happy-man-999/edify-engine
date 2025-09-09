@@ -4,7 +4,7 @@ const accessOptions = [
   {
     id: 'connect-domain',
     title: 'Connect Domain',
-    description: 'Use your own custom domain Coming soon...',
+    description: 'Use your own custom domain',
     icon: 'fa-link',
     color: '#42677D'
   },
@@ -18,7 +18,7 @@ const accessOptions = [
   {
     id: 'decide-later',
     title: "I'll decide later",
-    description: 'Choose domain access later Coming soon...',
+    description: 'Choose domain access later',
     icon: 'fa-clock',
     color: '#9CA3AF'
   }

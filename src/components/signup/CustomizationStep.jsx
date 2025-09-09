@@ -5,7 +5,7 @@ export const customizationOptions = [
     id: 'basic',
     title: 'Basic',
     subtitle: 'Start Your First World',
-    description: 'Perfect for creators getting started. Build and launch 1 fully hosted world with access to the Hyperfy engine, drag-and-drop tools, and your own dedicated server space.',
+    description: 'Perfect for creators getting started.',
     icon: 'fa-palette',
     color: '#42677D',
     details: [
@@ -20,7 +20,7 @@ export const customizationOptions = [
     id: 'premium',
     title: 'Premium',
     subtitle: 'Expand Your Universe',
-    description: 'Unlock the freedom to create and host up to 3 immersive worlds with unlimited access to the Hyperfy engine. Ideal for builders who want more room to experiment and grow - all on secure, dedicated hosting.',
+    description: 'Ideal for builders who want more room to experiment and grow.',
     icon: 'fa-cogs',
     color: '#5E8EA9',
     details: [
@@ -35,7 +35,7 @@ export const customizationOptions = [
     id: 'enterprise',
     title: 'Enterprise',
     subtitle: 'Scale Without Limits',
-    description: 'Designed for teams, brands, and large-scale projects. Enterprise gives you custom hosting, unlimited worlds, priority support, and advanced integrations - tailored infrastructure to power the next generation of immersive experiences.',
+    description: 'Designed for teams, brands, and large-scale projects.',
     icon: 'fa-building',
     color: '#223A4C',
     details: [
