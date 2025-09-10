@@ -197,7 +197,6 @@ export const usePaymentSuccess = () => {
             dispatch(showNotification(`New world created successfully!`));
           }
         } else if (result.itemType === 'item-purchase') {
-          console.log(result);
           // Handle item purchase success
           dispatch(showNotification(`Item purchased successfully! ${result.itemName || ''}`));
           
@@ -205,6 +204,10 @@ export const usePaymentSuccess = () => {
           if (result.downloadUrl) {
             handleDownload(result.downloadUrl, result.itemName || 'item');
           }
+        } else if (result.itemType === 'cart-purchase') {
+          console.log(result);
+          // Handle item purchase success
+          dispatch(showNotification(`Cart purchased successfully!`));
         } else if (result.itemType === 'basic-plan') {
           // Handle basic plan success
           dispatch(showNotification(`Basic plan activated successfully!`));
@@ -249,7 +252,7 @@ export const usePaymentSuccess = () => {
   };
 
   // Handle Solana payment success
-  const handleSolanaPaymentSuccess = async (signature) => {
+  const handleSolanaPaymentSuccess = async (signature, metadata = {}) => {
     try {
       showSpinner('Confirming payment...');
       
@@ -260,7 +263,8 @@ export const usePaymentSuccess = () => {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
-          signature: signature
+          signature: signature,
+          metadata
         })
       });
 
@@ -300,6 +304,9 @@ export const usePaymentSuccess = () => {
           if (result.downloadUrl) {
             handleDownload(result.downloadUrl, result.itemName || 'item');
           }
+        } else if (result.itemType === 'cart-purchase') {
+          // Handle item purchase success
+          dispatch(showNotification(`Cart purchased successfully!`));
         } else {
           // Generic success message
           dispatch(showNotification(`Payment successful! Signature: ${signature.slice(0, 8)}...`));

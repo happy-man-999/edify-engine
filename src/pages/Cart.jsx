@@ -1,22 +1,42 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../hooks/useCart';
 import { useCurrency } from '../hooks/useCurrency';
 import { useLoadingSpinner } from '../hooks/useLoadingSpinner';
 import { useErrorModal } from '../hooks/useErrorModal';
 import { useYesNoModal } from '../hooks/useYesNoModal';
+import { usePaymentModal } from '../hooks/usePaymentModal';
+import { usePaymentSuccess } from '../hooks/usePaymentSuccess';
 import { showNotification } from '../store/uiSlice';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { items: cartItems, total: cartTotal, isEmpty, removeItem, updateItemQuantity, clearAll } = useCart();
   const { currency, showPrice } = useCurrency();
   const { showSpinner, hideSpinner } = useLoadingSpinner();
   const { showError } = useErrorModal();
   const { showModal } = useYesNoModal();
+  const { openPaymentModal } = usePaymentModal();
+  const { handleStripePaymentSuccess, handleSolanaPaymentSuccess } = usePaymentSuccess();
+
+  // Handle payment success from URL parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const paymentStatus = urlParams.get('payment');
+    const sessionId = urlParams.get('session_id');
+
+    if (paymentStatus === 'success' && sessionId) {
+      handleStripePaymentSuccess(sessionId);
+      navigate(location.pathname, { replace: true });
+    } else if (paymentStatus === 'cancelled') {
+      dispatch(showNotification('Payment was cancelled'));
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.search, dispatch, navigate, location.pathname]);
 
   const handleQuantityChange = (itemId, newQuantity) => {
     if (newQuantity < 1) return;
@@ -44,17 +64,45 @@ const Cart = () => {
     if (isEmpty) return;
     
     try {
-      showSpinner("Preparing checkout...");
-      // Here you would integrate with your payment system
-      // For now, we'll just simulate a checkout process
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Calculate total amount for all cart items
+      const totalAmount = cartTotal;
+      const itemNames = cartItems.map(item => item.title);
+      const cartItemIds = cartItems.map(item => item._id);
       
-      // Navigate to checkout or payment page
-      navigate('/checkout');
+      // Open payment modal with cart total
+      const result = await openPaymentModal({
+        amount: totalAmount,
+        itemName: `Cart Purchase (${cartItems.length} items)`,
+        itemId: 'cart-purchase',
+        metadata: {
+          cartItems: JSON.stringify(cartItemIds),
+          totalItems: cartItems.length.toString(),
+          itemNames: JSON.stringify(itemNames)
+        }
+      });
+
+      if (!result || !result.paymentMethod) return;
+      
+      // Handle payment success based on payment method
+      if (result.paymentMethod === 'stripe') {
+      } else if (result.paymentMethod === 'solana') {
+        try {
+          const paymentResult = await handleSolanaPaymentSuccess(result.signature, result.metadata);
+          
+          if (paymentResult.itemType === 'cart-purchase') {
+            dispatch(showNotification(`${cartItems.length} items purchased successfully!`));
+          } else {
+            dispatch(showNotification(`Payment successful! Signature: ${shortAddress(result.signature)}`));
+          }
+        } catch (error) {
+          console.error('Error getting payment details:', error);
+          // Fallback to generic success message
+          showError('Payment successful, but confirmation failed');
+        }
+      }
+      
     } catch (error) {
-      showError("Checkout failed", error.message);
-    } finally {
-      hideSpinner();
+      showError("Payment failed", error.message);
     }
   };
 
@@ -215,7 +263,7 @@ const Cart = () => {
                 disabled={isEmpty}
                 className="w-full btn-primary py-3 text-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Proceed to Checkout
+                Proceed to Payment
               </button>
               
               <button

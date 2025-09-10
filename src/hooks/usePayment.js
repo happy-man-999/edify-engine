@@ -65,10 +65,10 @@ export const usePayment = () => {
         if (isSubscription) {
           result = await processSubscriptionPayment(itemId, itemName, metadata);
         } else {
-          result = await processStripePayment(amount, itemId, itemName);
+          result = await processStripePayment(amount, itemId, itemName, metadata);
         }
       } else if (paymentMethod === 'solana') {
-        result = await processSolanaPayment(convertUsdToSol(amount), itemId);
+        result = await processSolanaPayment(convertUsdToSol(amount), itemId, metadata);
       } else {
         throw new Error('Invalid payment method');
       }
@@ -84,7 +84,8 @@ export const usePayment = () => {
         token: result.token || result.signature,
         signature: result.signature,
         sessionId: result.sessionId,
-        message: 'Payment processed successfully'
+        message: 'Payment processed successfully',
+        metadata
       };
 
     } catch (error) {
@@ -126,7 +127,7 @@ export const usePayment = () => {
     };
   };
 
-  const processStripePayment = async (amount, itemId, itemName) => {
+  const processStripePayment = async (amount, itemId, itemName, metadata = {}) => {
     // Check if settings are loaded
     if (settingsLoading) {
       throw new Error('Settings are still loading. Please try again.');
@@ -145,7 +146,7 @@ export const usePayment = () => {
     const successUrl = `${currentUrl}?payment=success&session_id={CHECKOUT_SESSION_ID}`;
     const cancelUrl = `${currentUrl}?payment=cancelled`;
     
-    const sessionId = await createCheckoutSession(amountInCents, 'usd', successUrl, cancelUrl, itemId, itemName);
+    const sessionId = await createCheckoutSession(amountInCents, 'usd', successUrl, cancelUrl, itemId, itemName, metadata);
     
     // Redirect to Stripe checkout
     const checkoutResult = await redirectToCheckout(sessionId);
@@ -161,7 +162,7 @@ export const usePayment = () => {
     };
   };
 
-  const processSolanaPayment = async (amount, itemId) => {
+  const processSolanaPayment = async (amount, itemId, metadata = {}) => {
     // Check if Solana wallet is connected using the hook
     if (!solanaConnected) {
       throw new Error('Please connect your wallet first');

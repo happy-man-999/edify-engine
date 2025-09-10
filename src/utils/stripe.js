@@ -94,7 +94,7 @@ export const createPaymentIntent = async (amount, currency = 'usd') => {
 };
 
 // Create Stripe Checkout session
-export const createCheckoutSession = async (amount, currency = 'usd', successUrl = null, cancelUrl = null, itemId = null, itemName = null) => {
+export const createCheckoutSession = async (amount, currency = 'usd', successUrl = null, cancelUrl = null, itemId = null, itemName = null, metadata = {}) => {
   try {
     const response = await fetch('/api/stripe/create-checkout-session', {
       method: 'POST',
@@ -108,6 +108,7 @@ export const createCheckoutSession = async (amount, currency = 'usd', successUrl
         cancel_url: cancelUrl || `${window.location.origin}/signup`,
         itemId,
         itemName,
+        metadata
       }),
     });
 
