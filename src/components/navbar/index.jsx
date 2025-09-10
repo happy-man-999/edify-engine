@@ -1,7 +1,6 @@
 import React from "react";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
 import { tabs as allTabs } from './tabs';
-import HomepageAction from './HomepageAction'
 import StoreAction from './StoreAction'
 import { useAuth } from '../../hooks/useAuth';
 
@@ -37,9 +36,7 @@ const NavbarTabs = () => {
 };
 
 const NavbarAction = () => {
-  const location = useLocation();
-  
-  return location.pathname === '/store' ? <StoreAction /> : <HomepageAction />;
+  return <StoreAction />;
 };
 
 const Navbar = () => (
