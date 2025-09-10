@@ -77,15 +77,33 @@ export const useUserPurchases = () => {
 
       const data = await response.json();
       
+      // Show loading notification
+      dispatch(showNotification(`Starting download for ${itemName}...`));
+      
+      // Fetch the file as a blob to handle CORS properly
+      const fileResponse = await fetch(data.downloadUrl);
+      
+      if (!fileResponse.ok) {
+        throw new Error(`HTTP error! status: ${fileResponse.status}`);
+      }
+      
+      const blob = await fileResponse.blob();
+      
+      // Create a blob URL
+      const blobUrl = window.URL.createObjectURL(blob);
+      
       // Create a temporary link to download the file
       const link = document.createElement('a');
-      link.href = data.downloadUrl;
+      link.href = blobUrl;
       link.download = `${itemName}.${fileType.toLowerCase()}`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       
-      dispatch(showNotification(`Download started for ${itemName}`));
+      // Clean up the blob URL
+      window.URL.revokeObjectURL(blobUrl);
+      
+      dispatch(showNotification(`Download completed for ${itemName}`));
       return true;
     } catch (err) {
       console.error('Error downloading file:', err);

@@ -37,26 +37,40 @@ export const usePaymentSuccess = () => {
   const { lastEvent: solanaWebhookEvent } = useSolanaWebhook(userId, true);
   
   // Function to handle file downloads
-  const handleDownload = useCallback((downloadUrl, fileName) => {
+  const handleDownload = useCallback(async (downloadUrl, fileName) => {
     try {
+      // Show loading notification
+      dispatch(showNotification(`Starting download for ${fileName || 'item'}...`));
+      
+      // Fetch the file as a blob to handle CORS properly
+      const response = await fetch(downloadUrl);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const blob = await response.blob();
+      
+      // Create a blob URL
+      const blobUrl = window.URL.createObjectURL(blob);
+      
       // Create a temporary anchor element to trigger download
       const link = document.createElement('a');
-      link.href = downloadUrl;
+      link.href = blobUrl;
       link.download = fileName || 'download';
-      link.target = '_blank';
-      
-      // Set additional attributes to ensure proper filename
-      link.setAttribute('download', fileName || 'download');
       
       // Append to body, click, and remove
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       
+      // Clean up the blob URL
+      window.URL.revokeObjectURL(blobUrl);
+      
       // Show success notification
-      dispatch(showNotification(`Download started for ${fileName || 'item'}`));
+      dispatch(showNotification(`Download completed for ${fileName || 'item'}`));
     } catch (error) {
-      console.error('Error starting download:', error);
+      console.error('Error downloading file:', error);
       dispatch(showNotification('Download failed. Please try again.'));
     }
   }, [dispatch]);
