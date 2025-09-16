@@ -4,6 +4,7 @@ import { useWalletWithRedirects } from '../../hooks/useWalletWithRedirects';
 import { useWalletModal } from '../../hooks/useWalletModal';
 import { shortAddress } from '../../utils/format';
 import { walletLogos } from '../walletLogos';
+import { useNavigate } from 'react-router-dom';
 
 export default function UserMenu() {
   const { user, signout, isAuthenticated } = useAuth();
@@ -11,6 +12,7 @@ export default function UserMenu() {
   const { openWalletModal } = useWalletModal();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  const navigate = useNavigate();
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -165,31 +167,23 @@ export default function UserMenu() {
                 className="w-full py-2 px-3 text-left text-sm text-gray-700 hover:bg-gray-50 rounded transition-colors"
                 onClick={() => {
                   // Navigate to profile settings
+                  window.location.href = 'http://billing.stripe.com/p/login/6oU14nfrg2Y1aza8317Re00';
                   setMenuOpen(false);
                 }}
               >
                 <i className="fas fa-cog mr-2"></i>
-                Account Settings
+                Manage Account
               </button>
               <button
                 className="w-full py-2 px-3 text-left text-sm text-gray-700 hover:bg-gray-50 rounded transition-colors"
                 onClick={() => {
                   // Navigate to orders/purchases
+                  navigate('/store?tab=My%20Purchases', { replace: true });
                   setMenuOpen(false);
                 }}
               >
                 <i className="fas fa-shopping-bag mr-2"></i>
-                My Orders
-              </button>
-              <button
-                className="w-full py-2 px-3 text-left text-sm text-gray-700 hover:bg-gray-50 rounded transition-colors"
-                onClick={() => {
-                  // Navigate to favorites
-                  setMenuOpen(false);
-                }}
-              >
-                <i className="fas fa-heart mr-2"></i>
-                Favorites
+                My Purchases
               </button>
             </div>
           )}
