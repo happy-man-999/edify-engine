@@ -103,6 +103,12 @@ const Store = () => {
             dispatch(showNotification(`New world created successfully! Your domain: ${paymentResult.domain}`));
           } else if (paymentResult.itemType === 'item-purchase') {
             dispatch(showNotification(`Item purchased successfully! ${item.title}`));
+            // Redirect to My Purchases tab after successful item purchase
+            setActiveTab("My Purchases");
+          } else if (paymentResult.itemType === 'cart-purchase') {
+            dispatch(showNotification(`Cart purchased successfully!`));
+            // Redirect to My Purchases tab after successful cart purchase
+            setActiveTab("My Purchases");
           } else {
             dispatch(showNotification(`Payment successful! Signature: ${shortAddress(result.signature)}`));
           }
@@ -127,7 +133,12 @@ const Store = () => {
     const sessionId = searchParams.get('session_id');
 
     if (paymentStatus === 'success' && sessionId) {
-      handleStripePaymentSuccess(sessionId);
+      handleStripePaymentSuccess(sessionId).then((result) => {
+        // Redirect to My Purchases tab after successful Stripe payment
+        if (result && (result.itemType === 'item-purchase' || result.itemType === 'cart-purchase')) {
+          setActiveTab("My Purchases");
+        }
+      });
       navigate(location.pathname, { replace: true });
     } else if (paymentStatus === 'cancelled') {
       dispatch(showNotification('Payment was cancelled'));
@@ -135,7 +146,23 @@ const Store = () => {
     }
   }, [location.search, dispatch, navigate, location.pathname]);
 
-
+  // Handle tab parameter from URL
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const tab = searchParams.get('tab');
+    
+    // Valid tab names
+    const validTabs = ["Featured", "Apps", "Bundles", "3D Objects", "My Purchases"];
+    
+    if (tab && validTabs.includes(tab)) {
+      setActiveTab(tab);
+      // Clean up URL by removing the tab parameter after a short delay
+      // This allows the user to see the URL change and bookmark if needed
+      setTimeout(() => {
+        navigate(location.pathname, { replace: true });
+      }, 100);
+    }
+  }, [location.search, navigate, location.pathname]);
 
   // Tab content
   let tabContent = null;
@@ -143,7 +170,7 @@ const Store = () => {
   else if (activeTab === "Apps") tabContent = <AppsSection currency={currency} onAddToCart={handleAddToCart} onItemSelect={handleItemSelect} />;
   else if (activeTab === "Bundles") tabContent = <BundlesSection currency={currency} onAddToCart={handleAddToCart} onItemSelect={handleItemSelect} />;
   else if (activeTab === "3D Objects") tabContent = <ThreeDObjectsSection currency={currency} onAddToCart={handleAddToCart} onItemSelect={handleItemSelect} />;
-  else if (activeTab === "My Purchases") tabContent = <MyPurchasesSection onItemSelect={handleItemSelect} onBrowseStore={() => setActiveTab("Featured")} />;
+  else if (activeTab === "My Purchases") tabContent = <MyPurchasesSection onItemSelect={handleItemSelect} onBrowseStore={() => handleTabClick("Featured")} />;
   else tabContent = <div className="text-center text-gray-500 py-16">Coming soon...</div>;
 
   return (

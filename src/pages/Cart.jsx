@@ -9,6 +9,7 @@ import { useYesNoModal } from '../hooks/useYesNoModal';
 import { usePaymentModal } from '../hooks/usePaymentModal';
 import { usePaymentSuccess } from '../hooks/usePaymentSuccess';
 import { showNotification } from '../store/uiSlice';
+import { shortAddress } from '../utils/format';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const Cart = () => {
@@ -30,7 +31,12 @@ const Cart = () => {
     const sessionId = urlParams.get('session_id');
 
     if (paymentStatus === 'success' && sessionId) {
-      handleStripePaymentSuccess(sessionId);
+      handleStripePaymentSuccess(sessionId).then((result) => {
+        // Redirect to Store My Purchases tab after successful cart purchase
+        if (result && result.itemType === 'cart-purchase') {
+          navigate('/store?tab=My%20Purchases', { replace: true });
+        }
+      });
       navigate(location.pathname, { replace: true });
     } else if (paymentStatus === 'cancelled') {
       dispatch(showNotification('Payment was cancelled'));
@@ -91,6 +97,8 @@ const Cart = () => {
           
           if (paymentResult.itemType === 'cart-purchase') {
             dispatch(showNotification(`${cartItems.length} items purchased successfully!`));
+            // Redirect to Store My Purchases tab after successful cart purchase
+            navigate('/store?tab=My%20Purchases', { replace: true });
           } else {
             dispatch(showNotification(`Payment successful! Signature: ${shortAddress(result.signature)}`));
           }
