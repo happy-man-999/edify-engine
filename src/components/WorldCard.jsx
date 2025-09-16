@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { useDroplets } from '../hooks/useDroplets';
+import { useDeleteWorld } from '../hooks/useDeleteWorld';
+import { useYesNoModal } from '../hooks/useYesNoModal';
 
 const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
   const { syncDroplet } = useDroplets();
+  const { deleteWorld, isDeleting } = useDeleteWorld();
+  const { showModal } = useYesNoModal();
   const [isSyncing, setIsSyncing] = useState(false);
 
   const handleCardClick = () => {
@@ -86,6 +90,17 @@ const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
         ? `https://${world.name}` 
         : `https://${world.name}.edifyengine.com`;
       window.open(url, '_blank');
+    }
+  };
+
+  const handleDeleteClick = async (e) => {
+    e.stopPropagation();
+    const yesNoResult = await showModal(`Are you sure you want to delete "${world.name || 'this world'}"? This action cannot be undone and will permanently remove the world and all its data.`);
+    if (yesNoResult) {
+      const result = await deleteWorld(world.dropletId);
+      if (result.success && onRefresh) {
+        onRefresh();
+      }
     }
   };
 
@@ -220,6 +235,25 @@ const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
               aria-label="Upgrade to Custom Domain"
             >
               <i className="fas fa-crown text-lg"></i>
+            </button>
+          )}
+
+          {/* Delete Button */}
+          {world.status === 'active' && (
+            <button
+              onClick={handleDeleteClick}
+              disabled={isDeleting}
+              className={`bg-red-500/20 backdrop-blur-sm border border-red-400/30 rounded-full p-3 text-white hover:bg-red-500/40 hover:border-red-400/50 transition-all duration-200 shadow-lg hover:scale-110 transform focus:outline-none focus:ring-2 focus:ring-red-400/50 ${
+                isDeleting ? 'opacity-50 cursor-not-allowed hover:scale-100' : ''
+              }`}
+              title="Delete World"
+              aria-label="Delete World"
+            >
+              {isDeleting ? (
+                <i className="fas fa-spinner fa-spin text-lg"></i>
+              ) : (
+                <i className="fas fa-trash text-lg"></i>
+              )}
             </button>
           )}
         </div>

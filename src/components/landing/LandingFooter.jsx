@@ -15,30 +15,28 @@ const LandingFooter = () => {
           <div>
             <h4 className="font-semibold mb-4">Platform</h4>
             <ul className="space-y-2 text-gray-400">
+              <li><Link to="/home" className="hover:text-white transition-colors">Home</Link></li>
               <li><Link to="/store" className="hover:text-white transition-colors">Store</Link></li>
-              <li><Link to="/docs" className="hover:text-white transition-colors">Documentation</Link></li>
-              <li><Link to="/api" className="hover:text-white transition-colors">API</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-semibold mb-4">Company</h4>
             <ul className="space-y-2 text-gray-400">
-              <li><Link to="/about" className="hover:text-white transition-colors">About</Link></li>
-              <li><Link to="/careers" className="hover:text-white transition-colors">Careers</Link></li>
+              <li><Link to="/contribute" className="hover:text-white transition-colors">Contribute</Link></li>
               <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-semibold mb-4">Connect</h4>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <i className="fab fa-twitter text-xl"></i>
+              <a href="https://instagram.com/edifyengine" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                <i className="fab fa-instagram text-xl"></i>
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <i className="fab fa-linkedin text-xl"></i>
+              <a href="https://tiktok.com/@edifyengine" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                <i className="fab fa-tiktok text-xl"></i>
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <i className="fab fa-github text-xl"></i>
+              <a href="https://x.com/edifyengine" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                <i className="fab fa-x-twitter text-xl"></i>
               </a>
             </div>
           </div>

@@ -9,7 +9,7 @@ export const customizationOptions = [
     icon: 'fa-palette',
     color: '#42677D',
     details: [
-      'Unlimited access to Hyperfy world engine',
+      'Unlimited access to our world engine',
       'Dedicated Server and Hosting for 1 world',
       'One-time payment of $9.99 per world deployment on a provided domain',
       'No coding necessary - drag and drop interface'
@@ -24,7 +24,7 @@ export const customizationOptions = [
     icon: 'fa-cogs',
     color: '#5E8EA9',
     details: [
-      'Unlimited access to Hyperfy world engine',
+      'Unlimited access to our world engine',
       'Dedicated Server and Hosting for up to 3 worlds',
       'One-time payment of $9.99 per world deployment on a provided domain',
       'No coding necessary - drag and drop interface'
