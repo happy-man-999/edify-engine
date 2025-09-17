@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { showNotification } from '../../store/uiSlice';
+import ThreeDPreviewModal from '../ThreeDPreviewModal';
 
 const ItemsManagement = () => {
   const dispatch = useDispatch();
@@ -8,6 +9,8 @@ const ItemsManagement = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all'); // all, unapproved, approved, rejected
   const [searchTerm, setSearchTerm] = useState('');
+  const [previewItem, setPreviewItem] = useState(null);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   useEffect(() => {
     fetchItems();
@@ -62,6 +65,21 @@ const ItemsManagement = () => {
       console.error('Error updating item status:', error);
       dispatch(showNotification('Failed to update item status', 'error'));
     }
+  };
+
+  const handlePreviewClick = (item) => {
+    setPreviewItem(item);
+    setShowPreviewModal(true);
+  };
+
+  const handleClosePreview = () => {
+    setShowPreviewModal(false);
+    setPreviewItem(null);
+  };
+
+  const handleDownload = (item) => {
+    // Handle download functionality for admin
+    dispatch(showNotification('Download functionality for admin coming soon', 'info'));
   };
 
   const filteredItems = items.filter(item => {
@@ -310,18 +328,29 @@ const ItemsManagement = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
+                        {/* 3D Preview Button - Only show for items with sceneAssets */}
+                        {item.sceneAssets && (
+                          <button
+                            onClick={() => handlePreviewClick(item)}
+                            className="text-purple-600 hover:text-purple-900 transition-colors"
+                            title="3D Preview"
+                          >
+                            <i className="fas fa-cube"></i>
+                          </button>
+                        )}
+                        
                         {item.status === 'unapproved' && (
                           <>
                             <button
                               onClick={() => handleStatusChange(item._id, 'approved')}
-                              className="text-green-600 hover:text-green-900"
+                              className="text-green-600 hover:text-green-900 transition-colors"
                               title="Approve"
                             >
                               <i className="fas fa-check"></i>
                             </button>
                             <button
                               onClick={() => handleStatusChange(item._id, 'rejected')}
-                              className="text-red-600 hover:text-red-900"
+                              className="text-red-600 hover:text-red-900 transition-colors"
                               title="Reject"
                             >
                               <i className="fas fa-times"></i>
@@ -331,7 +360,7 @@ const ItemsManagement = () => {
                         {item.status === 'approved' && (
                           <button
                             onClick={() => handleStatusChange(item._id, 'unapproved')}
-                            className="text-yellow-600 hover:text-yellow-900"
+                            className="text-yellow-600 hover:text-yellow-900 transition-colors"
                             title="Unapprove"
                           >
                             <i className="fas fa-undo"></i>
@@ -340,7 +369,7 @@ const ItemsManagement = () => {
                         {item.status === 'rejected' && (
                           <button
                             onClick={() => handleStatusChange(item._id, 'approved')}
-                            className="text-green-600 hover:text-green-900"
+                            className="text-green-600 hover:text-green-900 transition-colors"
                             title="Approve"
                           >
                             <i className="fas fa-check"></i>
@@ -355,6 +384,15 @@ const ItemsManagement = () => {
           </div>
         )}
       </div>
+
+      {/* 3D Preview Modal */}
+      {showPreviewModal && previewItem && (
+        <ThreeDPreviewModal
+          item={previewItem}
+          onClose={handleClosePreview}
+          onDownload={handleDownload}
+        />
+      )}
     </div>
   );
 };
