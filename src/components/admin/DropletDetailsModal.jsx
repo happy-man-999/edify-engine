@@ -4,6 +4,19 @@ import { shortAddress } from '../../utils/format';
 const DropletDetailsModal = ({ open, droplet, onClose, onEdit }) => {
   if (!open || !droplet) return null;
 
+  const handleDropletClick = (dropletName) => {
+    // Check if the name is a complete domain (contains a dot)
+    let dropletUrl;
+    if (dropletName.includes('.')) {
+      // If it contains a dot, treat it as a complete domain
+      dropletUrl = dropletName.startsWith('http') ? dropletName : `https://${dropletName}`;
+    } else {
+      // If no dot, treat it as a subdomain of edifyengine.com
+      dropletUrl = `https://${dropletName}.edifyengine.com`;
+    }
+    window.open(dropletUrl, '_blank', 'noopener,noreferrer');
+  };
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -66,9 +79,14 @@ const DropletDetailsModal = ({ open, droplet, onClose, onEdit }) => {
               </div>
             </div>
             <div className="ml-4">
-              <h3 className="text-lg font-semibold text-gray-900">
+              <button
+                onClick={() => handleDropletClick(droplet.name)}
+                className="text-lg font-semibold text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200 flex items-center group"
+                title="Open droplet website"
+              >
                 {droplet.name}
-              </h3>
+                <i className="fas fa-external-link-alt ml-2 text-sm opacity-60 group-hover:opacity-100 transition-opacity duration-200"></i>
+              </button>
               <p className="text-gray-600">Droplet ID: {droplet.id}</p>
             </div>
           </div>
@@ -84,7 +102,14 @@ const DropletDetailsModal = ({ open, droplet, onClose, onEdit }) => {
               <div className="space-y-3">
                 <div>
                   <label className="block text-xs font-medium text-gray-500">Droplet Name</label>
-                  <p className="text-sm text-gray-900 font-mono">{droplet.name}</p>
+                  <button
+                    onClick={() => handleDropletClick(droplet.name)}
+                    className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200 flex items-center group font-mono"
+                    title="Open droplet website"
+                  >
+                    {droplet.name}
+                    <i className="fas fa-external-link-alt ml-1 text-xs opacity-60 group-hover:opacity-100 transition-opacity duration-200"></i>
+                  </button>
                 </div>
                 
                 <div>

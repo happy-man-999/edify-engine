@@ -165,6 +165,19 @@ const DropletManagement = () => {
     setCurrentPage(1); // Reset to first page when applying filters
   };
 
+  const handleDropletClick = (dropletName) => {
+    // Check if the name is a complete domain (contains a dot)
+    let dropletUrl;
+    if (dropletName.includes('.')) {
+      // If it contains a dot, treat it as a complete domain
+      dropletUrl = dropletName.startsWith('http') ? dropletName : `https://${dropletName}`;
+    } else {
+      // If no dot, treat it as a subdomain of edifyengine.com
+      dropletUrl = `https://${dropletName}.edifyengine.com`;
+    }
+    window.open(dropletUrl, '_blank', 'noopener,noreferrer');
+  };
+
   const handleAction = async (action, dropletId) => {
     try {
       let result;
@@ -482,7 +495,14 @@ const DropletManagement = () => {
                   <tr key={droplet.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{droplet.name}</div>
+                        <button
+                          onClick={() => handleDropletClick(droplet.name)}
+                          className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200 flex items-center group"
+                          title="Open droplet website"
+                        >
+                          {droplet.name}
+                          <i className="fas fa-external-link-alt ml-1 text-xs opacity-60 group-hover:opacity-100 transition-opacity duration-200"></i>
+                        </button>
                         <div className="text-sm text-gray-500">{droplet.ipAddress || 'No IP'}</div>
                         <div className="text-xs text-gray-400">{droplet.sizeSlug} • {droplet.regionSlug}</div>
                       </div>
