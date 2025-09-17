@@ -14,6 +14,15 @@ export default function UserMenu() {
   const menuRef = useRef(null);
   const navigate = useNavigate();
 
+  const openCalendlyModal = () => {
+    if (window.Calendly) {
+      window.Calendly.initPopupWidget({
+        url: 'https://calendly.com/edifyengine-info/30min'
+      });
+    }
+    setMenuOpen(false);
+  };
+
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -185,6 +194,15 @@ export default function UserMenu() {
                 <i className="fas fa-shopping-bag mr-2"></i>
                 My Purchases
               </button>
+              {user?.plan === 'premium' && (
+                <button
+                  className="w-full py-2 px-3 text-left text-sm text-gray-700 hover:bg-gray-50 rounded transition-colors"
+                  onClick={openCalendlyModal}
+                >
+                  <i className="fas fa-calendar-alt mr-2"></i>
+                  Schedule Meeting
+                </button>
+              )}
             </div>
           )}
 

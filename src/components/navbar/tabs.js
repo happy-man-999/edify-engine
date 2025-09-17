@@ -4,3 +4,7 @@ export const tabs = [
   { title: "Try", href: "https://try.edifyengine.com", external: true },
   { title: "Sign In", href: "/signin" },
 ]
+
+export const premiumTabs = [
+  { title: "Schedule", href: "calendly", calendly: true },
+]

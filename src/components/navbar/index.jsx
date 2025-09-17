@@ -1,12 +1,20 @@
 import React from "react";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
-import { tabs as allTabs } from './tabs';
+import { tabs as allTabs, premiumTabs } from './tabs';
 import StoreAction from './StoreAction'
 import { useAuth } from '../../hooks/useAuth';
 
 const NavbarTabs = () => {
   const location = useLocation();
   const { isAuthenticated, user } = useAuth();
+  
+  const openCalendlyModal = () => {
+    if (window.Calendly) {
+      window.Calendly.initPopupWidget({
+        url: 'https://calendly.com/edifyengine-info/30min'
+      });
+    }
+  };
   
   let tabs = allTabs;
   
@@ -22,11 +30,29 @@ const NavbarTabs = () => {
     if (user?.role === 'admin') {
       tabs.push({ title: "Admin Dashboard", href: "/admin" });
     }
+    
+    // Add premium tabs for premium plan users
+    if (user?.plan === 'premium') {
+      tabs.push(...premiumTabs);
+    }
   }
   
   return (
     <>
       {tabs.map((tab, id) => {
+        // Handle Calendly links
+        if (tab.calendly) {
+          return (
+            <button
+              key={id}
+              onClick={openCalendlyModal}
+              className="hover:text-[#5E8EA9] transition-colors duration-300 text-gray-700"
+            >
+              {tab.title}
+            </button>
+          );
+        }
+        
         // Handle external links
         if (tab.external) {
           return (

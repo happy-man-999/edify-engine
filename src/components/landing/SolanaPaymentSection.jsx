@@ -1,6 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SolanaPaymentSection = () => {
+  const navigate = useNavigate();
+  
   return (
     <section className="py-20 bg-gradient-to-br from-purple-50 to-blue-50">
       <div className="max-w-6xl mx-auto px-6">
@@ -114,7 +117,10 @@ const SolanaPaymentSection = () => {
             
             {/* CTA Button */}
             <div className="pt-6">
-              <button className="w-full lg:w-auto bg-gradient-to-r from-[#9945FF] to-[#14F195] text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
+              <button 
+                className="w-full lg:w-auto bg-gradient-to-r from-[#9945FF] to-[#14F195] text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300"
+                onClick={() => navigate('/store')}
+              >
                 Start Shopping with SOL
               </button>
               <p className="text-sm text-gray-500 mt-3 text-center lg:text-left">

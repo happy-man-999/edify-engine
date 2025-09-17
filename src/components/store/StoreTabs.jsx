@@ -4,7 +4,7 @@ const tabs = [
   //"Featured",
   "Apps",
   //"Bundles",
-  //"World Templates",
+  "World Templates",
   "3D Objects",
   //"Textures",
   //"Animations",

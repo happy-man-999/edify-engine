@@ -211,17 +211,21 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
       newErrors.features = 'Maximum 5 features allowed';
     }
 
-    // For 3D objects and apps, both scene assets (GLB) and download assets (HYP) are required
-    if (formData.type === '3d-object' || formData.type === 'app') {
+    // For 3D objects, apps, and world templates, both scene assets (GLB) and download assets (HYP) are required
+    if (formData.type === '3d-object' || formData.type === 'app' || formData.type === 'world') {
       if (!formData.sceneAssets) {
         newErrors.sceneAssets = formData.type === '3d-object' 
           ? '3D scene assets (GLB file) are required for 3D objects'
-          : 'Application preview assets (GLB file) are required for applications';
+          : formData.type === 'app'
+          ? 'Application preview assets (GLB file) are required for applications'
+          : 'World template preview assets (GLB file) are required for world templates';
       }
       if (!formData.downloadAssets) {
         newErrors.downloadAssets = formData.type === '3d-object'
           ? 'Download assets (HYP file) are required for 3D objects'
-          : 'Download assets (HYP file) are required for applications';
+          : formData.type === 'app'
+          ? 'Download assets (HYP file) are required for applications'
+          : 'Download assets (HYP file) are required for world templates';
       }
     }
 
@@ -237,7 +241,7 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
     }
 
     // Show "coming soon" for unsupported types
-    if (formData.type !== '3d-object' && formData.type !== 'app') {
+    if (formData.type !== '3d-object' && formData.type !== 'app' && formData.type !== 'world') {
       dispatch(showNotification('This item type is coming soon!', 'info'));
       return;
     }
@@ -259,13 +263,13 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
       formDataToSend.append('visibility', formData.visibility);
       formDataToSend.append('installationInstructions', formData.installationInstructions);
       
-      // Add scene assets for 3D objects and apps (GLB file for preview)
-      if ((formData.type === '3d-object' || formData.type === 'app') && formData.sceneAssets) {
+      // Add scene assets for 3D objects, apps, and world templates (GLB file for preview)
+      if ((formData.type === '3d-object' || formData.type === 'app' || formData.type === 'world') && formData.sceneAssets) {
         formDataToSend.append('sceneAssets', formData.sceneAssets);
       }
       
-      // Add download assets for 3D objects and apps (HYP file for download)
-      if ((formData.type === '3d-object' || formData.type === 'app') && formData.downloadAssets) {
+      // Add download assets for 3D objects, apps, and world templates (HYP file for download)
+      if ((formData.type === '3d-object' || formData.type === 'app' || formData.type === 'world') && formData.downloadAssets) {
         formDataToSend.append('downloadAssets', formData.downloadAssets);
       }
 
@@ -605,13 +609,17 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
               </p>
             </div>
 
-            {/* Scene Assets Upload - For 3D Objects and Applications */}
-            {(formData.type === '3d-object' || formData.type === 'app') && (
+            {/* Scene Assets Upload - For 3D Objects, Applications, and World Templates */}
+            {(formData.type === '3d-object' || formData.type === 'app' || formData.type === 'world') && (
               <div className="space-y-6">
                 {/* GLB File Upload for Preview */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {formData.type === '3d-object' ? '3D Scene Assets (.glb format)' : 'Application Preview Assets (.glb format)'} *
+                    {formData.type === '3d-object' 
+                      ? '3D Scene Assets (.glb format)' 
+                      : formData.type === 'app'
+                      ? 'Application Preview Assets (.glb format)'
+                      : 'World Template Preview Assets (.glb format)'} *
                   </label>
                   <input
                     type="file"
@@ -624,7 +632,9 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
                   <p className="text-sm text-gray-600 mt-1">
                     {formData.type === '3d-object' 
                       ? 'Upload 3D scene assets for preview display (GLB format)'
-                      : 'Upload application preview assets for display (GLB format)'
+                      : formData.type === 'app'
+                      ? 'Upload application preview assets for display (GLB format)'
+                      : 'Upload world template preview assets for display (GLB format)'
                     }
                   </p>
                   {errors.sceneAssets && <p className="text-red-500 text-sm mt-1">{errors.sceneAssets}</p>}
@@ -666,7 +676,11 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
                 {scenePreview && (
                   <div className="mt-4">
                     <p className="text-sm font-medium text-gray-700 mb-2">
-                      {formData.type === '3d-object' ? '3D Scene Preview:' : 'Application Preview:'}
+                      {formData.type === '3d-object' 
+                        ? '3D Scene Preview:' 
+                        : formData.type === 'app'
+                        ? 'Application Preview:'
+                        : 'World Template Preview:'}
                     </p>
                     <div className="relative inline-block w-full">
                       <div className="w-full h-64 bg-gray-100 rounded-lg border border-gray-200 shadow-sm overflow-hidden relative">
@@ -726,12 +740,12 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
                 {/* File Size Display */}
                 <div>
                   <label className="block text-sm text-gray-600 mb-1">
-                    {(formData.type === '3d-object' || formData.type === 'app') ? 'HYP File Size (Auto-detected)' : 'File Size (Auto-detected)'}
+                    {(formData.type === '3d-object' || formData.type === 'app' || formData.type === 'world') ? 'HYP File Size (Auto-detected)' : 'File Size (Auto-detected)'}
                   </label>
                   <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-700">
-                    {(formData.type === '3d-object' || formData.type === 'app') && formData.downloadAssets 
+                    {(formData.type === '3d-object' || formData.type === 'app' || formData.type === 'world') && formData.downloadAssets 
                       ? `${(formData.downloadAssets.size / (1024 * 1024)).toFixed(2)} MB (HYP file)`
-                      : (formData.type === '3d-object' || formData.type === 'app') && !formData.downloadAssets
+                      : (formData.type === '3d-object' || formData.type === 'app' || formData.type === 'world') && !formData.downloadAssets
                         ? 'No HYP file selected'
                         : formData.coverImage 
                           ? `${(formData.coverImage.size / (1024 * 1024)).toFixed(2)} MB`
@@ -760,14 +774,14 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
             </div>
 
             {/* Coming Soon Message for Unsupported Types */}
-            {formData.type !== '3d-object' && formData.type !== 'app' && (
+            {formData.type !== '3d-object' && formData.type !== 'app' && formData.type !== 'world' && (
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                 <div className="flex items-center">
                   <i className="fas fa-clock text-yellow-600 mr-2"></i>
                   <p className="text-yellow-800 font-medium">Coming Soon!</p>
                 </div>
                 <p className="text-yellow-700 text-sm mt-1">
-                  This item type is not yet available for upload. Only 3D Objects and Applications are currently supported.
+                  This item type is not yet available for upload. Only 3D Objects, Applications, and World Templates are currently supported.
                 </p>
               </div>
             )}
