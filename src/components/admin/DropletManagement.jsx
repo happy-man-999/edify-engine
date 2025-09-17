@@ -178,6 +178,83 @@ const DropletManagement = () => {
     window.open(dropletUrl, '_blank', 'noopener,noreferrer');
   };
 
+  const exportToCSV = () => {
+    if (!droplets || droplets.length === 0) {
+      dispatch(showNotification('No droplets to export', 'warning'));
+      return;
+    }
+
+    try {
+      // Define CSV headers
+      const headers = [
+        'Droplet ID',
+        'Name',
+        'Status',
+        'IP Address',
+        'Size',
+        'Region',
+        'Created Date',
+        'User',
+        'Transaction',
+        'Monthly Cost',
+        'Memory (MB)',
+        'vCPUs',
+        'Disk (GB)',
+        'Tags'
+      ];
+
+      // Convert droplets data to CSV format
+      const csvData = droplets.map(droplet => [
+        droplet.id || '',
+        droplet.name || '',
+        droplet.status || '',
+        droplet.ipAddress || 'Not assigned',
+        droplet.sizeSlug || '',
+        droplet.regionSlug || '',
+        formatDate(droplet.createdAt) || '',
+        droplet.user || 'Unknown',
+        droplet.transaction || 'N/A',
+        droplet.priceMonthly ? droplet.priceMonthly.toFixed(2) : '0.00',
+        droplet.memory || 'N/A',
+        droplet.vcpus || 'N/A',
+        droplet.disk || 'N/A',
+        droplet.tags ? droplet.tags.join('; ') : ''
+      ]);
+
+      // Combine headers and data
+      const csvContent = [headers, ...csvData]
+        .map(row => row.map(field => {
+          // Escape fields that contain commas, quotes, or newlines
+          if (typeof field === 'string' && (field.includes(',') || field.includes('"') || field.includes('\n'))) {
+            return `"${field.replace(/"/g, '""')}"`;
+          }
+          return field;
+        }).join(','))
+        .join('\n');
+
+      // Create and download the file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      
+      link.setAttribute('href', url);
+      link.setAttribute('download', `droplets_export_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up the URL object
+      URL.revokeObjectURL(url);
+      
+      dispatch(showNotification(`Successfully exported ${droplets.length} droplets to CSV`, 'success'));
+    } catch (error) {
+      console.error('Error exporting CSV:', error);
+      dispatch(showNotification('Failed to export CSV. Please try again.', 'error'));
+    }
+  };
+
   const handleAction = async (action, dropletId) => {
     try {
       let result;
@@ -271,7 +348,11 @@ const DropletManagement = () => {
             <i className="fas fa-sync mr-2"></i>
             Refresh
           </button>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+          <button 
+            onClick={exportToCSV}
+            disabled={loading || droplets.length === 0}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             <i className="fas fa-download mr-2"></i>
             Export CSV
           </button>
