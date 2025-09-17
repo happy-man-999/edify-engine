@@ -275,10 +275,10 @@ const DropletManagement = () => {
             <i className="fas fa-download mr-2"></i>
             Export CSV
           </button>
-          <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+          {/*<button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
             <i className="fas fa-plus mr-2"></i>
             Create Droplet
-          </button>
+          </button>*/}
         </div>
       </div>
 

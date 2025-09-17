@@ -10,9 +10,9 @@ const NavbarTabs = () => {
   
   let tabs = allTabs;
   
-  // Filter out "Sign In" tab if user is authenticated
+  // Filter out "Sign In" and "Try" tabs if user is authenticated
   if (isAuthenticated) {
-    tabs = tabs.filter(tab => tab.title !== "Sign In");
+    tabs = tabs.filter(tab => tab.title !== "Sign In" && tab.title !== "Try");
     
     // Add role-based tabs
     if (user?.role === 'contributor') {
@@ -26,11 +26,29 @@ const NavbarTabs = () => {
   
   return (
     <>
-      {tabs.map((tab, id) => (
-        <Link key={id} to={tab.href} className="hover:text-[#5E8EA9] transition-colors duration-300 text-gray-700">
-          {tab.title}
-        </Link>
-      ))}
+      {tabs.map((tab, id) => {
+        // Handle external links
+        if (tab.external) {
+          return (
+            <a
+              key={id}
+              href={tab.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#5E8EA9] transition-colors duration-300 text-gray-700"
+            >
+              {tab.title}
+            </a>
+          );
+        }
+        
+        // Handle internal links
+        return (
+          <Link key={id} to={tab.href} className="hover:text-[#5E8EA9] transition-colors duration-300 text-gray-700">
+            {tab.title}
+          </Link>
+        );
+      })}
     </>
   );
 };
