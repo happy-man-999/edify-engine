@@ -10,6 +10,8 @@ import LoadingSpinner from './components/LoadingSpinner';
 import CustomWalletModal from './components/CustomWalletModal';
 import AnimatedBackground from './components/AnimatedBackground';
 import PaymentModal from './components/PaymentModal';
+import FontProvider from './components/FontProvider';
+import FontDebug from './components/FontDebug';
 import Homepage from './pages/Homepage';
 import LandingPage from './pages/LandingPage';
 import Store from './pages/Store';
@@ -104,11 +106,12 @@ function App() {
   );
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>
-          <Router>
-              <AnimatedBackground />
+    <FontProvider>
+      <ConnectionProvider endpoint={endpoint}>
+        <WalletProvider wallets={wallets} autoConnect>
+          <WalletModalProvider>
+            <Router>
+                <AnimatedBackground />
               <MainLayout>
                 <Routes>
                   <Route path="/home" element={<Navbar />} />
@@ -147,11 +150,13 @@ function App() {
                   onClose={closePaymentModal}
                   {...paymentData}
                 />
+                <FontDebug />
               </MainLayout>
             </Router>
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
+    </FontProvider>
   );
 }
 
