@@ -163,6 +163,11 @@ export const useItems = () => {
     return items.filter(item => item.type === '3d-object');
   }, [items]);
 
+  // Get world templates
+  const getWorldTemplates = useCallback(() => {
+    return items.filter(item => item.type === 'world');
+  }, [items]);
+
   // Initial fetch on mount
   useEffect(() => {
     fetchItems();
@@ -185,6 +190,7 @@ export const useItems = () => {
     getBundles,
     getTemplates,
     getServices,
-    get3DObjects
+    get3DObjects,
+    getWorldTemplates
   };
 }; 

@@ -7,6 +7,7 @@ import FeaturedSection from "../components/store/FeaturedSection";
 import AppsSection from "../components/store/AppsSection";
 import BundlesSection from "../components/store/BundlesSection";
 import ThreeDObjectsSection from "../components/store/ThreeDObjectsSection";
+import WorldTemplatesSection from "../components/store/WorldTemplatesSection";
 import MyPurchasesSection from "../components/store/MyPurchasesSection";
 import { useErrorModal } from "../hooks/useErrorModal";
 import { useDispatch } from "react-redux";
@@ -152,7 +153,7 @@ const Store = () => {
     const tab = searchParams.get('tab');
     
     // Valid tab names
-    const validTabs = ["Featured", "Apps", "Bundles", "3D Objects", "My Purchases"];
+    const validTabs = ["Featured", "Apps", "Bundles", "World Templates", "3D Objects", "My Purchases"];
     
     if (tab && validTabs.includes(tab)) {
       setActiveTab(tab);
@@ -169,6 +170,7 @@ const Store = () => {
   if (activeTab === "Featured") tabContent = <FeaturedSection currency={currency} onAddToCart={handleAddToCart} onItemSelect={handleItemSelect} />;
   else if (activeTab === "Apps") tabContent = <AppsSection currency={currency} onAddToCart={handleAddToCart} onItemSelect={handleItemSelect} />;
   else if (activeTab === "Bundles") tabContent = <BundlesSection currency={currency} onAddToCart={handleAddToCart} onItemSelect={handleItemSelect} />;
+  else if (activeTab === "World Templates") tabContent = <WorldTemplatesSection currency={currency} onAddToCart={handleAddToCart} onItemSelect={handleItemSelect} />;
   else if (activeTab === "3D Objects") tabContent = <ThreeDObjectsSection currency={currency} onAddToCart={handleAddToCart} onItemSelect={handleItemSelect} />;
   else if (activeTab === "My Purchases") tabContent = <MyPurchasesSection onItemSelect={handleItemSelect} onBrowseStore={() => handleTabClick("Featured")} />;
   else tabContent = <div className="text-center text-gray-500 py-16">Coming soon...</div>;
