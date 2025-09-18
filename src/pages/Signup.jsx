@@ -351,6 +351,17 @@ const Signup = () => {
   return (
     <div className="min-h-screen bg-gray-50 pt-24">
       <GlobalStyles />
+      
+      {/* Page-specific Schema */}
+      <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "url": "https://edifyengine.com/signup",
+        "name": "Edify Engine Sign Up",
+        "description": "Create your free Edify Engine account and start building immersive spaces instantly."
+      })}
+      </script>
 
       {/* Progress Bar */}
       <div className="bg-white border-b border-gray-200">

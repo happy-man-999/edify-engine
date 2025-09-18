@@ -177,6 +177,17 @@ const Store = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      {/* Page-specific Schema */}
+      <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "url": "https://edifyengine.com/store/",
+        "name": "Edify Engine Store",
+        "description": "Shop 3D assets, premium apps, and immersive world tools in the Edify Engine Store."
+      })}
+      </script>
+      
       {/* Payment Processing Status */}
       {currentPayment && (
         <PaymentProcessingStatus

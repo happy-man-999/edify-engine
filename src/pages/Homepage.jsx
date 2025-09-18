@@ -11,6 +11,18 @@ const Homepage = () => {
   return (
     <main className="flex-1 p-6 pt-24">
       <GlobalStyles />
+      
+      {/* Page-specific Schema */}
+      <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "url": "https://edifyengine.com/home",
+        "name": "Edify Engine Home",
+        "description": "Launch immersive 3D worlds and interactive environments in minutes with Edify Engine."
+      })}
+      </script>
+      
       <div className="max-w-7xl mx-auto">
         {/*<HeroSection />*/}
         {/*<QuickActions />*/}

@@ -82,6 +82,17 @@ const Signin = () => {
   return (
     <div className="min-h-screen bg-gray-50 pt-24">
       <GlobalStyles />
+      
+      {/* Page-specific Schema */}
+      <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "url": "https://edifyengine.com/signin",
+        "name": "Edify Engine Sign In",
+        "description": "Log in to your Edify Engine account to manage and explore your 3D worlds."
+      })}
+      </script>
 
       {/* Main Content */}
       <div className="max-w-md mx-auto px-6 py-12">
