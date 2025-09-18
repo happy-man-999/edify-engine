@@ -9,11 +9,8 @@ const NavbarTabs = () => {
   const { isAuthenticated, user } = useAuth();
   
   const openCalendlyModal = () => {
-    if (window.Calendly) {
-      window.Calendly.initPopupWidget({
-        url: 'https://calendly.com/edifyengine-info/30min'
-      });
-    }
+    // Open Calendly in a new tab
+    window.open('https://calendly.com/edifyengine-info/30min', '_blank', 'noopener,noreferrer');
   };
   
   let tabs = allTabs;
