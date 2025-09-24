@@ -11,7 +11,6 @@ import CustomWalletModal from './components/CustomWalletModal';
 import AnimatedBackground from './components/AnimatedBackground';
 import PaymentModal from './components/PaymentModal';
 import FontProvider from './components/FontProvider';
-import FontDebug from './components/FontDebug';
 import ScrollToTop from './components/ScrollToTop';
 import Homepage from './pages/Homepage';
 import LandingPage from './pages/LandingPage';
@@ -47,6 +46,7 @@ import {
 } from './store/uiSlice';
 import YesNoModal from './components/YesNoModal';
 import { usePaymentModal } from './hooks/usePaymentModal';
+import { initializeFontLoading } from './utils/fontLoader';
 
 import './App.css';
 
@@ -56,6 +56,11 @@ function App() {
 
   // Global payment modal state
   const { isOpen, paymentData, openPaymentModal, closePaymentModal } = usePaymentModal();
+
+  // Initialize font loading on app start
+  useEffect(() => {
+    initializeFontLoading();
+  }, []);
 
   // Dynamic network configuration from settings
   const [network, setNetwork] = useState(WalletAdapterNetwork.Devnet);
@@ -152,7 +157,6 @@ function App() {
                   onClose={closePaymentModal}
                   {...paymentData}
                 />
-                <FontDebug />
               </MainLayout>
               </ScrollToTop>
             </Router>

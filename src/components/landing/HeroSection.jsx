@@ -22,9 +22,9 @@ const HeroSection = () => {
       </div>
       
       {/* Hero Content */}
-      <div className="relative z-10 text-center text-white max-w-[46rem] mx-auto px-6 -mt-45">
+      <div className="relative z-10 text-center text-white max-w-[46rem] mx-auto px-6 -mt-45 hero-content">
         <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <h1 className="text-6xl md:text-7xl font-semibold mb-6 leading-tight">
+          <h1 className="text-6xl md:text-7xl font-semibold mb-6 leading-tight" style={{ fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
             <span className="text-white font-bold" style={{ 
               textShadow: `
                 -2px -2px 0 #648DA6,
@@ -35,15 +35,16 @@ const HeroSection = () => {
                 1px -1px 0 #648DA6,
                 -1px 1px 0 #648DA6,
                 1px 1px 0 #648DA6
-              `
+              `,
+              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
             }}>
               Build Your
             </span>
-            <span className="block bg-[#4B748B] bg-clip-text text-transparent font-extrabold">
+            <span className="block bg-[#4B748B] bg-clip-text text-transparent font-extrabold" style={{ fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
               Virtual Universe
             </span>
           </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-[#4B748B] leading-relaxed font-['Calibri'] font-light">
+          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-[#4B748B] leading-relaxed font-light" style={{ fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
             Create immersive 3D experiences, virtual worlds, and interactive environments 
             without writing a single line of code. Launch in minutes, not months.
           </p>
@@ -53,14 +54,18 @@ const HeroSection = () => {
               className="bg-gradient-to-r from-[#42677D] to-[#5E8EA9] hover:from-[#355263] hover:to-[#4a7a8f] text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
             >
               <i className="fas fa-rocket mr-2"></i>
-              Start Building Now
+              <span style={{ fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+                Start Building Now
+              </span>
             </Link>
             <Link 
               to="/store" 
               className="bg-gradient-to-r from-[#65707C] to-[#767E88] backdrop-blur-sm text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 hover:from-[#65707C]/80 hover:to-[#767E88]/80 hover:shadow-lg hover:shadow-[#65707C]/25 active:from-[#65707C]/60 active:to-[#767E88]/60 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#65707C] focus:ring-offset-2 focus:ring-offset-transparent"
             >
               <i className="fas fa-store mr-2"></i>
-              Browse Store
+              <span style={{ fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+                Browse Store
+              </span>
             </Link>
           </div>
         </div>
