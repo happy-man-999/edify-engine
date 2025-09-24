@@ -46,7 +46,7 @@ export const useUserPurchases = () => {
     } catch (err) {
       console.error('Error fetching purchases:', err);
       setError(err.message);
-      dispatch(showNotification('Failed to load purchases', 'error'));
+      //dispatch(showNotification('Failed to load purchases', 'error'));
     } finally {
       setLoading(false);
     }

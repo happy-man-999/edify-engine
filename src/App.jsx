@@ -12,6 +12,7 @@ import AnimatedBackground from './components/AnimatedBackground';
 import PaymentModal from './components/PaymentModal';
 import FontProvider from './components/FontProvider';
 import FontDebug from './components/FontDebug';
+import ScrollToTop from './components/ScrollToTop';
 import Homepage from './pages/Homepage';
 import LandingPage from './pages/LandingPage';
 import Store from './pages/Store';
@@ -112,7 +113,8 @@ function App() {
           <WalletModalProvider>
             <Router>
                 <AnimatedBackground />
-              <MainLayout>
+              <ScrollToTop>
+                <MainLayout>
                 <Routes>
                   <Route path="/home" element={<Navbar />} />
                   <Route path="/store" element={<Navbar />} />
@@ -152,6 +154,7 @@ function App() {
                 />
                 <FontDebug />
               </MainLayout>
+              </ScrollToTop>
             </Router>
         </WalletModalProvider>
       </WalletProvider>
