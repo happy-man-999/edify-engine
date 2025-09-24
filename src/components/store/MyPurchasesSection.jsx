@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useUserPurchases } from '../../hooks/useUserPurchases';
+import { useAuth } from '../../hooks/useAuth';
 import ThreeDObjectCard from './ThreeDObjectCard';
 import ThreeDPreviewModal from '../ThreeDPreviewModal';
 
 const MyPurchasesSection = ({ onItemSelect, onBrowseStore }) => {
+  const { isAuthenticated } = useAuth();
   const {
     purchases,
     loading,
@@ -31,6 +33,25 @@ const MyPurchasesSection = ({ onItemSelect, onBrowseStore }) => {
       setPreviewItem(item);
     }
   };
+
+  // Show sign-in prompt if user is not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-gray-500 text-lg mb-4">
+          <i className="fas fa-sign-in-alt text-4xl mb-4"></i>
+          <h3 className="text-xl font-semibold mb-2">Sign in to view your purchases</h3>
+          <p>Please sign in to access your purchase history and downloads.</p>
+        </div>
+        <button 
+          onClick={() => window.location.href = '/signin'}
+          className="btn-primary"
+        >
+          Sign In
+        </button>
+      </div>
+    );
+  }
 
   if (loading && purchases.length === 0) {
     return (
