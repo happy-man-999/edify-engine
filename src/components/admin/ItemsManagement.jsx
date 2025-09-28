@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { showNotification } from '../../store/uiSlice';
 import ThreeDPreviewModal from '../ThreeDPreviewModal';
+import ItemEditModal from './ItemEditModal';
 
 const ItemsManagement = () => {
   const dispatch = useDispatch();
@@ -11,6 +12,8 @@ const ItemsManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [previewItem, setPreviewItem] = useState(null);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     fetchItems();
@@ -80,6 +83,26 @@ const ItemsManagement = () => {
   const handleDownload = (item) => {
     // Handle download functionality for admin
     dispatch(showNotification('Download functionality for admin coming soon', 'info'));
+  };
+
+  const handleEditClick = (item) => {
+    setEditingItem(item);
+    setShowEditModal(true);
+  };
+
+  const handleEditClose = () => {
+    setShowEditModal(false);
+    setEditingItem(null);
+  };
+
+  const handleEditSuccess = (updatedItem) => {
+    // Update the item in the local state
+    setItems(prevItems =>
+      prevItems.map(item =>
+        item._id === updatedItem._id ? updatedItem : item
+      )
+    );
+    handleEditClose();
   };
 
   const filteredItems = items.filter(item => {
@@ -375,6 +398,15 @@ const ItemsManagement = () => {
                             <i className="fas fa-check"></i>
                           </button>
                         )}
+                        
+                        {/* Edit Button - Available for all items */}
+                        <button
+                          onClick={() => handleEditClick(item)}
+                          className="text-blue-600 hover:text-blue-900 transition-colors"
+                          title="Edit Item"
+                        >
+                          <i className="fas fa-edit"></i>
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -391,6 +423,15 @@ const ItemsManagement = () => {
           item={previewItem}
           onClose={handleClosePreview}
           onDownload={handleDownload}
+        />
+      )}
+
+      {/* Edit Item Modal */}
+      {showEditModal && editingItem && (
+        <ItemEditModal
+          item={editingItem}
+          onClose={handleEditClose}
+          onSuccess={handleEditSuccess}
         />
       )}
     </div>
