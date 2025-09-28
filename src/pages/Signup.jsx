@@ -34,6 +34,7 @@ const Signup = () => {
 
   const [errors, setErrors] = useState({});
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [isProcessingContact, setIsProcessingContact] = useState(false);
   const googleAuthProcessedRef = useRef(false);
 
   const totalSteps = 7;
@@ -285,6 +286,25 @@ const Signup = () => {
     }
   };
 
+  const handleContactScheduled = async (contactData) => {
+    try {
+      setIsProcessingContact(true);
+      
+      // Save enterprise contact information and mark signup as completed
+      await saveSignupProgress(7, {
+        isCompleted: true,
+        contactScheduled: true,
+        contactData: contactData,
+        completedAt: new Date()
+      });
+    } catch (error) {
+      console.error('Failed to save contact information:', error);
+      showError('Failed to save your consultation details. Please try again.');
+    } finally {
+      setIsProcessingContact(false);
+    }
+  };
+
   const renderStep = () => {
     switch (currentStep) {
       case 1:
@@ -340,7 +360,10 @@ const Signup = () => {
           <PaymentStep
             formData={formData}
             isProcessingPayment={isProcessingPayment}
+            isProcessingContact={isProcessingContact}
             onPayment={handlePayment}
+            onContactScheduled={handleContactScheduled}
+            signupProgress={signupProgress}
           />
         );
       default:

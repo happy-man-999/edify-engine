@@ -1,0 +1,383 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useErrorModal } from '../../hooks/useErrorModal';
+
+const EnterpriseContactStep = ({ formData, onContactScheduled, isProcessingContact, signupProgress }) => {
+  const { showError } = useErrorModal();
+  const [calendlyLoaded, setCalendlyLoaded] = useState(false);
+  const [isScheduled, setIsScheduled] = useState(false);
+  const [scheduledData, setScheduledData] = useState(null);
+  const [showReschedule, setShowReschedule] = useState(false);
+  const calendlyRef = useRef(null);
+
+  // Check for existing scheduled meeting on component mount
+  useEffect(() => {
+    if (signupProgress && signupProgress.enterpriseContact && signupProgress.enterpriseContact.isScheduled) {
+      const existingData = signupProgress.enterpriseContact.contactData;
+      if (existingData) {
+        setScheduledData(existingData);
+        setIsScheduled(true);
+      }
+    }
+  }, [signupProgress]);
+
+  // Load Calendly widget script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://assets.calendly.com/assets/external/widget.js';
+    script.async = true;
+    script.onload = () => setCalendlyLoaded(true);
+    document.head.appendChild(script);
+
+    return () => {
+      // Cleanup script on unmount
+      const existingScript = document.querySelector('script[src="https://assets.calendly.com/assets/external/widget.js"]');
+      if (existingScript) {
+        document.head.removeChild(existingScript);
+      }
+    };
+  }, []);
+
+  const handleCalendlyEvent = async (e) => {
+    if (e.data.event === 'calendly.event_scheduled') {
+      console.log('Calendly event scheduled:', e.data.payload);
+      
+      // Extract URIs from payload
+      const eventUri = e.data.payload.event.uri;
+      const inviteeUri = e.data.payload.invitee.uri;
+      
+      try {
+        // Fetch actual event details from backend
+        const token = localStorage.getItem('token');
+        const response = await fetch('/api/calendly/event-details', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            eventUri: eventUri,
+            inviteeUri: inviteeUri
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.message || 'Failed to fetch event details');
+        }
+
+        const result = await response.json();
+        const { event, invitee } = result.data;
+
+        // Extract data from the resource objects
+        const eventResource = event.resource;
+        const inviteeResource = invitee.resource;
+
+        // Create event data with actual details from Calendly API
+        const eventData = {
+          eventUuid: eventResource.uri.split('/').pop(),
+          inviteeUuid: inviteeResource.uri.split('/').pop(),
+          eventUri: eventResource.uri,
+          inviteeUri: inviteeResource.uri,
+          startTime: eventResource.start_time,
+          endTime: eventResource.end_time,
+          inviteeName: inviteeResource.name,
+          inviteeEmail: inviteeResource.email,
+          eventName: eventResource.name,
+          eventType: eventResource.event_type,
+          status: eventResource.status,
+          location: eventResource.location,
+          cancelUrl: inviteeResource.cancel_url,
+          rescheduleUrl: inviteeResource.reschedule_url,
+          timezone: inviteeResource.timezone,
+        };
+        
+        console.log('Processed event data with Calendly API:', eventData);
+        setScheduledData(eventData);
+        setIsScheduled(true);
+        setShowReschedule(false);
+        onContactScheduled(eventData);
+      } catch (error) {
+        console.error('Error fetching event details:', error);
+        showError(`Failed to fetch meeting details: ${error.message}`);
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('message', handleCalendlyEvent);
+    return () => window.removeEventListener('message', handleCalendlyEvent);
+  }, []);
+
+  // Initialize Calendly widget when loaded
+  useEffect(() => {
+    if (calendlyLoaded && window.Calendly && calendlyRef.current && !isScheduled) {
+      window.Calendly.initInlineWidget({
+        url: showReschedule 
+          ? scheduledData?.rescheduleUrl 
+          : `${import.meta.env.VITE_CALENDLY_URL}?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=42677d`,
+        parentElement: calendlyRef.current,
+        prefill: {
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email
+        },
+        utm: {
+          utmCampaign: showReschedule ? 'enterprise-reschedule' : 'enterprise-schedule',
+          utmSource: 'edifyengine',
+          utmMedium: 'website'
+        }
+      });
+    }
+  }, [calendlyLoaded, calendlyRef.current, showReschedule]);
+
+  const handleReschedule = () => {
+    setIsScheduled(false);
+    setShowReschedule(true);
+  };
+
+  const formatDateTime = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    return date.toLocaleString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZoneName: 'short'
+    });
+  };
+
+  // Show scheduled confirmation if meeting is booked
+  if (isScheduled && scheduledData) {
+    return (
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-8">
+          <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i className="fas fa-calendar-check text-white text-3xl"></i>
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Consultation Scheduled!</h2>
+          <p className="text-xl text-gray-600 mb-4">Your enterprise consultation has been confirmed</p>
+        </div>
+
+        <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-8 rounded-2xl border border-green-200 mb-8">
+          <div className="text-center mb-6">
+            <h3 className="text-2xl font-semibold text-gray-900 mb-4">Meeting Details</h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-center">
+                <i className="fas fa-calendar-alt text-green-600 mr-3"></i>
+                <span className="text-lg font-medium text-gray-900">
+                  {scheduledData.startTime ? formatDateTime(scheduledData.startTime) : 'Meeting scheduled successfully'}
+                </span>
+              </div>
+              <div className="flex items-center justify-center">
+                <i className="fas fa-user text-green-600 mr-3"></i>
+                <span className="text-lg text-gray-700">{scheduledData.inviteeName}</span>
+              </div>
+              <div className="flex items-center justify-center">
+                <i className="fas fa-envelope text-green-600 mr-3"></i>
+                <span className="text-lg text-gray-700">{scheduledData.inviteeEmail}</span>
+              </div>
+              {scheduledData.eventName && (
+                <div className="flex items-center justify-center">
+                  <i className="fas fa-calendar-check text-green-600 mr-3"></i>
+                  <span className="text-lg text-gray-700">{scheduledData.eventName}</span>
+                </div>
+              )}
+              {scheduledData.location && scheduledData.location.join_url && (
+                <div className="flex items-center justify-center">
+                  <i className="fas fa-video text-green-600 mr-3"></i>
+                  <a 
+                    href={scheduledData.location.join_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-lg text-blue-600 hover:text-blue-800 underline"
+                  >
+                    Join Meeting
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 mb-6">
+            <h4 className="text-lg font-semibold text-gray-900 mb-4">Meeting Information</h4>
+            <div className="space-y-2 text-sm">
+              {scheduledData.startTime && scheduledData.endTime && (
+                <div>
+                  <span className="font-medium text-gray-600">Duration:</span>
+                  <span className="ml-2 text-gray-900">
+                    {Math.round((new Date(scheduledData.endTime) - new Date(scheduledData.startTime)) / (1000 * 60))} minutes
+                  </span>
+                </div>
+              )}
+              {scheduledData.timezone && (
+                <div>
+                  <span className="font-medium text-gray-600">Timezone:</span>
+                  <span className="ml-2 text-gray-900">{scheduledData.timezone}</span>
+                </div>
+              )}
+              {scheduledData.status && (
+                <div>
+                  <span className="font-medium text-gray-600">Status:</span>
+                  <span className="ml-2 text-gray-900 capitalize">{scheduledData.status}</span>
+                </div>
+              )}
+              {scheduledData.location && scheduledData.location.type && (
+                <div>
+                  <span className="font-medium text-gray-600">Meeting Type:</span>
+                  <span className="ml-2 text-gray-900 capitalize">
+                    {scheduledData.location.type.replace('_', ' ')}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="text-center space-y-4">
+            <p className="text-green-700 font-medium">
+              You'll receive a calendar invite and confirmation email shortly with the exact meeting time.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={handleReschedule}
+                className="bg-white text-green-600 border border-green-600 px-6 py-3 rounded-lg hover:bg-green-50 transition-colors font-medium"
+              >
+                <i className="fas fa-calendar-alt mr-2"></i>
+                Reschedule Meeting
+              </button>
+              
+              {scheduledData.cancelUrl && (
+                <a
+                  href={scheduledData.cancelUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors font-medium"
+                >
+                  <i className="fas fa-times mr-2"></i>
+                  Cancel Meeting
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-4xl mx-auto">
+      <div className="text-center mb-8">
+        <div className="w-20 h-20 bg-gradient-to-br from-[#223A4C] to-[#42677D] rounded-full flex items-center justify-center mx-auto mb-6">
+          <i className="fas fa-building text-white text-3xl"></i>
+        </div>
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">Enterprise Consultation</h2>
+        <p className="text-xl text-gray-600 mb-4">Let's discuss your enterprise needs</p>
+        <p className="text-gray-500 max-w-2xl mx-auto">
+          Our enterprise team will work with you to create a custom solution that meets your specific requirements. 
+          Schedule a consultation to get started.
+        </p>
+      </div>
+
+      {/* Enterprise Benefits */}
+      <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">What to expect from your consultation</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex items-start">
+            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-1">
+              <i className="fas fa-check text-green-600 text-sm"></i>
+            </div>
+            <div>
+              <h4 className="font-medium text-gray-900">Custom Solution Design</h4>
+              <p className="text-sm text-gray-600">Tailored architecture for your specific needs</p>
+            </div>
+          </div>
+          <div className="flex items-start">
+            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-1">
+              <i className="fas fa-check text-green-600 text-sm"></i>
+            </div>
+            <div>
+              <h4 className="font-medium text-gray-900">Dedicated Support</h4>
+              <p className="text-sm text-gray-600">24/7 enterprise-grade support team</p>
+            </div>
+          </div>
+          <div className="flex items-start">
+            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-1">
+              <i className="fas fa-check text-green-600 text-sm"></i>
+            </div>
+            <div>
+              <h4 className="font-medium text-gray-900">Scalable Infrastructure</h4>
+              <p className="text-sm text-gray-600">Unlimited worlds and custom domains</p>
+            </div>
+          </div>
+          <div className="flex items-start">
+            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-1">
+              <i className="fas fa-check text-green-600 text-sm"></i>
+            </div>
+            <div>
+              <h4 className="font-medium text-gray-900">Priority Implementation</h4>
+              <p className="text-sm text-gray-600">Fast-track deployment and onboarding</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Calendly Inline Widget */}
+      <div className="text-center space-y-6">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+          <div className="flex items-center justify-center mb-4">
+            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+              <i className="fas fa-calendar-alt text-blue-600 text-xl"></i>
+            </div>
+            <div className="text-left">
+              <h4 className="text-lg font-semibold text-blue-800">
+                {showReschedule ? 'Reschedule Your Consultation' : 'Schedule Your Consultation'}
+              </h4>
+              <p className="text-sm text-blue-700">
+                {showReschedule ? 'Choose a new time that works for you' : 'Choose a time that works for you'}
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-center space-x-4 text-sm text-blue-700">
+            <div className="flex items-center">
+              <i className="fas fa-clock mr-1"></i>
+              <span>30 minutes</span>
+            </div>
+            <div className="flex items-center">
+              <i className="fas fa-video mr-1"></i>
+              <span>Video call</span>
+            </div>
+            <div className="flex items-center">
+              <i className="fas fa-users mr-1"></i>
+              <span>Expert team</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Calendly Inline Widget */}
+        <div className="bg-white rounded-xl border border-gray-200 p-4">
+          {calendlyLoaded ? (
+            <div 
+              className="calendly-inline-widget" 
+              data-url={showReschedule 
+                ? scheduledData.rescheduleUrl
+                : `${import.meta.env.VITE_CALENDLY_URL}?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=42677d`} 
+              style={{minWidth: '320px', height: '700px'}}
+              ref={calendlyRef}
+            ></div>
+          ) : (
+            <div className="flex items-center justify-center h-96">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#42677D] mx-auto mb-4"></div>
+                <p className="text-gray-500">Loading scheduling widget...</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default EnterpriseContactStep;

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { customizationOptions } from './CustomizationStep';
+import EnterpriseContactStep from './EnterpriseContactStep';
 
-const PaymentStep = ({ formData, onPayment, isProcessingPayment }) => {
+const PaymentStep = ({ formData, onPayment, onContactScheduled, isProcessingPayment, isProcessingContact, signupProgress }) => {
   const [paymentSettings, setPaymentSettings] = useState({
     stripeMode: 'live',
     solanaMode: 'mainnet',
@@ -26,6 +27,19 @@ const PaymentStep = ({ formData, onPayment, isProcessingPayment }) => {
 
   const isTestMode = paymentSettings.isTestMode || paymentSettings.stripeMode === 'test' || paymentSettings.solanaMode === 'devnet';
   const plan = customizationOptions.find(option => `${option.id}-plan` === formData.customizationLevel) || customizationOptions[0];
+  const isEnterprisePlan = formData.customizationLevel === 'enterprise-plan';
+
+  // If enterprise plan, show contact step instead of payment
+  if (isEnterprisePlan) {
+    return (
+      <EnterpriseContactStep
+        formData={formData}
+        onContactScheduled={onContactScheduled}
+        isProcessingContact={isProcessingContact}
+        signupProgress={signupProgress}
+      />
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto">

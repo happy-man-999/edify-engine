@@ -11,6 +11,7 @@ const SignupSuccess = () => {
   const [isProcessing, setIsProcessing] = useState(true);
   const [currentPayment, setCurrentPayment] = useState(null);
   const [paymentResult, setPaymentResult] = useState(null);
+  const [signupType, setSignupType] = useState(null);
 
   // Get current user ID
   const getCurrentUserId = useCallback(() => {
@@ -52,6 +53,14 @@ const SignupSuccess = () => {
   useEffect(() => {
     const handlePaymentSuccess = async () => {
       try {        
+        // Check if this is an enterprise signup
+        const type = searchParams.get('type');
+        if (type === 'enterprise') {
+          setSignupType('enterprise');
+          setIsProcessing(false);
+          return;
+        }
+        
         // Check if this is a payment success redirect
         const sessionId = searchParams.get('session_id');
         const paymentIntent = searchParams.get('payment_intent');
@@ -96,6 +105,12 @@ const SignupSuccess = () => {
         const progressData = await checkSignupProgress();
         
         if (progressData && progressData.isCompleted) {
+          // Check if it's enterprise signup
+          if (progressData.enterpriseContact && progressData.enterpriseContact.isScheduled) {
+            setSignupType('enterprise');
+          } else {
+            setSignupType('regular');
+          }
           setIsProcessing(false);
         } else {
           //navigate('/signup');
@@ -146,6 +161,82 @@ const SignupSuccess = () => {
     );
   }
 
+  // Enterprise success page
+  if (signupType === 'enterprise') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="bg-white rounded-lg shadow-sm p-8">
+            <div className="mb-6">
+              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-[#223A4C] to-[#42677D] mb-6">
+                <i className="fas fa-building text-white text-2xl"></i>
+              </div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">Enterprise Consultation Scheduled!</h1>
+              <p className="text-lg text-gray-600 mb-6">
+                Thank you for your interest in our Enterprise plan. Our team will be in touch soon to discuss your custom solution.
+              </p>
+              
+              <div className="bg-blue-50 rounded-lg p-6 mb-6">
+                <h3 className="text-lg font-semibold text-blue-800 mb-3">What happens next?</h3>
+                <div className="space-y-3 text-left">
+                  <div className="flex items-start">
+                    <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-0.5">
+                      <i className="fas fa-calendar-check text-blue-600 text-sm"></i>
+                    </div>
+                    <div>
+                      <p className="font-medium text-blue-900">Meeting Confirmed</p>
+                      <p className="text-sm text-blue-700">You'll receive a calendar invite with meeting details</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start">
+                    <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-0.5">
+                      <i className="fas fa-users text-blue-600 text-sm"></i>
+                    </div>
+                    <div>
+                      <p className="font-medium text-blue-900">Expert Consultation</p>
+                      <p className="text-sm text-blue-700">Meet with our enterprise team to discuss your needs</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start">
+                    <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-0.5">
+                      <i className="fas fa-cogs text-blue-600 text-sm"></i>
+                    </div>
+                    <div>
+                      <p className="font-medium text-blue-900">Custom Solution</p>
+                      <p className="text-sm text-blue-700">We'll design a tailored solution for your organization</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <Link
+                to="/home"
+                className="block w-full bg-[#42677D] text-white py-3 px-4 rounded-lg hover:bg-[#355263] transition-colors"
+              >
+                Go to Dashboard
+              </Link>
+              <Link
+                to="/store"
+                className="block w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Explore Store
+              </Link>
+            </div>
+            
+            <div className="mt-8 pt-6 border-t border-gray-200">
+              <p className="text-sm text-gray-500">
+                Check your email for meeting confirmation and additional information about our enterprise solutions.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Regular success page
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="max-w-md mx-auto text-center">

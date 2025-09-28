@@ -41,7 +41,6 @@ export const customizationOptions = [
     details: [
     ],
     price: 0, // Contact us for pricing
-    disabled: true
   },
 ];
 

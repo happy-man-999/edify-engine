@@ -16,7 +16,7 @@ export default function UserMenu() {
 
   const openCalendlyModal = () => {
     // Open Calendly in a new tab
-    window.open('https://calendly.com/edifyengine-info/30min', '_blank', 'noopener,noreferrer');
+    window.open(import.meta.env.VITE_CALENDLY_URL, '_blank', 'noopener,noreferrer');
     setMenuOpen(false);
   };
 
