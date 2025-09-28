@@ -113,7 +113,7 @@ export const restartDroplet = createAsyncThunk(
     try {
       const { token } = getState().auth;
       
-      const response = await fetch(`/api/admin/droplets/${dropletId}/restart`, {
+      const response = await fetch(`/api/user/droplets/${dropletId}/restart`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

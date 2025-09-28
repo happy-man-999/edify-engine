@@ -4,10 +4,11 @@ import { useDeleteWorld } from '../hooks/useDeleteWorld';
 import { useYesNoModal } from '../hooks/useYesNoModal';
 
 const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
-  const { syncDroplet } = useDroplets();
+  const { syncDroplet, restartDroplet } = useDroplets();
   const { deleteWorld, isDeleting } = useDeleteWorld();
   const { showModal } = useYesNoModal();
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isRestarting, setIsRestarting] = useState(false);
 
   const handleCardClick = () => {
     if (world.name && world.status === 'active') {
@@ -90,6 +91,26 @@ const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
         ? `https://${world.name}` 
         : `https://${world.name}.edifyengine.com`;
       window.open(url, '_blank');
+    }
+  };
+
+  const handleRestartClick = async (e) => {
+    e.stopPropagation();
+    if (isRestarting) return;
+    
+    const yesNoResult = await showModal(`Are you sure you want to restart "${world.name || 'this world'}"? This will temporarily take the world offline while it restarts.`);
+    if (yesNoResult) {
+      setIsRestarting(true);
+      try {
+        const result = await restartDroplet(world.dropletId);
+        if (result.success && onRefresh) {
+          onRefresh();
+        }
+      } catch (error) {
+        console.error('Error restarting droplet:', error);
+      } finally {
+        setIsRestarting(false);
+      }
     }
   };
 
@@ -222,6 +243,23 @@ const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
               <i className="fas fa-sync text-lg"></i>
             )}
           </button>
+
+          {/* Restart Button */}
+          {world.status === 'active' && world.name && (<button
+            onClick={handleRestartClick}
+            disabled={isRestarting}
+            className={`bg-white/20 backdrop-blur-sm border border-white/30 rounded-full p-3 text-white hover:bg-white/40 hover:border-white/50 transition-all duration-200 shadow-lg hover:scale-110 transform focus:outline-none focus:ring-2 focus:ring-white/50 ${
+              isRestarting ? 'opacity-50 cursor-not-allowed hover:scale-100' : ''
+            }`}
+            title="Restart World"
+            aria-label="Restart World"
+          >
+            {isRestarting ? (
+              <i className="fas fa-redo fa-spin text-lg"></i>
+            ) : (
+              <i className="fas fa-redo text-lg"></i>
+            )}
+          </button>)}
 
           {/* Custom Domain Upsell Button */}
           {world.status === 'active' && world.name && onCustomDomainUpsell && (
