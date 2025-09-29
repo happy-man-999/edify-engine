@@ -33,7 +33,7 @@ const Store = () => {
   const { itemCount, addItem } = useCart();
   const { currency, toggleCurrency } = useCurrency();
   const { connected } = useWalletWithRedirects();
-  const { balance: solBalance, loading: balanceLoading } = useSolBalance();
+  const { balance: solBalance, firstLoading: balanceLoading } = useSolBalance();
   
   // Get the global payment modal function
   const { openPaymentModal } = usePaymentModal();

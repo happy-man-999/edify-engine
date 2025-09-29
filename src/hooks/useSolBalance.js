@@ -44,6 +44,7 @@ const getSolanaEndpoint = (network) => {
 export const useSolBalance = () => {
   const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [firstLoading, setFirstLoading] = useState(true);
   const [error, setError] = useState(null);
   const { connected, publicKey } = useWallet();
 
@@ -76,6 +77,7 @@ export const useSolBalance = () => {
       setBalance(0);
     } finally {
       setLoading(false);
+      setFirstLoading(false);
     }
   };
 
@@ -93,6 +95,7 @@ export const useSolBalance = () => {
   return {
     balance,
     loading,
+    firstLoading,
     error,
     refreshBalance: fetchBalance
   };
