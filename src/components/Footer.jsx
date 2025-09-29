@@ -1,14 +1,11 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { tabs as allTabs, premiumTabs } from "./navbar/tabs";
 import { useAuth } from "../hooks/useAuth";
 
 const Footer = () => {
   const { isAuthenticated, user } = useAuth();
   
-  const openCalendlyModal = () => {
-    // Open Calendly in a new tab
-    window.open(import.meta.env.VITE_CALENDLY_URL, '_blank', 'noopener,noreferrer');
-  };
   
   let tabs = allTabs;
   
@@ -57,7 +54,7 @@ const Footer = () => {
             <h4 className="font-semibold mb-4 text-gray-900">Company</h4>
             <ul className="space-y-2 text-gray-600">
               <li><a href="/contribute" className="hover:text-[#5E8EA9] transition-colors">Contribute</a></li>
-              <li><button onClick={openCalendlyModal} className="hover:text-[#5E8EA9] transition-colors text-left">Contact</button></li>
+              <li><Link to="/contact" className="hover:text-[#5E8EA9] transition-colors">Contact</Link></li>
             </ul>
           </div>
           <div>

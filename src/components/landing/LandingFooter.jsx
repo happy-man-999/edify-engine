@@ -2,10 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const LandingFooter = () => {
-  const openCalendlyModal = () => {
-    // Open Calendly in a new tab
-    window.open(import.meta.env.VITE_CALENDLY_URL, '_blank', 'noopener,noreferrer');
-  };
 
   return (
     <footer className="bg-gray-900 text-white py-12">
@@ -28,7 +24,7 @@ const LandingFooter = () => {
             <h4 className="font-semibold mb-4">Company</h4>
             <ul className="space-y-2 text-gray-400">
               <li><Link to="/contribute" className="hover:text-white transition-colors">Contribute</Link></li>
-              <li><button onClick={openCalendlyModal} className="hover:text-white transition-colors text-left">Contact</button></li>
+              <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
             </ul>
           </div>
           <div>

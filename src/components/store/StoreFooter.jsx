@@ -1,10 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const StoreFooter = () => {
-  const openCalendlyModal = () => {
-    // Open Calendly in a new tab
-    window.open(import.meta.env.VITE_CALENDLY_URL, '_blank', 'noopener,noreferrer');
-  };
 
   return (
   <footer className="glass border-t border-gray-200 py-8 mt-auto">
@@ -29,7 +26,7 @@ const StoreFooter = () => {
             <li><a href="#" className="text-gray-600 hover:text-[#5E8EA9] transition-colors duration-300 text-sm">About</a></li>
             <li><a href="#" className="text-gray-600 hover:text-[#5E8EA9] transition-colors duration-300 text-sm">Careers</a></li>
             <li><a href="#" className="text-gray-600 hover:text-[#5E8EA9] transition-colors duration-300 text-sm">Blog</a></li>
-            <li><button onClick={openCalendlyModal} className="text-gray-600 hover:text-[#5E8EA9] transition-colors duration-300 text-sm text-left">Contact</button></li>
+            <li><Link to="/contact" className="text-gray-600 hover:text-[#5E8EA9] transition-colors duration-300 text-sm">Contact</Link></li>
           </ul>
         </div>
         <div>

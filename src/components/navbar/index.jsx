@@ -8,10 +8,6 @@ const NavbarTabs = () => {
   const location = useLocation();
   const { isAuthenticated, user } = useAuth();
   
-  const openCalendlyModal = () => {
-    // Open Calendly in a new tab
-    window.open(import.meta.env.VITE_CALENDLY_URL, '_blank', 'noopener,noreferrer');
-  };
   
   let tabs = allTabs;
   
@@ -37,18 +33,6 @@ const NavbarTabs = () => {
   return (
     <>
       {tabs.map((tab, id) => {
-        // Handle Calendly links
-        if (tab.calendly) {
-          return (
-            <button
-              key={id}
-              onClick={openCalendlyModal}
-              className="hover:text-[#5E8EA9] transition-colors duration-300 text-gray-700"
-            >
-              {tab.title}
-            </button>
-          );
-        }
         
         // Handle external links
         if (tab.external) {
