@@ -6,5 +6,5 @@ export const tabs = [
 ]
 
 export const premiumTabs = [
-  { title: "Schedule", href: "calendly", calendly: true },
+  { title: "Contact", href: "calendly", calendly: true },
 ]

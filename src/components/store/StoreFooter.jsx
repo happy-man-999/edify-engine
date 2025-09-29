@@ -1,6 +1,12 @@
 import React from "react";
 
-const StoreFooter = () => (
+const StoreFooter = () => {
+  const openCalendlyModal = () => {
+    // Open Calendly in a new tab
+    window.open(import.meta.env.VITE_CALENDLY_URL, '_blank', 'noopener,noreferrer');
+  };
+
+  return (
   <footer className="glass border-t border-gray-200 py-8 mt-auto">
     <div className="max-w-7xl mx-auto px-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -23,7 +29,7 @@ const StoreFooter = () => (
             <li><a href="#" className="text-gray-600 hover:text-[#5E8EA9] transition-colors duration-300 text-sm">About</a></li>
             <li><a href="#" className="text-gray-600 hover:text-[#5E8EA9] transition-colors duration-300 text-sm">Careers</a></li>
             <li><a href="#" className="text-gray-600 hover:text-[#5E8EA9] transition-colors duration-300 text-sm">Blog</a></li>
-            <li><a href="#" className="text-gray-600 hover:text-[#5E8EA9] transition-colors duration-300 text-sm">Contact</a></li>
+            <li><button onClick={openCalendlyModal} className="text-gray-600 hover:text-[#5E8EA9] transition-colors duration-300 text-sm text-left">Contact</button></li>
           </ul>
         </div>
         <div>
@@ -47,6 +53,7 @@ const StoreFooter = () => (
       </div>
     </div>
   </footer>
-);
+  );
+};
 
 export default StoreFooter;

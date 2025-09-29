@@ -57,7 +57,7 @@ const Footer = () => {
             <h4 className="font-semibold mb-4 text-gray-900">Company</h4>
             <ul className="space-y-2 text-gray-600">
               <li><a href="/contribute" className="hover:text-[#5E8EA9] transition-colors">Contribute</a></li>
-              <li><a href="/contact" className="hover:text-[#5E8EA9] transition-colors">Contact</a></li>
+              <li><button onClick={openCalendlyModal} className="hover:text-[#5E8EA9] transition-colors text-left">Contact</button></li>
             </ul>
           </div>
           <div>
