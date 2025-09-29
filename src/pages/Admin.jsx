@@ -36,10 +36,10 @@ const Admin = () => {
   }
 
   const tabs = [
-    { id: 'users', label: 'User Management', icon: 'fas fa-users' },
-    { id: 'droplets', label: 'Droplet Management', icon: 'fas fa-server' },
-    { id: 'payments', label: 'Payment Activity', icon: 'fas fa-credit-card' },
-    { id: 'items', label: 'Items Management', icon: 'fas fa-box' },
+    { id: 'users', label: 'Users', icon: 'fas fa-users' },
+    { id: 'droplets', label: 'Droplets', icon: 'fas fa-server' },
+    { id: 'payments', label: 'Payments', icon: 'fas fa-credit-card' },
+    { id: 'items', label: 'Itemss', icon: 'fas fa-box' },
     { id: 'logs', label: 'Logs & Status', icon: 'fas fa-chart-line' },
     { id: 'settings', label: 'Settings & Configs', icon: 'fas fa-cog' },
   ];
