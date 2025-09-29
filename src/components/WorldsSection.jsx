@@ -62,9 +62,9 @@ const WorldsSection = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { openPaymentModal } = usePaymentModal();
-  const { handleStripePaymentSuccess, handleSolanaPaymentSuccess } = usePaymentSuccess();
   const { showError } = useErrorModal();
   const { userDroplets, loading, error, refreshUserDroplets } = useUserDroplets();
+  const { handleStripePaymentSuccess, handleSolanaPaymentSuccess } = usePaymentSuccess({refreshUserDroplets});
   const { user } = useAuth();
   
   // Redux state for domain modal
@@ -188,7 +188,7 @@ const WorldsSection = () => {
       // Proceed with subscription payment flow
       openPaymentModal({
         amount: 2.99,
-        itemName: "New World (Custom Domain)",
+        itemName: "Link your own domain name or buy one through us.",
         itemId: "custom-domain",
         subscriptionMode: true,
         metadata: {

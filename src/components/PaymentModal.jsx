@@ -78,7 +78,7 @@ const PaymentModal = ({
         <div className="bg-gradient-to-r from-[#42677D] to-[#5E8EA9] p-6 text-white">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">
-              {subscriptionMode ? 'Complete Subscription' : 'Complete Payment'}
+              {itemId === 'custom-domain' ? 'Add a Custom Domain' : subscriptionMode ? 'Complete Subscription' : 'Complete Payment'}
             </h2>
             <button
               onClick={handleClose}

@@ -160,7 +160,6 @@ const DomainSelectionModal = ({ open, onClose }) => {
   const handleClose = () => {
     setCustomDomain('');
     setDomainAvailable(null);
-    setDropletIP(null);
     onClose();
   };
 
@@ -233,7 +232,7 @@ const DomainSelectionModal = ({ open, onClose }) => {
               {domainAvailable === false && (
                 <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-sm text-blue-800 mb-3">
-                    Your domain needs to be configured. Use Entri to automatically set up DNS records.
+                    Your domain needs to be configured. Use Entri to automatically set up DNS records. If you have already configured your domain, please wait a while for the changes to propagate.
                   </p>
                   
                   <button

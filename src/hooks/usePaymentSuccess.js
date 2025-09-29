@@ -1,12 +1,12 @@
 import { useDispatch } from 'react-redux';
-import { showNotification } from '../store/uiSlice';
+import { showNotification, openDomainModal } from '../store/uiSlice';
 import { checkAuth } from '../store/authSlice';
 import { useErrorModal } from './useErrorModal';
 import { useLoadingSpinner } from './useLoadingSpinner';
 import { useWebhook } from './useWebhook';
 import { useState, useEffect, useCallback, useRef } from 'react';
 
-export const usePaymentSuccess = () => {
+export const usePaymentSuccess = ({refreshUserDroplets}) => {
   const dispatch = useDispatch();
   const { showError } = useErrorModal();
   const { showSpinner, hideSpinner } = useLoadingSpinner();
@@ -204,6 +204,17 @@ export const usePaymentSuccess = () => {
         } else if (result.itemType === 'custom-domain') {
           // Handle custom domain success
           dispatch(showNotification(`Upgraded your world to use a custom domain successfully!`));
+          
+          if (refreshUserDroplets) {
+            refreshUserDroplets();
+          } else {
+            console.warn('refreshUserDroplets function not provided');
+          }
+          
+          // Open domain modal for the upgraded droplet
+          if (result.droplet.dropletId) {
+            dispatch(openDomainModal(result.droplet.dropletId));
+          }
         } else {
           // Generic success message
           dispatch(showNotification(`Payment successful! ${result.message || ''}`));
