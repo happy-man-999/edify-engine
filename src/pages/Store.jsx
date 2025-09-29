@@ -23,7 +23,7 @@ import PaymentProcessingStatus from "../components/PaymentProcessingStatus";
 import { useCallback } from "react";
 
 const Store = () => {
-  const [activeTab, setActiveTab] = useState("My Purchases");
+  const [activeTab, setActiveTab] = useState("3D Objects");
   const [walletOpen, setWalletOpen] = useState(false);
   const [currentPayment, setCurrentPayment] = useState(null);
   
