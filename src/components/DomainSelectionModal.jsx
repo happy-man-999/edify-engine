@@ -1,51 +1,65 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useErrorModal } from '../hooks/useErrorModal';
+import { useEntri } from '../hooks/useEntri';
+import { useWebhook } from '../hooks/useWebhook';
+import { isValidDomainFormat } from '../utils/domainUtils';
+import { showNotification } from '../store/uiSlice';
 
-const DomainSelectionModal = ({ 
-  open, 
-  onClose, 
-  onDomainSelected,
-  dropletId
-}) => {
+const DomainSelectionModal = ({ open, onClose }) => {
   const [customDomain, setCustomDomain] = useState('');
   const [isCheckingDomain, setIsCheckingDomain] = useState(false);
   const [domainAvailable, setDomainAvailable] = useState(null);
-  const [showDnsInstructions, setShowDnsInstructions] = useState(false);
-  const [dropletIP, setDropletIP] = useState(null);
-  const [isLoadingIP, setIsLoadingIP] = useState(false);
+  const dispatch = useDispatch();
   const { showError } = useErrorModal();
+  const { dropletId } = useSelector(state => state.ui.domainModal);
+  const { user } = useSelector(state => state.auth);
+  
+  // Custom domain webhook for real-time updates
+  const { lastEvent, isConnected } = useWebhook(user?.id, open);
 
-  // Fetch droplet IP when modal opens
+  // Handle webhook events
   useEffect(() => {
-    if (open && dropletId) {
-      fetchDropletIP();
+    if (lastEvent) {
+      if (lastEvent.type === 'custom-domain-setup-completed') {
+        dispatch(showNotification(`Custom domain ${lastEvent.data.customDomain} setup completed successfully!`));
+        // Close the modal after successful setup
+        onClose();
+      } else if (lastEvent.type === 'custom-domain-setup-failed') {
+        dispatch(showNotification(`Custom domain setup failed: ${lastEvent.data.error}`));
+      }
     }
-  }, [open, dropletId]);
+  }, [lastEvent, dispatch, onClose]);
+
+  const handleOnEntriClose = event => {
+    console.log('onEntriClose', event.detail);
+  }
+
+  const { proceedWithEntri } = useEntri(handleOnEntriClose);
 
   const fetchDropletIP = async () => {
     if (!dropletId) return;
     
-    setIsLoadingIP(true);
     try {
-      const response = await fetch(`/api/dns/droplet/${dropletId}/ip`);
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/dns/droplet/${dropletId}/ip`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       
       if (response.ok) {
         const data = await response.json();
-        setDropletIP(data.ipAddress);
+        return data.ipAddress;
       } else {
         const errorData = await response.json();
         console.error('Failed to fetch droplet IP:', errorData);
-        setDropletIP(null);
       }
     } catch (error) {
       console.error('Error fetching droplet IP:', error);
-      setDropletIP(null);
-    } finally {
-      setIsLoadingIP(false);
     }
   };
-
-
 
   const checkDomainAvailability = async () => {
     if (!customDomain.trim()) {
@@ -53,48 +67,14 @@ const DomainSelectionModal = ({
       return;
     }
 
-    // Basic domain validation
-    // Validate domain format - allows normal domains like example.com, sub.example.com
-    const domainRegex = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    if (!domainRegex.test(customDomain.trim())) {
+    // Use utility function for domain validation
+    if (!isValidDomainFormat(customDomain.trim())) {
       showError('Domain must be a valid domain name (e.g., example.com, app.example.com). Each part must be 1-63 characters long and contain only letters, numbers, and hyphens. Cannot start or end with a hyphen.');
-      return;
-    }
-    
-    // Additional validation for domain length and format
-    const domainParts = customDomain.trim().split('.');
-    if (domainParts.length < 2) {
-      showError('Domain must have at least 2 parts (e.g., example.com)');
-      return;
-    }
-    
-    if (domainParts.length > 5) {
-      showError('Domain cannot have more than 5 parts');
-      return;
-    }
-    
-    // Check each part length
-    for (let i = 0; i < domainParts.length; i++) {
-      const part = domainParts[i];
-      if (part.length < 1 || part.length > 63) {
-        showError(`Domain part "${part}" must be 1-63 characters long`);
-        return;
-      }
-      if (part.startsWith('-') || part.endsWith('-')) {
-        showError(`Domain part "${part}" cannot start or end with a hyphen`);
-        return;
-      }
-    }
-    
-    // Check total domain length
-    if (customDomain.trim().length > 253) {
-      showError('Total domain length cannot exceed 253 characters');
       return;
     }
 
     setIsCheckingDomain(true);
     setDomainAvailable(null);
-    setShowDnsInstructions(false);
 
     try {
       // Make request to server-side health check endpoint
@@ -114,59 +94,76 @@ const DomainSelectionModal = ({
         } else {
           // Domain responds but status is not "ok" or request failed
           setDomainAvailable(false);
-          setShowDnsInstructions(true);
-          showError(`Domain "${domain}" is not configured correctly. Please configure DNS records.`);
+          showError(`Domain "${domain}" is not configured correctly.`);
         }
       } else {
         // Server error
         setDomainAvailable(false);
-        setShowDnsInstructions(true);
-        showError(`Domain "${domain}" verification failed. Please configure DNS records.`);
+        showError(`Domain "${domain}" verification failed.`);
       }
     } catch (error) {
       console.error('Error checking domain health:', error);
       
       // Handle error cases - all treated as domain not configured
       setDomainAvailable(false);
-      setShowDnsInstructions(true);
-      showError(`Domain "${customDomain}" verification failed. Please configure DNS records to point to your world's IP: ${dropletIP || 'Loading...'}`);
+      showError(`Domain "${customDomain}" verification failed.`);
     } finally {
       setIsCheckingDomain(false);
     }
   };
 
-  const handleAlreadyAdded = () => {
-    showError('You must wait until DNS propagation is complete. This can take up to 24-48 hours.');
-    onClose();
+  const handleEntriSetup = async () => {
+    const dropletIP = await fetchDropletIP();
+    proceedWithEntri(customDomain.trim(), dropletIP);
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (!domainAvailable) {
       showError('Please check domain availability first');
       return;
     }
 
-    onDomainSelected(customDomain.trim());
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/dns/custom-domain/setup', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          dropletId: dropletId,
+          customDomain: customDomain.trim()
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Show success notification
+        dispatch(showNotification(data.message));
+        // Close the modal
+        onClose();
+      } else {
+        throw new Error(data.message || 'Failed to setup custom domain');
+      }
+    } catch (error) {
+      console.error('Error setting up custom domain:', error);
+      showError('Failed to setup custom domain: ' + error.message);
+    }
   };
 
   const handleClose = () => {
     setCustomDomain('');
     setDomainAvailable(null);
-    setShowDnsInstructions(false);
     setDropletIP(null);
     onClose();
   };
 
-  // Get the droplet's IP address for DNS instructions
-  const getDropletIP = () => {
-    if (isLoadingIP) {
-      return 'Loading...';
-    }
-    if (!dropletIP) {
-      return 'IP address not available';
-    }
-    return dropletIP;
-  };
 
   if (!open) return null;
 
@@ -227,99 +224,25 @@ const DomainSelectionModal = ({
                   <i className={`fas fa-${domainAvailable ? 'check-circle' : 'times-circle'} mr-1`}></i>
                   {domainAvailable 
                     ? `Domain "${customDomain}" is available!`
-                    : `Domain "${customDomain}" IP doesn't match. Please configure DNS records.`
+                    : `Domain "${customDomain}" is not configured correctly.`
                   }
                 </div>
               )}
 
-              {/* DNS Instructions */}
-              {showDnsInstructions && (
+              {/* Entri Integration Button */}
+              {domainAvailable === false && (
                 <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-sm text-blue-800 mb-3">
-                    Your domain's IP address doesn't match our server, or DNS records are not yet configured. This is normal for newly created domains. You need to add DNS records to point your domain to our server.
+                    Your domain needs to be configured. Use Entri to automatically set up DNS records.
                   </p>
                   
-                  <div className="mb-4">
-                    <h4 className="font-semibold text-blue-900 mb-2">Your World's IP Address:</h4>
-                    <div className="bg-blue-100 p-2 rounded border border-blue-300">
-                      <code className="text-blue-800 font-mono text-sm">
-                        {getDropletIP()}
-                      </code>
-                    </div>
-                    <p className="text-xs text-blue-600 mt-1">
-                      This is the IP address of your specific world
-                    </p>
-                  </div>
-
-                  <div className="space-y-4">
-                    {/* Cloudflare Instructions */}
-                    <div className="bg-white p-3 rounded border border-blue-200">
-                      <h5 className="font-semibold text-blue-900 mb-2 flex items-center">
-                        <i className="fas fa-cloud mr-2 text-blue-600"></i>
-                        Cloudflare DNS Setup
-                      </h5>
-                      <ol className="text-sm text-blue-800 space-y-1 ml-4">
-                        <li>1. Log into your Cloudflare dashboard</li>
-                        <li>2. Select your domain</li>
-                        <li>3. Go to <strong>DNS</strong> → <strong>Records</strong></li>
-                        <li>4. Click <strong>Add record</strong></li>
-                        <li>5. Set <strong>Type</strong> to <code className="bg-blue-100 px-1 rounded">A</code></li>
-                        <li>6. Set <strong>Name</strong> to <code className="bg-blue-100 px-1 rounded">@</code> (or leave blank for root domain)</li>
-                        <li>7. Set <strong>IPv4 address</strong> to your world's IP: <code className="bg-blue-100 px-1 rounded">{getDropletIP()}</code></li>
-                        <li>8. Set <strong>Proxy status</strong> to <code className="bg-blue-100 px-1 rounded">DNS only</code></li>
-                        <li>9. Click <strong>Save</strong></li>
-                      </ol>
-                    </div>
-
-                    {/* GoDaddy Instructions */}
-                    <div className="bg-white p-3 rounded border border-blue-200">
-                      <h5 className="font-semibold text-blue-900 mb-2 flex items-center">
-                        <i className="fas fa-globe mr-2 text-blue-600"></i>
-                        GoDaddy DNS Setup
-                      </h5>
-                      <ol className="text-sm text-blue-800 space-y-1 ml-4">
-                        <li>1. Log into your GoDaddy account</li>
-                        <li>2. Go to <strong>My Products</strong> → <strong>DNS</strong></li>
-                        <li>3. Find your domain and click <strong>DNS</strong></li>
-                        <li>4. Click <strong>Add</strong> under <strong>A Records</strong></li>
-                        <li>5. Set <strong>Type</strong> to <code className="bg-blue-100 px-1 rounded">A</code></li>
-                        <li>6. Set <strong>Host</strong> to <code className="bg-blue-100 px-1 rounded">@</code></li>
-                        <li>7. Set <strong>Points to</strong> to your world's IP: <code className="bg-blue-100 px-1 rounded">{getDropletIP()}</code></li>
-                        <li>8. Set <strong>TTL</strong> to <code className="bg-blue-100 px-1 rounded">600</code> (10 minutes)</li>
-                        <li>9. Click <strong>Save</strong></li>
-                      </ol>
-                    </div>
-
-                    {/* General Instructions */}
-                    <div className="bg-yellow-50 p-3 rounded border border-yellow-200">
-                      <h5 className="font-semibold text-yellow-800 mb-2 flex items-center">
-                        <i className="fas fa-info-circle mr-2 text-yellow-600"></i>
-                        Important Notes
-                      </h5>
-                      <ul className="text-sm text-yellow-800 space-y-1 ml-4">
-                        <li>• DNS changes can take 24-48 hours to propagate globally</li>
-                        <li>• Make sure to set the record type to <strong>A</strong> (not CNAME)</li>
-                        <li>• For subdomains, use the subdomain name instead of <code className="bg-yellow-100 px-1 rounded">@</code></li>
-                        <li>• After adding records, wait a few minutes before checking again</li>
-                        <li>• Use the IP address shown above: <code className="bg-yellow-100 px-1 rounded">{getDropletIP()}</code></li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 flex space-x-2">
-                    <button
-                      onClick={handleAlreadyAdded}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                      I've Added the Records
-                    </button>
-                    <button
-                      onClick={checkDomainAvailability}
-                      className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-                    >
-                      Check Again
-                    </button>
-                  </div>
+                  <button
+                    onClick={handleEntriSetup}
+                    className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  >
+                    <i className="fas fa-cog mr-2"></i>
+                    Configure with Entri
+                  </button>
                 </div>
               )}
                 

@@ -13,7 +13,9 @@ const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
   const handleCardClick = () => {
     if (world.name && world.status === 'active') {
       // Open domain in new tab for active droplets
-      window.open(`https://${world.name}.edifyengine.com`, '_blank');
+      window.open(world.customDomain 
+        ? `https://${world.customDomain}`
+        : `https://${world.subdomain}.edifyengine.com`, '_blank');
     } else if (world.status === 'new' || world.status === 'off') {
       // For new/off droplets, show info or navigate to management
       console.log('Droplet is still being created or offline');
@@ -87,9 +89,9 @@ const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
     e.stopPropagation();
     if (world.name && world.status === 'active') {
       // Check if name is a full domain (contains dots) or just a subdomain
-      const url = world.name.includes('.') 
-        ? `https://${world.name}` 
-        : `https://${world.name}.edifyengine.com`;
+      const url = world.customDomain
+        ? `https://${world.customDomain}` 
+        : `https://${world.subdomain}.edifyengine.com`;
       window.open(url, '_blank');
     }
   };
@@ -268,11 +270,15 @@ const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
                 e.stopPropagation();
                 onCustomDomainUpsell();
               }}
-              className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-full p-3 text-white hover:bg-white/40 hover:border-white/50 transition-all duration-200 shadow-lg hover:scale-110 transform focus:outline-none focus:ring-2 focus:ring-white/50"
-              title="Upgrade to Custom Domain"
-              aria-label="Upgrade to Custom Domain"
+              className={`backdrop-blur-sm border rounded-full p-3 text-white hover:bg-white/40 hover:border-white/50 transition-all duration-200 shadow-lg hover:scale-110 transform focus:outline-none focus:ring-2 focus:ring-white/50 ${
+                world.customDomainPaid 
+                  ? 'bg-green-500/20 border-green-400/30 hover:bg-green-500/40' 
+                  : 'bg-white/20 border-white/30'
+              }`}
+              title={world.customDomainPaid ? 'Configure Custom Domain' : 'Upgrade to Custom Domain ($2.99)'}
+              aria-label={world.customDomainPaid ? 'Configure Custom Domain' : 'Upgrade to Custom Domain'}
             >
-              <i className="fas fa-crown text-lg"></i>
+              <i className={`fas ${world.customDomainPaid ? 'fa-globe' : 'fa-crown'} text-lg`}></i>
             </button>
           )}
 

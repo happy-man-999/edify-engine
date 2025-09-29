@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useWebhook, useSolanaWebhook } from '../hooks/useWebhook';
+import { useWebhook } from '../hooks/useWebhook';
 import { useLoadingSpinner } from '../hooks/useLoadingSpinner';
 import { useDispatch } from 'react-redux';
 import { showNotification } from '../store/uiSlice';
@@ -13,9 +13,8 @@ const PaymentProcessingStatus = ({ userId, paymentIdentifier, paymentMethod, ite
   const dispatch = useDispatch();
   const { hideSpinner } = useLoadingSpinner();
   
-  // Connect to appropriate webhook based on payment method
-  const { lastEvent: stripeWebhookEvent } = useWebhook(userId, paymentMethod === 'stripe');
-  const { lastEvent: solanaWebhookEvent } = useSolanaWebhook(userId, paymentMethod === 'solana');
+  // Connect to webhook for real-time updates
+  const { lastEvent: webhookEvent } = useWebhook(userId, true);
   
   // Memoize the webhook event handler to prevent infinite loops
   const handleWebhookEvent = useCallback((event) => {
@@ -44,12 +43,10 @@ const PaymentProcessingStatus = ({ userId, paymentIdentifier, paymentMethod, ite
   
   // Handle webhook events
   useEffect(() => {
-    if (paymentMethod === 'stripe' && stripeWebhookEvent) {
-      handleWebhookEvent(stripeWebhookEvent);
-    } else if (paymentMethod === 'solana' && solanaWebhookEvent) {
-      handleWebhookEvent(solanaWebhookEvent);
+    if (webhookEvent) {
+      handleWebhookEvent(webhookEvent);
     }
-  }, [stripeWebhookEvent, solanaWebhookEvent, paymentMethod, handleWebhookEvent]);
+  }, [webhookEvent, handleWebhookEvent]);
   
   // Auto-hide domain info after 10 seconds
   useEffect(() => {

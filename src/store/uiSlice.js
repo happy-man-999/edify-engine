@@ -19,6 +19,10 @@ const initialState = {
     isOpen: false,
     paymentData: null,
   },
+  domainModal: {
+    isOpen: false,
+    dropletId: null,
+  },
   currency: 'USD',
 };
 
@@ -74,6 +78,18 @@ const uiSlice = createSlice({
         paymentData: null,
       };
     },
+    openDomainModal(state, action) {
+      state.domainModal = {
+        isOpen: true,
+        dropletId: action.payload,
+      };
+    },
+    hideDomainModal(state) {
+      state.domainModal = {
+        isOpen: false,
+        dropletId: null,
+      };
+    },
     changeCurrency(state, action) {
       state.currency = action.payload;
     },
@@ -93,6 +109,8 @@ export const {
   hideWalletModal,
   openPaymentModal,
   closePaymentModal,
+  openDomainModal,
+  hideDomainModal,
   changeCurrency,
 } = uiSlice.actions;
 

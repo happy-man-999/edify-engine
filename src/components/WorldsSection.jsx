@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { usePaymentModal } from "../hooks/usePaymentModal";
 import { usePaymentSuccess } from "../hooks/usePaymentSuccess";
@@ -7,7 +7,7 @@ import { useErrorModal } from "../hooks/useErrorModal";
 import { useUserDroplets } from "../hooks/useUserDroplets";
 import { useAuth } from "../hooks/useAuth";
 import { shortAddress } from "../utils/format";
-import { showNotification } from "../store/uiSlice";
+import { showNotification, openDomainModal, hideDomainModal } from "../store/uiSlice";
 import WorldCard from "./WorldCard";
 import DomainSelectionModal from "./DomainSelectionModal";
 import UpgradePlanModal from "./UpgradePlanModal";
@@ -67,10 +67,9 @@ const WorldsSection = () => {
   const { userDroplets, loading, error, refreshUserDroplets } = useUserDroplets();
   const { user } = useAuth();
   
-  // State for showing the domain selection modal
-  const [showDomainModal, setShowDomainModal] = useState(false);
+  // Redux state for domain modal
+  const { isOpen: showDomainModal } = useSelector(state => state.ui.domainModal);
   const [selectedCustomDomain, setSelectedCustomDomain] = useState(null);
-  const [selectedDropletId, setSelectedDropletId] = useState(null);
 
   // State for showing the informational message
   const [showActiveInfo, setShowActiveInfo] = useState(false);
@@ -178,40 +177,69 @@ const WorldsSection = () => {
     });
   };
 
-  const handleCustomDomainSelected = (domain) => {
-    setShowDomainModal(false);
-    setSelectedCustomDomain(domain);
+  const handleCustomDomainUpsell = async (dropletId) => {
+    // Find the world to check if custom domain is already paid
+    const world = userDroplets.find(w => w.dropletId === dropletId);
     
-    // Proceed with subscription payment flow
-    openPaymentModal({
-      amount: 2.99,
-      itemName: "New World (Custom Domain)",
-      itemId: "custom-domain",
-      subscriptionMode: true,
-      metadata: {
-        customDomain: domain,
-        dropletId: selectedDropletId
-      }
-    }).then(async (result) => {
-      if (!result || !result.paymentMethod) return;
-      
-      if (result.paymentMethod === 'stripe') {
-        // For Stripe subscription, the redirect will handle the notification
-        // Refresh user droplets after successful payment
-        setTimeout(() => {
-          refreshUserDroplets();
-        }, 2000); // Wait a bit for the backend to process
-      }
-    }).catch((error) => {
-      console.error('Payment failed:', error);
-      showError(error.message);
-    });
+    if (world && world.customDomainPaid) {
+      // Already paid, show domain selection modal directly
+      dispatch(openDomainModal(dropletId));
+    } else {
+      // Proceed with subscription payment flow
+      openPaymentModal({
+        amount: 2.99,
+        itemName: "New World (Custom Domain)",
+        itemId: "custom-domain",
+        subscriptionMode: true,
+        metadata: {
+          dropletId: dropletId
+        }
+      }).then(async (result) => {
+        if (!result || !result.paymentMethod) return;
+        
+        if (result.paymentMethod === 'stripe') {
+          // For Stripe subscription, the redirect will handle the notification
+          // Refresh user droplets after successful payment
+          setTimeout(() => {
+            refreshUserDroplets();
+          }, 2000); // Wait a bit for the backend to process
+        }
+      }).catch((error) => {
+        console.error('Payment failed:', error);
+        showError(error.message);
+      });
+    }
   };
 
-  const handleCustomDomainUpsell = (dropletId) => {
-    // Show domain selection modal in custom domain only mode
-    setShowDomainModal(true);
-    setSelectedDropletId(dropletId);
+  const markWorldAsCustomDomainPaid = async (dropletId, transactionId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/user/droplets/${dropletId}/custom-domain-paid`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          transactionId: transactionId
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('World marked as custom domain paid:', data);
+        
+        // Refresh the droplets list to update the UI
+        refreshUserDroplets();
+        
+        dispatch(showNotification('Custom domain upgrade successful!'));
+      } else {
+        throw new Error('Failed to mark world as custom domain paid');
+      }
+    } catch (error) {
+      console.error('Error marking world as custom domain paid:', error);
+      throw error;
+    }
   };
 
   const handleUpgradePlan = () => {
@@ -387,9 +415,7 @@ const WorldsSection = () => {
       {/* Domain Selection Modal */}
       <DomainSelectionModal
         open={showDomainModal}
-        onClose={() => setShowDomainModal(false)}
-        onDomainSelected={handleCustomDomainSelected}
-        dropletId={selectedDropletId}
+        onClose={() => dispatch(hideDomainModal())}
       />
 
       {/* Upgrade Plan Modal */}

@@ -3,7 +3,7 @@ import { showNotification } from '../store/uiSlice';
 import { checkAuth } from '../store/authSlice';
 import { useErrorModal } from './useErrorModal';
 import { useLoadingSpinner } from './useLoadingSpinner';
-import { useWebhook, useSolanaWebhook } from './useWebhook';
+import { useWebhook } from './useWebhook';
 import { useState, useEffect, useCallback, useRef } from 'react';
 
 export const usePaymentSuccess = () => {
@@ -33,8 +33,7 @@ export const usePaymentSuccess = () => {
   const userId = getCurrentUserId();
   
   // Connect to webhooks for real-time updates
-  const { lastEvent: stripeWebhookEvent } = useWebhook(userId, true);
-  const { lastEvent: solanaWebhookEvent } = useSolanaWebhook(userId, true);
+  const { lastEvent: webhookEvent } = useWebhook(userId, true);
   
   // Function to handle file downloads
   const handleDownload = useCallback(async (downloadUrl, fileName) => {
@@ -87,16 +86,17 @@ export const usePaymentSuccess = () => {
     dispatchRef.current = dispatch;
   }, [hideSpinner, showError, dispatch]);
   
-  // Memoize the webhook event handlers to prevent infinite loops
-  const handleStripeWebhookEvent = useCallback((event) => {
+  // Memoize the webhook event handler to prevent infinite loops
+  const handleWebhookEvent = useCallback((event) => {
     if (event.type === 'new-world-created') {
-      const { sessionId, domain, status } = event.data;
+      const { sessionId, signature, domain, status } = event.data;
       
       if (status === 'completed') {
-        // Update processing state
+        // Update processing state - use sessionId for Stripe or signature for Solana
+        const paymentId = sessionId || signature;
         setProcessingPayments(prev => {
           const newMap = new Map(prev);
-          newMap.delete(sessionId);
+          newMap.delete(paymentId);
           return newMap;
         });
         
@@ -105,46 +105,15 @@ export const usePaymentSuccess = () => {
         dispatchRef.current(showNotification(`New world created successfully! Your domain: ${domain}`));
       }
     } else if (event.type === 'new-world-creation-failed') {
-      const { sessionId, error } = event.data;
+      const { sessionId, signature, error } = event.data;
       
-      // Update processing state
+      // Update processing state - use sessionId for Stripe or signature for Solana
+      const paymentId = sessionId || signature;
       setProcessingPayments(prev => {
         const newMap = new Map(prev);
-        newMap.delete(sessionId);
+        newMap.delete(paymentId);
         return newMap;
       });
-      
-      // Hide spinner and show error
-      hideSpinnerRef.current();
-      showErrorRef.current(`New world creation failed: ${error}`);
-    }
-  }, []);
-  
-  const handleSolanaWebhookEvent = useCallback((event) => {
-    if (event.type === 'new-world-created') {
-      const { signature, domain, status } = event.data;
-      
-      if (status === 'completed') {
-        // Update processing state
-        setProcessingPayments(prev => {
-          const newMap = new Map(prev);
-          newMap.delete(signature);
-          return newMap;
-        });
-        
-        // Hide spinner and show success
-        hideSpinnerRef.current();
-        dispatchRef.current(showNotification(`New world created successfully! Your domain: ${domain}`));
-      }
-    } else if (event.type === 'new-world-creation-failed') {
-      const { signature, error } = event.data;
-      
-      // Update processing state
-        setProcessingPayments(prev => {
-          const newMap = new Map(prev);
-          newMap.delete(signature);
-          return newMap;
-        });
       
       // Hide spinner and show error
       hideSpinnerRef.current();
@@ -154,16 +123,10 @@ export const usePaymentSuccess = () => {
 
   // Handle webhook events
   useEffect(() => {
-    if (stripeWebhookEvent) {
-      handleStripeWebhookEvent(stripeWebhookEvent);
+    if (webhookEvent) {
+      handleWebhookEvent(webhookEvent);
     }
-  }, [stripeWebhookEvent, handleStripeWebhookEvent]);
-  
-  useEffect(() => {
-    if (solanaWebhookEvent) {
-      handleSolanaWebhookEvent(solanaWebhookEvent);
-    }
-  }, [solanaWebhookEvent, handleSolanaWebhookEvent]);
+  }, [webhookEvent, handleWebhookEvent]);
 
   // Handle Stripe payment success
   const handleStripePaymentSuccess = async (sessionId) => {
@@ -238,6 +201,9 @@ export const usePaymentSuccess = () => {
           if (token) {
             dispatch(checkAuth(token));
           }
+        } else if (result.itemType === 'custom-domain') {
+          // Handle custom domain success
+          dispatch(showNotification(`Upgraded your world to use a custom domain successfully!`));
         } else {
           // Generic success message
           dispatch(showNotification(`Payment successful! ${result.message || ''}`));
