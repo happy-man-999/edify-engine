@@ -28,6 +28,31 @@ export const fetchDroplets = createAsyncThunk(
   }
 );
 
+export const fetchUserDroplets = createAsyncThunk(
+  'droplets/fetchUserDroplets',
+  async (_, { rejectWithValue, getState }) => {
+    try {
+      const { token } = getState().auth;
+      
+      const response = await fetch('/api/user/droplets', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user droplets');
+      }
+
+      const data = await response.json();
+      return data.droplets || [];
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const fetchDropletStats = createAsyncThunk(
   'droplets/fetchDropletStats',
   async (_, { rejectWithValue, getState }) => {
@@ -217,6 +242,7 @@ export const deleteDroplet = createAsyncThunk(
 
 const initialState = {
   droplets: [],
+  userDroplets: [],
   stats: {
     totalDroplets: 0,
     activeDroplets: 0,
@@ -232,8 +258,10 @@ const initialState = {
     pages: 0
   },
   loading: false,
+  userDropletsLoading: false,
   statsLoading: false,
   error: null,
+  userDropletsError: null,
   selectedDroplet: null
 };
 
@@ -270,6 +298,21 @@ const dropletSlice = createSlice({
       .addCase(fetchDroplets.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      });
+
+    // fetchUserDroplets
+    builder
+      .addCase(fetchUserDroplets.pending, (state) => {
+        state.userDropletsLoading = true;
+        state.userDropletsError = null;
+      })
+      .addCase(fetchUserDroplets.fulfilled, (state, action) => {
+        state.userDropletsLoading = false;
+        state.userDroplets = action.payload;
+      })
+      .addCase(fetchUserDroplets.rejected, (state, action) => {
+        state.userDropletsLoading = false;
+        state.userDropletsError = action.payload;
       });
 
     // fetchDropletStats

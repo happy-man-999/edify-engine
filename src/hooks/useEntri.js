@@ -61,6 +61,11 @@ export const useEntri = (handleOnEntriClose) => {
           ttl: 300,
         },
       ],
+      whiteLabel: {
+        customProperties: {
+          initialScreen: { disableScreen: true }
+        }
+      }
     };
 
     entri.showEntri(config);

@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useErrorModal } from '../hooks/useErrorModal';
 import { useEntri } from '../hooks/useEntri';
 import { useWebhook } from '../hooks/useWebhook';
+import { useUserDroplets } from '../hooks/useUserDroplets';
 import { isValidDomainFormat } from '../utils/domainUtils';
 import { showNotification } from '../store/uiSlice';
 
@@ -15,6 +16,7 @@ const DomainSelectionModal = ({ open, onClose }) => {
   const { showError } = useErrorModal();
   const { dropletId } = useSelector(state => state.ui.domainModal);
   const { user } = useSelector(state => state.auth);
+  const { refreshUserDroplets } = useUserDroplets();
   
   // Custom domain webhook for real-time updates
   const { lastEvent, isConnected } = useWebhook(user?.id, open);
@@ -149,6 +151,8 @@ const DomainSelectionModal = ({ open, onClose }) => {
       if (data.success) {
         // Show success notification
         dispatch(showNotification(data.message));
+        // Refresh user droplets to update the UI
+        refreshUserDroplets();
         // Close the modal
         onClose();
       } else {
@@ -235,7 +239,7 @@ const DomainSelectionModal = ({ open, onClose }) => {
               {domainAvailable === false && (
                 <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-sm text-blue-800 mb-3">
-                    Your domain needs to be configured. Use Entri to automatically set up DNS records. If you have already configured your domain, please wait a while for the changes to propagate.
+                    We need to finish configuring your domain. You can click button to automatically set up your DNS records. If you've already updated your domain settings, please give it some time - changes may take a little while to show up.
                   </p>
                   
                   <button
@@ -244,7 +248,7 @@ const DomainSelectionModal = ({ open, onClose }) => {
                     className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                   >
                     <i className="fas fa-cog mr-2"></i>
-                    Configure with Entri
+                    Connect Domain
                   </button>
                 </div>
               )}

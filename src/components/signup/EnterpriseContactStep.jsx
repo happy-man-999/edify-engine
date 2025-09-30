@@ -342,7 +342,7 @@ const EnterpriseContactStep = ({ formData, onContactScheduled, isProcessingConta
           <div className="flex items-center justify-center space-x-4 text-sm text-blue-700">
             <div className="flex items-center">
               <i className="fas fa-clock mr-1"></i>
-              <span>30 minutes</span>
+              <span>15 minutes</span>
             </div>
             <div className="flex items-center">
               <i className="fas fa-video mr-1"></i>

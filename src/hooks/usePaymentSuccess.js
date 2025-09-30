@@ -5,11 +5,13 @@ import { useErrorModal } from './useErrorModal';
 import { useLoadingSpinner } from './useLoadingSpinner';
 import { useWebhook } from './useWebhook';
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useUserDroplets } from './useUserDroplets';
 
-export const usePaymentSuccess = ({refreshUserDroplets} = {}) => {
+export const usePaymentSuccess = () => {
   const dispatch = useDispatch();
   const { showError } = useErrorModal();
   const { showSpinner, hideSpinner } = useLoadingSpinner();
+  const { refreshUserDroplets } = useUserDroplets();
   
   // State for tracking payment processing
   const [processingPayments, setProcessingPayments] = useState(new Map());
@@ -205,11 +207,7 @@ export const usePaymentSuccess = ({refreshUserDroplets} = {}) => {
           // Handle custom domain success
           dispatch(showNotification(`Upgraded your world to use a custom domain successfully!`));
           
-          if (refreshUserDroplets) {
-            refreshUserDroplets();
-          } else {
-            console.warn('refreshUserDroplets function not provided');
-          }
+          refreshUserDroplets();
           
           // Open domain modal for the upgraded droplet
           if (result.droplet.dropletId) {

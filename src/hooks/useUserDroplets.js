@@ -1,50 +1,25 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchUserDroplets } from '../store/dropletSlice';
 
 export const useUserDroplets = () => {
-  const [userDroplets, setUserDroplets] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  
+  const dispatch = useDispatch();
+  const { userDroplets, userDropletsLoading, userDropletsError } = useSelector((state) => state.droplets);
   const { token } = useSelector((state) => state.auth);
-
-  const fetchUserDroplets = useCallback(async () => {
-    if (!token) return;
-    
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const response = await fetch('/api/user/droplets', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch user droplets');
-      }
-
-      const data = await response.json();
-      setUserDroplets(data.droplets || []);
-    } catch (err) {
-      console.error('Error fetching user droplets:', err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [token]);
 
   // Fetch user droplets on mount and when token changes
   useEffect(() => {
-    fetchUserDroplets();
-  }, [fetchUserDroplets]);
+    if (token) {
+      dispatch(fetchUserDroplets());
+    }
+  }, [dispatch, token]);
 
   // Function to refresh user droplets
   const refreshUserDroplets = useCallback(() => {
-    fetchUserDroplets();
-  }, [fetchUserDroplets]);
+    if (token) {
+      dispatch(fetchUserDroplets());
+    }
+  }, [dispatch, token]);
 
   // Function to get droplet status color
   const getStatusColor = useCallback((status) => {
@@ -76,8 +51,8 @@ export const useUserDroplets = () => {
 
   return {
     userDroplets,
-    loading,
-    error,
+    loading: userDropletsLoading,
+    error: userDropletsError,
     refreshUserDroplets,
     getStatusColor,
     formatSpecs,

@@ -44,7 +44,7 @@ const Contact = () => {
                 <div>
                   <h3 className="text-lg font-medium text-gray-900 mb-2">What to Expect</h3>
                   <ul className="text-gray-600 space-y-2">
-                    <li>• 15-30 minute consultation</li>
+                    <li>• 15 minute consultation</li>
                     <li>• Project requirements discussion</li>
                     <li>• Custom pricing and timeline</li>
                     <li>• Technical feasibility review</li>
@@ -56,8 +56,8 @@ const Contact = () => {
                   <h4 className="font-medium text-blue-900 mb-2">Need Immediate Help?</h4>
                   <p className="text-blue-700 text-sm">
                     For urgent inquiries or technical support, please email us at{' '}
-                    <a href="mailto:support@edifyengine.com" className="underline hover:text-blue-800">
-                      support@edifyengine.com
+                    <a href="mailto:info@edifyengine.com" className="underline hover:text-blue-800">
+                      info@edifyengine.com
                     </a>
                   </p>
                 </div>
