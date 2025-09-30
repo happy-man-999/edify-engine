@@ -83,12 +83,12 @@ const DomainSelectionModal = ({ open, onClose }) => {
       
       console.log('Checking domain health via server:', domain);
 
-      const response = await fetch(`/api/dns/check-health?domain=${encodeURIComponent(domain)}&protocol=${protocol}`);
+      const response = await fetch(`/api/dns/check-health?domain=${encodeURIComponent(domain)}&dropletId=${dropletId}&protocol=${protocol}`);
 
       if (response.ok) {
         const data = await response.json();
         
-        if (data.success && data.status === 'ok') {
+        if (data.success && data.status === 'connected') {
           // Domain is alive and responding correctly
           setDomainAvailable(true);
         } else {
