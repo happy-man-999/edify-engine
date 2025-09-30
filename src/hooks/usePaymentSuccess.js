@@ -6,7 +6,7 @@ import { useLoadingSpinner } from './useLoadingSpinner';
 import { useWebhook } from './useWebhook';
 import { useState, useEffect, useCallback, useRef } from 'react';
 
-export const usePaymentSuccess = ({refreshUserDroplets}) => {
+export const usePaymentSuccess = ({refreshUserDroplets} = {}) => {
   const dispatch = useDispatch();
   const { showError } = useErrorModal();
   const { showSpinner, hideSpinner } = useLoadingSpinner();
