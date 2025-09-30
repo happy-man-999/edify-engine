@@ -63,8 +63,6 @@ export const useEntri = (handleOnEntriClose) => {
       ],
     };
 
-    console.log(token, config)
-
     entri.showEntri(config);
   }, [getAuthToken]);
 

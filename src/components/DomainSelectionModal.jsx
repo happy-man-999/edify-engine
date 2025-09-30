@@ -10,6 +10,7 @@ const DomainSelectionModal = ({ open, onClose }) => {
   const [customDomain, setCustomDomain] = useState('');
   const [isCheckingDomain, setIsCheckingDomain] = useState(false);
   const [domainAvailable, setDomainAvailable] = useState(null);
+  const [isLoadingEntri, setIsLoadingEntri] = useState(false);
   const dispatch = useDispatch();
   const { showError } = useErrorModal();
   const { dropletId } = useSelector(state => state.ui.domainModal);
@@ -32,6 +33,7 @@ const DomainSelectionModal = ({ open, onClose }) => {
   }, [lastEvent, dispatch, onClose]);
 
   const handleOnEntriClose = event => {
+    setIsLoadingEntri(false);
     console.log('onEntriClose', event.detail);
   }
 
@@ -113,6 +115,7 @@ const DomainSelectionModal = ({ open, onClose }) => {
   };
 
   const handleEntriSetup = async () => {
+    setIsLoadingEntri(true);
     const dropletIP = await fetchDropletIP();
     proceedWithEntri(customDomain.trim(), dropletIP);
   };
@@ -237,6 +240,7 @@ const DomainSelectionModal = ({ open, onClose }) => {
                   
                   <button
                     onClick={handleEntriSetup}
+                    disabled={isLoadingEntri}
                     className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                   >
                     <i className="fas fa-cog mr-2"></i>
