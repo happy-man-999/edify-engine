@@ -12,7 +12,7 @@ const EmailVerificationModal = ({
   const [error, setError] = useState('');
   const [remainingAttempts, setRemainingAttempts] = useState(3);
   const [isResending, setIsResending] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes in seconds
   const inputRefs = useRef([]);
 
   // Timer countdown
@@ -38,7 +38,7 @@ const EmailVerificationModal = ({
       setCode(['', '', '', '']);
       setError('');
       setRemainingAttempts(3);
-      setTimeLeft(300);
+      setTimeLeft(600);
       // Focus first input
       setTimeout(() => {
         if (inputRefs.current[0]) {
@@ -155,7 +155,7 @@ const EmailVerificationModal = ({
       const data = await response.json();
 
       if (response.ok) {
-        setTimeLeft(300); // Reset timer
+        setTimeLeft(600); // Reset timer
         setRemainingAttempts(3); // Reset attempts
         setCode(['', '', '', '']); // Clear code
         // Focus first input
