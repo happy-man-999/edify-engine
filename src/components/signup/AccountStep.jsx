@@ -1,9 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useSearchParams } from 'react-router-dom';
+import EmailVerificationModal from '../EmailVerificationModal';
 
 const AccountStep = ({ formData, errors, onInputChange, onNext, setErrors }) => {
-  const { user, isAuthenticated, signupUser } = useAuth();
+  const { 
+    user, 
+    isAuthenticated, 
+    signupUser, 
+    signupUserWithVerification,
+    sendEmailVerificationCode,
+    emailVerification,
+    openEmailVerification,
+    closeEmailVerification
+  } = useAuth();
   const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [signupError, setSignupError] = useState('');
@@ -77,20 +87,47 @@ const AccountStep = ({ formData, errors, onInputChange, onNext, setErrors }) => 
     setIsLoading(true);
     
     try {
-      const result = await signupUser({
+      // Send verification code first
+      const emailResult = await sendEmailVerificationCode(
+        formData.email.trim(), 
+        formData.firstName.trim()
+      );
+      
+      if (emailResult.success) {
+        // Open email verification modal
+        openEmailVerification(formData.email.trim(), formData.firstName.trim());
+      } else {
+        setSignupError(emailResult.error || 'Failed to send verification code. Please try again.');
+      }
+    } catch (error) {
+      setSignupError(error.message || 'An unexpected error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerificationSuccess = async (verificationCode) => {
+    setIsLoading(true);
+    setSignupError('');
+    
+    try {
+      const result = await signupUserWithVerification({
         firstName: formData.firstName.trim(),
         lastName: formData.lastName.trim(),
         email: formData.email.trim(),
-        password: formData.password
+        password: formData.password,
+        verificationCode: verificationCode
       });
       
       if (result.success) {
         onNext();
       } else {
         setSignupError(result.error || 'Signup failed. Please try again.');
+        closeEmailVerification();
       }
     } catch (error) {
       setSignupError(error.message || 'An unexpected error occurred. Please try again.');
+      closeEmailVerification();
     } finally {
       setIsLoading(false);
     }
@@ -113,11 +150,12 @@ const AccountStep = ({ formData, errors, onInputChange, onNext, setErrors }) => 
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Your Account</h2>
-        <p className="text-gray-600">Join the future of immersive experiences</p>
-      </div>
+    <>
+      <div className="max-w-2xl mx-auto">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Your Account</h2>
+          <p className="text-gray-600">Join the future of immersive experiences</p>
+        </div>
       
       {/* Google Sign In Button */}
       <div className="mb-8">
@@ -252,7 +290,17 @@ const AccountStep = ({ formData, errors, onInputChange, onNext, setErrors }) => 
           </button>
         </div>
       </form>
-    </div>
+      </div>
+
+      {/* Email Verification Modal */}
+      <EmailVerificationModal
+        isOpen={emailVerification.isModalOpen}
+        onClose={closeEmailVerification}
+        email={emailVerification.email}
+        firstName={emailVerification.firstName}
+        onVerificationSuccess={handleVerificationSuccess}
+      />
+    </>
   );
 };
 

@@ -213,7 +213,7 @@ const SettingsConfigs = () => {
   };
 
   const pollSnapshotStatus = async (actionId) => {
-    const maxAttempts = 60; // 5 minutes with 5-second intervals
+    const maxAttempts = 180; // 5 minutes with 5-second intervals
     let attempts = 0;
     
     const poll = async () => {

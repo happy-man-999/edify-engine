@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import {
   checkAuth,
   signup,
+  signupWithVerification,
+  sendVerificationCode,
   signin,
   signout,
   updateProfile,
@@ -11,7 +13,10 @@ import {
   checkSignupProgress,
   saveSignupProgress,
   clearError,
-  clearAuth
+  clearAuth,
+  openEmailVerificationModal,
+  closeEmailVerificationModal,
+  clearEmailVerificationError
 } from '../store/authSlice';
 
 export const useAuth = () => {
@@ -24,7 +29,8 @@ export const useAuth = () => {
     signupProgress,
     hasCompletedSignup,
     isAuthenticated,
-    error
+    error,
+    emailVerification
   } = useSelector((state) => state.auth);
 
   // Check if user is authenticated on app load
@@ -40,6 +46,34 @@ export const useAuth = () => {
       success: !result.error,
       error: result.error ? result.payload : null
     };
+  };
+
+  const signupUserWithVerification = async (userData) => {
+    const result = await dispatch(signupWithVerification(userData));
+    return {
+      success: !result.error,
+      error: result.error ? result.payload : null
+    };
+  };
+
+  const sendEmailVerificationCode = async (email, firstName) => {
+    const result = await dispatch(sendVerificationCode({ email, firstName }));
+    return {
+      success: !result.error,
+      error: result.error ? result.payload : null
+    };
+  };
+
+  const openEmailVerification = (email, firstName) => {
+    dispatch(openEmailVerificationModal({ email, firstName }));
+  };
+
+  const closeEmailVerification = () => {
+    dispatch(closeEmailVerificationModal());
+  };
+
+  const clearEmailVerificationError = () => {
+    dispatch(clearEmailVerificationError());
   };
 
   const signinUser = async (credentials) => {
@@ -99,6 +133,8 @@ export const useAuth = () => {
     token,
     loading,
     signupUser,
+    signupUserWithVerification,
+    sendEmailVerificationCode,
     signinUser,
     signout: signoutUser,
     updateProfile: updateUserProfile,
@@ -109,6 +145,10 @@ export const useAuth = () => {
     hasCompletedSignup,
     isAuthenticated,
     error,
+    emailVerification,
+    openEmailVerification,
+    closeEmailVerification,
+    clearEmailVerificationError,
     clearError: clearAuthError,
     clearAuth: clearAuthState
   };

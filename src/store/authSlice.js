@@ -49,6 +49,56 @@ export const signup = createAsyncThunk(
   }
 );
 
+export const signupWithVerification = createAsyncThunk(
+  'auth/signupWithVerification',
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await fetch('/api/auth/signup-with-verification', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userData)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Signup failed');
+      }
+
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const sendVerificationCode = createAsyncThunk(
+  'auth/sendVerificationCode',
+  async ({ email, firstName }, { rejectWithValue }) => {
+    try {
+      const response = await fetch('/api/email-verification/send-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, firstName })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to send verification code');
+      }
+
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const signin = createAsyncThunk(
   'auth/signin',
   async (credentials, { rejectWithValue }) => {
@@ -225,7 +275,14 @@ const initialState = {
   signupProgress: null,
   hasCompletedSignup: false,
   isAuthenticated: false,
-  error: null
+  error: null,
+  emailVerification: {
+    isModalOpen: false,
+    email: '',
+    firstName: '',
+    isSendingCode: false,
+    sendCodeError: null
+  }
 };
 
 const authSlice = createSlice({
@@ -246,6 +303,21 @@ const authSlice = createSlice({
       state.signupProgress = null;
       state.hasCompletedSignup = false;
       localStorage.removeItem('token');
+    },
+    openEmailVerificationModal(state, action) {
+      state.emailVerification.isModalOpen = true;
+      state.emailVerification.email = action.payload.email;
+      state.emailVerification.firstName = action.payload.firstName;
+      state.emailVerification.sendCodeError = null;
+    },
+    closeEmailVerificationModal(state) {
+      state.emailVerification.isModalOpen = false;
+      state.emailVerification.email = '';
+      state.emailVerification.firstName = '';
+      state.emailVerification.sendCodeError = null;
+    },
+    clearEmailVerificationError(state) {
+      state.emailVerification.sendCodeError = null;
     }
   },
   extraReducers: (builder) => {
@@ -287,6 +359,41 @@ const authSlice = createSlice({
       .addCase(signup.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      });
+
+    // signupWithVerification
+    builder
+      .addCase(signupWithVerification.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(signupWithVerification.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        state.isAuthenticated = true;
+        localStorage.setItem('token', action.payload.token);
+        state.error = null;
+        state.emailVerification.isModalOpen = false;
+      })
+      .addCase(signupWithVerification.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    // sendVerificationCode
+    builder
+      .addCase(sendVerificationCode.pending, (state) => {
+        state.emailVerification.isSendingCode = true;
+        state.emailVerification.sendCodeError = null;
+      })
+      .addCase(sendVerificationCode.fulfilled, (state, action) => {
+        state.emailVerification.isSendingCode = false;
+        state.emailVerification.sendCodeError = null;
+      })
+      .addCase(sendVerificationCode.rejected, (state, action) => {
+        state.emailVerification.isSendingCode = false;
+        state.emailVerification.sendCodeError = action.payload;
       });
 
     // signin
@@ -398,5 +505,12 @@ const authSlice = createSlice({
   }
 });
 
-export const { clearError, setToken, clearAuth } = authSlice.actions;
+export const { 
+  clearError, 
+  setToken, 
+  clearAuth, 
+  openEmailVerificationModal, 
+  closeEmailVerificationModal, 
+  clearEmailVerificationError 
+} = authSlice.actions;
 export default authSlice.reducer; 
