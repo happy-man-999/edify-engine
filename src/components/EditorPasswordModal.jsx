@@ -4,7 +4,7 @@ import { closeEditorModal } from '../store/uiSlice';
 
 const EditorPasswordModal = () => {
   const dispatch = useDispatch();
-  const { isOpen, subdomain } = useSelector(state => state.ui.editorModal);
+  const { isOpen, domain } = useSelector(state => state.ui.editorModal);
   const [copied, setCopied] = useState(false);
   const password = "edifyengine123!@#";
 
@@ -19,7 +19,7 @@ const EditorPasswordModal = () => {
   };
 
   const handleNavigate = () => {
-    const editorUrl = `https://${subdomain}.edifyengine.com/editor`;
+    const editorUrl = `https://${domain}/editor`;
     window.open(editorUrl, '_blank');
     dispatch(closeEditorModal());
   };

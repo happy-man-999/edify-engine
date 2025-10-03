@@ -131,7 +131,7 @@ const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
 
   const handleEditorClick = (e) => {
     e.stopPropagation();
-    showEditorModal(world.subdomain);
+    showEditorModal(world.customDomain ? world.customDomain : world.subdomain + ".edifyengine.com");
   };
 
   return (

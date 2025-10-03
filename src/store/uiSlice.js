@@ -25,7 +25,7 @@ const initialState = {
   },
   editorModal: {
     isOpen: false,
-    subdomain: null,
+    domain: null,
   },
   currency: 'USD',
 };
@@ -97,13 +97,13 @@ const uiSlice = createSlice({
     openEditorModal(state, action) {
       state.editorModal = {
         isOpen: true,
-        subdomain: action.payload,
+        domain: action.payload,
       };
     },
     closeEditorModal(state) {
       state.editorModal = {
         isOpen: false,
-        subdomain: null,
+        domain: null,
       };
     },
     changeCurrency(state, action) {
