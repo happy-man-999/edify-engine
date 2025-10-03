@@ -46,6 +46,7 @@ import {
   clearNotification,
 } from './store/uiSlice';
 import YesNoModal from './components/YesNoModal';
+import EditorPasswordModal from './components/EditorPasswordModal';
 import { usePaymentModal } from './hooks/usePaymentModal';
 import { initializeFontLoading } from './utils/fontLoader';
 
@@ -155,6 +156,7 @@ function App() {
                 {notification && <Notification message={notification} onClose={() => dispatch(clearNotification())} />}
                 <ErrorModal open={errorModal.open} message={errorModal.message} onClose={() => dispatch(closeErrorModal())} />
                 <YesNoModal />
+                <EditorPasswordModal />
                 <CustomWalletModal />
                 <PaymentModal
                   open={isOpen}

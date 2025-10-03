@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { useDroplets } from '../hooks/useDroplets';
 import { useDeleteWorld } from '../hooks/useDeleteWorld';
 import { useYesNoModal } from '../hooks/useYesNoModal';
+import { useEditorModal } from '../hooks/useEditorModal';
 
 const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
   const { syncDroplet, restartDroplet } = useDroplets();
   const { deleteWorld, isDeleting } = useDeleteWorld();
   const { showModal } = useYesNoModal();
+  const { showModal: showEditorModal } = useEditorModal();
   const [isSyncing, setIsSyncing] = useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
 
@@ -125,6 +127,11 @@ const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
         onRefresh();
       }
     }
+  };
+
+  const handleEditorClick = (e) => {
+    e.stopPropagation();
+    showEditorModal(world.subdomain);
   };
 
   return (
@@ -262,6 +269,18 @@ const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
               <i className="fas fa-redo text-lg"></i>
             )}
           </button>)}
+
+          {/* Editor Button */}
+          {world.status === 'active' && world.name && (
+            <button
+              onClick={handleEditorClick}
+              className="bg-purple-500/20 backdrop-blur-sm border border-purple-400/30 rounded-full p-3 text-white hover:bg-purple-500/40 hover:border-purple-400/50 transition-all duration-200 shadow-lg hover:scale-110 transform focus:outline-none focus:ring-2 focus:ring-purple-400/50"
+              title="Open Editor"
+              aria-label="Open VSCode Editor"
+            >
+              <i className="fas fa-code text-lg"></i>
+            </button>
+          )}
 
           {/* Custom Domain Upsell Button */}
           {world.status === 'active' && world.name && onCustomDomainUpsell && (

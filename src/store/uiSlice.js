@@ -23,6 +23,10 @@ const initialState = {
     isOpen: false,
     dropletId: null,
   },
+  editorModal: {
+    isOpen: false,
+    subdomain: null,
+  },
   currency: 'USD',
 };
 
@@ -90,6 +94,18 @@ const uiSlice = createSlice({
         dropletId: null,
       };
     },
+    openEditorModal(state, action) {
+      state.editorModal = {
+        isOpen: true,
+        subdomain: action.payload,
+      };
+    },
+    closeEditorModal(state) {
+      state.editorModal = {
+        isOpen: false,
+        subdomain: null,
+      };
+    },
     changeCurrency(state, action) {
       state.currency = action.payload;
     },
@@ -111,6 +127,8 @@ export const {
   closePaymentModal,
   openDomainModal,
   hideDomainModal,
+  openEditorModal,
+  closeEditorModal,
   changeCurrency,
 } = uiSlice.actions;
 
