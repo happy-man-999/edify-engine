@@ -47,7 +47,7 @@ const EditorPasswordModal = () => {
               <i className="fas fa-code"></i>
             </div>
             <p className="text-gray-700 mb-4">
-              Your personal password for the online VSCode editor:
+              Your personal password
             </p>
             
             {/* Password Display */}
@@ -80,7 +80,7 @@ const EditorPasswordModal = () => {
             </div>
             
             <p className="text-sm text-gray-600 mb-6">
-              This is your own password. Keep it secure and don't share it with others.
+              Keep it secure and don't share it with others.
             </p>
           </div>
 
