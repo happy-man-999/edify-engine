@@ -6,6 +6,7 @@ import LoadingSpinner from '../LoadingSpinner';
 import { shortAddress } from '../../utils/format';
 import DropletDetailsModal from './DropletDetailsModal';
 import DropletFilterModal from './DropletFilterModal';
+import CreateDropletModal from './CreateDropletModal';
 import { useYesNoModal } from '../../hooks/useYesNoModal';
 
 const DropletManagement = () => {
@@ -18,6 +19,7 @@ const DropletManagement = () => {
   const [selectedDroplet, setSelectedDroplet] = useState(null);
   const [isDropletDetailsModalOpen, setIsDropletDetailsModalOpen] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isCreateDropletModalOpen, setIsCreateDropletModalOpen] = useState(false);
   const [advancedFilters, setAdvancedFilters] = useState({});
 
   const {
@@ -255,6 +257,42 @@ const DropletManagement = () => {
     }
   };
 
+  const handleCreateDroplet = async (userId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/admin/droplets/create', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Show the message from the backend (which indicates background processing)
+        const message = data.message || `Droplet "${data.droplet.name}" is being created.`;
+        const notificationType = data.processing ? 'info' : 'success';
+        
+        dispatch(showNotification(message, notificationType));
+        
+        // Refresh the droplets list after a short delay to give the background process time to save to DB
+        setTimeout(() => {
+          loadDroplets({ page: currentPage, limit: pageSize });
+          loadDropletStats();
+        }, 2000);
+      } else {
+        const errorData = await response.json();
+        dispatch(showNotification(`Failed to create droplet: ${errorData.message || 'Unknown error'}`, 'error'));
+      }
+    } catch (error) {
+      console.error('Error creating droplet:', error);
+      dispatch(showNotification('Failed to create droplet. Please try again.', 'error'));
+    }
+  };
+
   const handleAction = async (action, dropletId) => {
     try {
       let result;
@@ -338,6 +376,13 @@ const DropletManagement = () => {
         </div>
         <div className="flex space-x-3">
           <button 
+            onClick={() => setIsCreateDropletModalOpen(true)}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          >
+            <i className="fas fa-plus mr-2"></i>
+            Create Droplet
+          </button>
+          <button 
             onClick={() => {
               loadDroplets({ page: currentPage, limit: pageSize });
               loadDropletStats();
@@ -356,10 +401,6 @@ const DropletManagement = () => {
             <i className="fas fa-download mr-2"></i>
             Export CSV
           </button>
-          {/*<button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-            <i className="fas fa-plus mr-2"></i>
-            Create Droplet
-          </button>*/}
         </div>
       </div>
 
@@ -763,6 +804,13 @@ const DropletManagement = () => {
         onClose={handleCloseFilterModal}
         onApply={handleApplyFilters}
         currentFilters={advancedFilters}
+      />
+
+      {/* Create Droplet Modal */}
+      <CreateDropletModal
+        open={isCreateDropletModalOpen}
+        onClose={() => setIsCreateDropletModalOpen(false)}
+        onCreateDroplet={handleCreateDroplet}
       />
     </div>
   );
