@@ -181,7 +181,7 @@ export const usePayment = () => {
     // Fetch Solana wallet address from server settings
     let recipient;
     try {
-      const response = await fetch('/api/admin/settings');
+      const response = await fetch('/api/admin/payment-settings');
       if (response.ok) {
         const data = await response.json();
         recipient = data.settings.solanaWalletAddress;

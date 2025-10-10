@@ -12,7 +12,7 @@ export const useSettings = () => {
       setLoading(true);
       setError(null);
       
-      const response = await fetch('/api/admin/settings');
+      const response = await fetch('/api/admin/payment-settings');
       
       if (response.ok) {
         const data = await response.json();
