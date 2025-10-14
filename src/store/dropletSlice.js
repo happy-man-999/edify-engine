@@ -111,7 +111,7 @@ export const syncDropletStatus = createAsyncThunk(
     try {
       const { token } = getState().auth;
       
-      const response = await fetch(`/api/admin/droplets/${dropletId}/sync`, {
+      const response = await fetch(`/api/user/droplets/${dropletId}/sync`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
