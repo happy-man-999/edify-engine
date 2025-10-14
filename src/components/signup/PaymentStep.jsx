@@ -14,7 +14,7 @@ const PaymentStep = ({ formData, onPayment, onContactScheduled, isProcessingPaym
       try {
         const response = await fetch('/api/admin/payment-settings');
         if (response.ok) {
-          const settings = await response.json();
+          const { settings } = await response.json();
           setPaymentSettings(settings);
         }
       } catch (error) {

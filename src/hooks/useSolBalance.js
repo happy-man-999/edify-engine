@@ -7,7 +7,7 @@ const getSolanaNetwork = async () => {
   try {
     const response = await fetch('/api/admin/payment-settings');
     if (response.ok) {
-      const settings = await response.json();
+      const { settings } = await response.json();
       const solanaMode = settings.solanaMode || 'devnet';
       const isTestMode = settings.isTestMode || false;
       
