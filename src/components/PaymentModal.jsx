@@ -19,7 +19,7 @@ const PaymentModal = ({
   
   const { processPayment, isProcessing, stripeInitialized, settingsLoading } = usePayment();
   const { connected: solanaConnected } = useWalletWithRedirects();
-  const { convertUsdToSol } = useCurrency();
+  const { convertUsdToSol, loading: solPriceLoading } = useCurrency();
   const { resolvePayment, rejectPayment } = usePaymentModal();
 
   const displayAmount = amount;
@@ -89,7 +89,15 @@ const PaymentModal = ({
             </button>
           </div>
           <div className="mt-2 text-white/90">
-            <p className="text-sm">Amount: USD {displayAmount} / SOL {convertUsdToSol(displayAmount).toFixed(2)}</p>
+            <p className="text-sm">
+              Amount: USD {displayAmount} / SOL {
+                solPriceLoading ? (
+                  <i className="fas fa-spinner fa-spin ml-1"></i>
+                ) : (
+                  convertUsdToSol(displayAmount).toFixed(3)
+                )
+              }
+            </p>
             <p className="text-xs opacity-75">{itemName}</p>
           </div>
         </div>
@@ -166,13 +174,13 @@ const PaymentModal = ({
             {!subscriptionMode && (
               <div
                 className={`border-2 rounded-lg p-4 transition-all ${
-                  solanaConnected
+                  solanaConnected && !solPriceLoading
                     ? selectedMethod === 'solana'
                       ? 'border-[#42677D] bg-[#42677D]/5 cursor-pointer'
                       : 'border-gray-200 hover:border-gray-300 cursor-pointer'
                     : 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60'
                 }`}
-                onClick={() => solanaConnected && handleMethodSelect('solana')}
+                onClick={() => solanaConnected && !solPriceLoading && handleMethodSelect('solana')}
               >
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-gradient-to-r from-[#9945FF] to-[#14F195] rounded-full flex items-center justify-center">
@@ -185,7 +193,11 @@ const PaymentModal = ({
                   <div className="flex-1">
                     <div className="flex items-center space-x-2">
                       <h4 className="font-medium text-gray-800">Solana (SOL)</h4>
-                      {solanaConnected ? (
+                      {solPriceLoading ? (
+                        <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+                          <i className="fas fa-spinner fa-spin mr-1"></i>Loading Price
+                        </span>
+                      ) : solanaConnected ? (
                         <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
                           <i className="fas fa-check mr-1"></i>Available
                         </span>
@@ -196,7 +208,13 @@ const PaymentModal = ({
                       )}
                     </div>
                     <p className="text-sm text-gray-600">Pay with SOL cryptocurrency</p>
-                    {!solanaConnected && (
+                    {solPriceLoading && (
+                      <p className="text-xs text-yellow-600 mt-1">
+                        <i className="fas fa-spinner fa-spin mr-1"></i>
+                        Loading current SOL price...
+                      </p>
+                    )}
+                    {!solanaConnected && !solPriceLoading && (
                       <p className="text-xs text-orange-600 mt-1">
                         <i className="fas fa-wallet mr-1"></i>
                         Connect your Solana wallet to enable this payment method
@@ -228,12 +246,13 @@ const PaymentModal = ({
             </button>
             <button
               onClick={() => setShowConfirm(true)}
-              disabled={!selectedMethod || isProcessing || (selectedMethod === 'stripe' && (!stripeInitialized || settingsLoading))}
+              disabled={!selectedMethod || isProcessing || (selectedMethod === 'stripe' && (!stripeInitialized || settingsLoading)) || (selectedMethod === 'solana' && solPriceLoading)}
               className="flex-1 px-4 py-3 bg-[#42677D] text-white rounded-lg hover:bg-[#355263] transition-colors disabled:opacity-50"
             >
               {isProcessing ? 'Processing...' : 
                selectedMethod === 'stripe' && settingsLoading ? 'Loading Config...' :
                selectedMethod === 'stripe' && !stripeInitialized ? 'Initializing...' :
+               selectedMethod === 'solana' && solPriceLoading ? 'Loading Price...' :
                'Continue'}
             </button>
           </div>
@@ -248,8 +267,8 @@ const PaymentModal = ({
               </h3>
               <p className="text-gray-600 mb-6">
                 {subscriptionMode 
-                  ? `You are about to subscribe for ${selectedMethod === 'stripe' ? `USD ${displayAmount}` : `SOL ${convertUsdToSol(displayAmount).toFixed(2)}`} per month. `
-                  : `You are about to pay ${selectedMethod === 'stripe' ? `USD ${displayAmount}` : `SOL ${convertUsdToSol(displayAmount).toFixed(2)}`}. `
+                  ? `You are about to subscribe for ${selectedMethod === 'stripe' ? `USD ${displayAmount}` : `SOL ${convertUsdToSol(displayAmount).toFixed(3)}`} per month. `
+                  : `You are about to pay ${selectedMethod === 'stripe' ? `USD ${displayAmount}` : `SOL ${convertUsdToSol(displayAmount).toFixed(3)}`}. `
                 }
                 This action cannot be undone.
               </p>

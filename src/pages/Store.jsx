@@ -165,6 +165,37 @@ const Store = () => {
     }
   }, [location.search, navigate, location.pathname]);
 
+  // Handle item ID parameter from URL (for direct purchase links)
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const itemId = searchParams.get('id');
+    
+    if (itemId) {
+      // Fetch the item by ID and trigger purchase modal
+      const fetchAndOpenItem = async () => {
+        try {
+          const response = await fetch(`/api/items/${itemId}`);
+          if (!response.ok) {
+            throw new Error('Item not found');
+          }
+          const item = await response.json();
+          
+          // Trigger the payment modal for this item
+          handleItemSelect(item);
+          
+          // Clean up URL by removing the id parameter
+          navigate(location.pathname, { replace: true });
+        } catch (error) {
+          console.error('Error fetching item:', error);
+          showError('Item not found or unavailable');
+          navigate(location.pathname, { replace: true });
+        }
+      };
+      
+      fetchAndOpenItem();
+    }
+  }, [location.search, navigate, location.pathname, showError]);
+
   // Tab content
   let tabContent = null;
   if (activeTab === "Featured") tabContent = <FeaturedSection currency={currency} onAddToCart={handleAddToCart} onItemSelect={handleItemSelect} />;
