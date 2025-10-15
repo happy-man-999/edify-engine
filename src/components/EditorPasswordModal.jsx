@@ -6,7 +6,7 @@ const EditorPasswordModal = () => {
   const dispatch = useDispatch();
   const { isOpen, domain } = useSelector(state => state.ui.editorModal);
   const [copied, setCopied] = useState(false);
-  const password = "edifyengine123!@#";
+  const password = "ih4uciI1qwITUxGt";
 
   const handleCopyPassword = async () => {
     try {
