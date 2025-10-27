@@ -6,6 +6,7 @@ import {
   fetchDropletById,
   syncDropletStatus,
   restartDroplet,
+  backupDroplet,
   terminateDroplet,
   reprovisionDroplet,
   deleteDroplet,
@@ -67,6 +68,14 @@ export const useDroplets = () => {
     };
   };
 
+  const backupDropletAction = async (dropletId, snapshotName) => {
+    const result = await dispatch(backupDroplet({ dropletId, snapshotName }));
+    return {
+      success: !result.error,
+      error: result.error?.message || result.payload
+    };
+  };
+
   const terminateDropletAction = async (dropletId) => {
     const result = await dispatch(terminateDroplet(dropletId));
     return {
@@ -120,6 +129,7 @@ export const useDroplets = () => {
     loadDropletById,
     syncDroplet,
     restartDroplet: restartDropletAction,
+    backupDroplet: backupDropletAction,
     terminateDroplet: terminateDropletAction,
     reprovisionDroplet: reprovisionDropletAction,
     deleteDroplet: deleteDropletAction,

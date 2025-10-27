@@ -4,6 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import HeroSection from "../components/HeroSection";
 import QuickActions from "../components/QuickActions";
 import WorldsSection from "../components/WorldsSection";
+import SnapshotsSection from "../components/SnapshotsSection";
 import ExploreSection from "../components/ExploreSection";
 import GlobalStyles from "../components/GlobalStyles";
 
@@ -27,6 +28,7 @@ const Homepage = () => {
         {/*<HeroSection />*/}
         {/*<QuickActions />*/}
         <WorldsSection />
+        <SnapshotsSection />
         <ExploreSection />
       </div>
     </main>

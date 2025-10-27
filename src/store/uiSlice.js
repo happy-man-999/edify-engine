@@ -7,6 +7,15 @@ const initialState = {
     message: '',
     modalId: '',
   },
+  snapshotNameModal: {
+    open: false,
+    modalId: '',
+    defaultName: '',
+  },
+  snapshotSelectionModal: {
+    open: false,
+    modalId: '',
+  },
   notification: null,
   loadingSpinner: {
     isVisible: false,
@@ -45,6 +54,25 @@ const uiSlice = createSlice({
     },
     closeYesNoModal(state) {
       state.yesNoModal = { open: false, message: '', modalId: '' };
+    },
+    showSnapshotNameModal(state, action) {
+      state.snapshotNameModal = {
+        open: true,
+        modalId: action.payload.modalId,
+        defaultName: action.payload.defaultName || '',
+      };
+    },
+    closeSnapshotNameModal(state) {
+      state.snapshotNameModal = { open: false, modalId: '', defaultName: '' };
+    },
+    showSnapshotSelectionModal(state, action) {
+      state.snapshotSelectionModal = {
+        open: true,
+        modalId: action.payload.modalId,
+      };
+    },
+    closeSnapshotSelectionModal(state) {
+      state.snapshotSelectionModal = { open: false, modalId: '' };
     },
     showNotification(state, action) { state.notification = action.payload; },
     clearNotification(state) { state.notification = null; },
@@ -117,6 +145,10 @@ export const {
   closeErrorModal,
   showYesNoModal,
   closeYesNoModal,
+  showSnapshotNameModal,
+  closeSnapshotNameModal,
+  showSnapshotSelectionModal,
+  closeSnapshotSelectionModal,
   showNotification,
   clearNotification,
   showLoadingSpinner,

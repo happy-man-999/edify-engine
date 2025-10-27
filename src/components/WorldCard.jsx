@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { showNotification } from '../store/uiSlice';
 import { useDroplets } from '../hooks/useDroplets';
 import { useDeleteWorld } from '../hooks/useDeleteWorld';
 import { useYesNoModal } from '../hooks/useYesNoModal';
 import { useEditorModal } from '../hooks/useEditorModal';
+import { useSnapshotNameModal } from '../hooks/useSnapshotNameModal';
+import { useErrorModal } from '../hooks/useErrorModal';
 
 const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
-  const { syncDroplet, restartDroplet } = useDroplets();
+  const dispatch = useDispatch();
+  const { syncDroplet, restartDroplet, backupDroplet } = useDroplets();
   const { deleteWorld, isDeleting } = useDeleteWorld();
   const { showModal } = useYesNoModal();
   const { showModal: showEditorModal } = useEditorModal();
+  const { showModal: showSnapshotNameModal } = useSnapshotNameModal();
+  const { showError } = useErrorModal();
   const [isSyncing, setIsSyncing] = useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
+  const [isBackingUp, setIsBackingUp] = useState(false);
 
   const handleCardClick = () => {
     if (world.name && world.status === 'active') {
@@ -77,11 +85,17 @@ const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
     setIsSyncing(true);
     try {
       const result = await syncDroplet(world.dropletId);
-      if (result.success && onRefresh) {
-        onRefresh();
+      if (result.success) {
+        dispatch(showNotification('Status synced successfully!'));
+        if (onRefresh) {
+          onRefresh();
+        }
+      } else {
+        showError('Sync failed: ' + (result.error || 'Unknown error'));
       }
     } catch (error) {
       console.error('Error syncing droplet:', error);
+      showError('Sync failed: ' + error.message);
     } finally {
       setIsSyncing(false);
     }
@@ -107,14 +121,55 @@ const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
       setIsRestarting(true);
       try {
         const result = await restartDroplet(world.dropletId);
-        if (result.success && onRefresh) {
-          onRefresh();
+        if (result.success) {
+          dispatch(showNotification('Restart initiated! Your world is restarting.'));
+          if (onRefresh) {
+            onRefresh();
+          }
+        } else {
+          showError('Restart failed: ' + (result.error || 'Unknown error'));
         }
       } catch (error) {
         console.error('Error restarting droplet:', error);
+        showError('Restart failed: ' + error.message);
       } finally {
         setIsRestarting(false);
       }
+    }
+  };
+
+  const handleBackupClick = async (e) => {
+    e.stopPropagation();
+    if (isBackingUp) return;
+    
+    // Show snapshot name modal with default name
+    const defaultSnapshotName = `${world.subdomain}-backup-${new Date().toISOString().slice(0, 10)}`;
+    const snapshotName = await showSnapshotNameModal(defaultSnapshotName);
+    
+    // If user cancelled the modal, return
+    if (!snapshotName) {
+      return;
+    }
+    
+    setIsBackingUp(true);
+    try {
+      const result = await backupDroplet(world.dropletId, snapshotName);
+      if (result.success) {
+        dispatch(showNotification('Snapshot creation initiated! Your droplet will be powered off, snapshotted, and powered back on.'));
+        if (onRefresh) {
+          // Refresh the droplets list to update status
+          setTimeout(() => {
+            onRefresh();
+          }, 2000);
+        }
+      } else {
+        showError('Snapshot creation failed: ' + (result.error || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Error creating snapshot:', error);
+      showError('Snapshot creation failed: ' + error.message);
+    } finally {
+      setIsBackingUp(false);
     }
   };
 
@@ -221,7 +276,9 @@ const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto">
         {/* Subtle background overlay for better button visibility */}
         <div className="absolute inset-0 bg-black/20 rounded-lg"></div>
-        <div className="flex gap-3 relative z-10">
+        <div className="flex flex-col gap-2 relative z-10">
+          {/* First Row - 3 buttons */}
+          <div className="flex gap-2 justify-center">
           {/* Visit Button */}
           {world.status === 'active' && world.name && (
             <button
@@ -254,7 +311,7 @@ const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
           </button>
 
           {/* Restart Button */}
-          {world.status === 'active' && world.name && (<button
+          <button
             onClick={handleRestartClick}
             disabled={isRestarting}
             className={`bg-white/20 backdrop-blur-sm border border-white/30 rounded-full p-3 text-white hover:bg-white/40 hover:border-white/50 transition-all duration-200 shadow-lg hover:scale-110 transform focus:outline-none focus:ring-2 focus:ring-white/50 ${
@@ -268,7 +325,29 @@ const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
             ) : (
               <i className="fas fa-redo text-lg"></i>
             )}
-          </button>)}
+          </button>
+          </div>
+
+          {/* Second Row - 4 buttons */}
+          <div className="flex gap-2 justify-center">
+          {/* Backup Button */}
+          {world.status === 'active' && world.name && (
+            <button
+              onClick={handleBackupClick}
+              disabled={isBackingUp}
+              className={`bg-blue-500/20 backdrop-blur-sm border border-blue-400/30 rounded-full p-3 text-white hover:bg-blue-500/40 hover:border-blue-400/50 transition-all duration-200 shadow-lg hover:scale-110 transform focus:outline-none focus:ring-2 focus:ring-blue-400/50 ${
+                isBackingUp ? 'opacity-50 cursor-not-allowed hover:scale-100' : ''
+              }`}
+              title="Create Snapshot"
+              aria-label="Create Snapshot"
+            >
+              {isBackingUp ? (
+                <i className="fas fa-save fa-spin text-lg"></i>
+              ) : (
+                <i className="fas fa-save text-lg"></i>
+              )}
+            </button>
+          )}
 
           {/* Editor Button */}
           {world.status === 'active' && world.name && (
@@ -319,6 +398,7 @@ const WorldCard = ({ world, onRefresh, onCustomDomainUpsell }) => {
               )}
             </button>
           )}
+          </div>
         </div>
       </div>
     </div>

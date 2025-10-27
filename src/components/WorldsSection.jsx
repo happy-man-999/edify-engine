@@ -6,6 +6,7 @@ import { usePaymentSuccess } from "../hooks/usePaymentSuccess";
 import { useErrorModal } from "../hooks/useErrorModal";
 import { useUserDroplets } from "../hooks/useUserDroplets";
 import { useAuth } from "../hooks/useAuth";
+import { useSnapshotSelectionModal } from "../hooks/useSnapshotSelectionModal";
 import { shortAddress } from "../utils/format";
 import { showNotification, openDomainModal, hideDomainModal } from "../store/uiSlice";
 import WorldCard from "./WorldCard";
@@ -66,6 +67,7 @@ const WorldsSection = () => {
   const { userDroplets, loading, error, refreshUserDroplets } = useUserDroplets();
   const { handleStripePaymentSuccess, handleSolanaPaymentSuccess } = usePaymentSuccess({refreshUserDroplets});
   const { user } = useAuth();
+  const { showModal: showSnapshotSelectionModal } = useSnapshotSelectionModal();
   
   // Redux state for domain modal
   const { isOpen: showDomainModal } = useSelector(state => state.ui.domainModal);
@@ -137,10 +139,18 @@ const WorldsSection = () => {
     localStorage.removeItem('worldActiveInfoDismissed');
   };
   
-  const handleCreateWorld = () => {
+  const handleCreateWorld = async () => {
     // Check if user has reached the world limit
     if (hasReachedWorldLimit) {
       showError('You have reached the maximum limit of 3 worlds. Please delete an existing world before creating a new one.');
+      return;
+    }
+    
+    // Show snapshot selection modal
+    const selectedSnapshotId = await showSnapshotSelectionModal();
+    
+    // If user cancelled the modal, return
+    if (selectedSnapshotId === undefined) {
       return;
     }
     
@@ -148,7 +158,10 @@ const WorldsSection = () => {
     openPaymentModal({
       amount: 9.99,
       itemName: "New World",
-      itemId: "new-world"
+      itemId: "new-world",
+      metadata: {
+        snapshotId: selectedSnapshotId // null for default, or the snapshot ID
+      }
     }).then(async (result) => {
       if (!result || !result.paymentMethod) return;
       
@@ -246,10 +259,6 @@ const WorldsSection = () => {
     setShowUpgradeModal(true);
   };
 
-  const handleViewAll = () => {
-    //navigate('/admin/droplets');
-  };
-
   // Check if user has reached the world limit
   const hasReachedWorldLimit = !user || user && user.plan === 'basic' && userDroplets.length >= 1 || user && user.plan === 'premium' && userDroplets.length >= 3;
   const remainingWorlds = !user ? 0 : (user.plan === 'basic' ? 1 : 3) - userDroplets.length;
@@ -275,13 +284,6 @@ const WorldsSection = () => {
             title="Refresh worlds"
           >
             <i className={`fas fa-sync-alt ${loading ? 'animate-spin' : ''}`}></i>
-          </button>
-          <button 
-            onClick={handleViewAll}
-            className="text-[#5E8EA9] hover:text-[#42677D] flex items-center transition-colors duration-300"
-          >
-            <span>View All</span>
-            <i className="fas fa-chevron-right ml-2"></i>
           </button>
         </div>
       </div>

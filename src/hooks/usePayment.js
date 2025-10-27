@@ -196,7 +196,14 @@ export const usePayment = () => {
     }
 
     // Generate a unique order ID similar to your reference code
-    const payInfo = `${user._id || user.id}*${itemId}`;
+    // Include metadata if it exists
+    let payInfo = `${user._id || user.id}*${itemId}`;
+    
+    // Encode metadata into the reference string if present
+    if (metadata && Object.keys(metadata).length > 0) {
+      const metadataString = JSON.stringify(metadata);
+      payInfo = `${payInfo}|${metadataString}`;
+    }
     
     // Send SOL payment
     const signature = await sendSOLWithReference(recipient, amount, payInfo);

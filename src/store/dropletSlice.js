@@ -159,6 +159,34 @@ export const restartDroplet = createAsyncThunk(
   }
 );
 
+export const backupDroplet = createAsyncThunk(
+  'droplets/backupDroplet',
+  async ({ dropletId, snapshotName }, { rejectWithValue, getState }) => {
+    try {
+      const { token } = getState().auth;
+      
+      const response = await fetch(`/api/user/droplets/${dropletId}/backup`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ snapshotName })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to backup droplet');
+      }
+
+      return { dropletId, message: data.message };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const terminateDroplet = createAsyncThunk(
   'droplets/terminateDroplet',
   async (dropletId, { rejectWithValue, getState }) => {
@@ -388,6 +416,21 @@ const dropletSlice = createSlice({
         // Success notification will be handled by the component
       })
       .addCase(restartDroplet.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    // backupDroplet
+    builder
+      .addCase(backupDroplet.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(backupDroplet.fulfilled, (state, action) => {
+        state.loading = false;
+        // Success notification will be handled by the component
+      })
+      .addCase(backupDroplet.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
