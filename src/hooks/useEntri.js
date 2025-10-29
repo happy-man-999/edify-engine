@@ -71,7 +71,37 @@ export const useEntri = (handleOnEntriClose) => {
     entri.showEntri(config);
   }, [getAuthToken]);
 
+  const purchaseDomain = useCallback(async (dropletIP, successCallbackUrl, exitCallbackUrl) => {
+    try {
+      const token = await getAuthToken();
+
+      // Prepare DNS records for new domain purchases
+      // Using '@' as host since the user will specify the domain during purchase
+      const config = {
+        applicationId: import.meta.env.VITE_ENTRI_APPLICATION_ID,
+        token: token,
+        dnsRecords: [
+          {
+            type: "A",
+            host: "@",
+            value: dropletIP,
+            ttl: 300,
+          },
+        ],
+        successCallbackUrl: successCallbackUrl,
+        exitCallbackUrl: exitCallbackUrl,
+      };
+
+      // Call Entri purchaseDomain (Squarespace is configured in dashboard)
+      entri.purchaseDomain(config);
+    } catch (error) {
+      console.error('Error in purchaseDomain:', error);
+      throw error;
+    }
+  }, [getAuthToken]);
+
   return {
     proceedWithEntri,
+    purchaseDomain,
   };
 };

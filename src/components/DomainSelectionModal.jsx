@@ -12,6 +12,7 @@ const DomainSelectionModal = ({ open, onClose }) => {
   const [isCheckingDomain, setIsCheckingDomain] = useState(false);
   const [domainAvailable, setDomainAvailable] = useState(null);
   const [isLoadingEntri, setIsLoadingEntri] = useState(false);
+  const [isPurchasingDomain, setIsPurchasingDomain] = useState(false);
   const dispatch = useDispatch();
   const { showError } = useErrorModal();
   const { dropletId } = useSelector(state => state.ui.domainModal);
@@ -34,12 +35,47 @@ const DomainSelectionModal = ({ open, onClose }) => {
     }
   }, [lastEvent, dispatch, onClose]);
 
+  // Handle domain purchase callback from Entri
+  useEffect(() => {
+    if (open) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const purchasedDomain = urlParams.get('domain');
+      const fromPurchase = urlParams.get('fromPurchase');
+      const purchaseCancelled = urlParams.get('purchaseCancelled');
+      
+      // Entri redirects to successCallbackUrl with ?domain=mydomain.com
+      // Check if this is a return from purchase flow
+      if (purchasedDomain && fromPurchase === 'true') {
+        // Set the purchased domain and check availability
+        setCustomDomain(purchasedDomain);
+        setIsPurchasingDomain(false);
+        
+        // Clean up URL parameters
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, '', newUrl);
+        
+        // Auto-check the domain after a brief delay to allow DNS propagation
+        setTimeout(() => {
+          checkDomainAvailability();
+        }, 500);
+        
+        dispatch(showNotification(`Domain ${purchasedDomain} purchased successfully! Verifying configuration...`));
+      } else if (purchaseCancelled === 'true') {
+        setIsPurchasingDomain(false);
+        // Clean up URL parameters
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, '', newUrl);
+        dispatch(showNotification('Domain purchase cancelled.'));
+      }
+    }
+  }, [open, dispatch]);
+
   const handleOnEntriClose = event => {
     setIsLoadingEntri(false);
     console.log('onEntriClose', event.detail);
   }
 
-  const { proceedWithEntri } = useEntri(handleOnEntriClose);
+  const { proceedWithEntri, purchaseDomain } = useEntri(handleOnEntriClose);
 
   const fetchDropletIP = async () => {
     if (!dropletId) return;
@@ -122,6 +158,32 @@ const DomainSelectionModal = ({ open, onClose }) => {
     proceedWithEntri(customDomain.trim(), dropletIP);
   };
 
+  const handlePurchaseDomain = async () => {
+    setIsPurchasingDomain(true);
+    
+    try {
+      // Get droplet IP
+      const dropletIP = await fetchDropletIP();
+      if (!dropletIP) {
+        throw new Error('Failed to get droplet IP address');
+      }
+
+      // Construct callback URLs
+      // Entri will redirect to successCallbackUrl with ?domain=mydomain.com
+      const baseUrl = window.location.origin + window.location.pathname;
+      const successCallbackUrl = `${baseUrl}?fromPurchase=true`;
+      const exitCallbackUrl = `${baseUrl}?purchaseCancelled=true`;
+
+      // Use the purchaseDomain function from useEntri hook
+      await purchaseDomain(dropletIP, successCallbackUrl, exitCallbackUrl);
+      
+    } catch (error) {
+      console.error('Error purchasing domain:', error);
+      showError('Failed to open domain purchase flow: ' + error.message);
+      setIsPurchasingDomain(false);
+    }
+  };
+
   const handleContinue = async () => {
     if (!domainAvailable) {
       showError('Please check domain availability first');
@@ -195,6 +257,37 @@ const DomainSelectionModal = ({ open, onClose }) => {
         {/* Content - Scrollable */}
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
           <div className="space-y-4 mb-6">
+            {/* Domain Purchase Section */}
+            <div className="mb-6 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-lg">
+              <p className="text-sm text-gray-700 mb-3">
+                Don't have a custom domain yet? You can purchase one directly here and we'll automatically configure it for your world.
+              </p>
+              <button
+                onClick={handlePurchaseDomain}
+                disabled={isPurchasingDomain}
+                className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center font-medium"
+              >
+                {isPurchasingDomain ? (
+                  <>
+                    <i className="fas fa-spinner fa-spin mr-2"></i>
+                    Opening purchase flow...
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-shopping-cart mr-2"></i>
+                    Buy a Domain
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* Divider */}
+            <div className="mb-6 flex items-center">
+              <div className="flex-1 border-t border-gray-300"></div>
+              <span className="px-3 text-sm text-gray-500">OR</span>
+              <div className="flex-1 border-t border-gray-300"></div>
+            </div>
+
             {/* Custom Domain Input */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
