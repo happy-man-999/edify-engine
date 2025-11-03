@@ -15,6 +15,9 @@ export const checkAuth = createAsyncThunk(
       if (response.ok) {
         const data = await response.json();
         return data;
+      } else if (response.status === 401) {
+        // Token expired or invalid - return special error code
+        return rejectWithValue({ code: 'TOKEN_EXPIRED', message: 'Token expired or invalid' });
       } else {
         return rejectWithValue('Token is invalid');
       }
@@ -160,6 +163,10 @@ export const updateProfile = createAsyncThunk(
       const data = await response.json();
 
       if (!response.ok) {
+        if (response.status === 401) {
+          // Token expired or invalid
+          return rejectWithValue({ code: 'TOKEN_EXPIRED', message: 'Token expired. Please sign in again.' });
+        }
         throw new Error(data.message || 'Profile update failed');
       }
 
@@ -193,6 +200,9 @@ export const handleGoogleAuthCompletion = createAsyncThunk(
         }
         
         return { success: true, user: data.user, token: token };
+      } else if (response.status === 401) {
+        // Token expired or invalid
+        return rejectWithValue({ code: 'TOKEN_EXPIRED', message: 'Token expired. Please sign in again.' });
       } else {
         throw new Error('Failed to fetch user profile');
       }
@@ -222,6 +232,9 @@ export const checkSignupProgress = createAsyncThunk(
       if (response.ok) {
         const data = await response.json();
         return data;
+      } else if (response.status === 401) {
+        // Token expired or invalid
+        return rejectWithValue({ code: 'TOKEN_EXPIRED', message: 'Token expired. Please sign in again.' });
       } else {
         const errorText = await response.text();
         console.error('checkSignupProgress: Response not ok, status:', response.status, 'Error:', errorText);
@@ -256,6 +269,9 @@ export const saveSignupProgress = createAsyncThunk(
       if (response.ok) {
         const result = await response.json();
         return result;
+      } else if (response.status === 401) {
+        // Token expired or invalid
+        return rejectWithValue({ code: 'TOKEN_EXPIRED', message: 'Token expired. Please sign in again.' });
       } else {
         const errorText = await response.text();
         console.error('saveSignupProgress: Response not ok, status:', response.status, 'Error:', errorText);
@@ -335,11 +351,23 @@ const authSlice = createSlice({
       })
       .addCase(checkAuth.rejected, (state, action) => {
         state.loading = false;
-        state.user = null;
-        state.token = null;
-        state.isAuthenticated = false;
-        localStorage.removeItem('token');
-        state.error = action.payload;
+        const payload = action.payload;
+        const isTokenExpired = payload && typeof payload === 'object' && payload.code === 'TOKEN_EXPIRED';
+        
+        if (isTokenExpired) {
+          // Clear auth state on token expiration
+          state.user = null;
+          state.token = null;
+          state.isAuthenticated = false;
+          localStorage.removeItem('token');
+        } else {
+          // Other errors - clear auth but keep error
+          state.user = null;
+          state.token = null;
+          state.isAuthenticated = false;
+          localStorage.removeItem('token');
+        }
+        state.error = typeof payload === 'object' ? payload.message : payload;
       });
 
     // signup
@@ -447,7 +475,16 @@ const authSlice = createSlice({
       })
       .addCase(updateProfile.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        const payload = action.payload;
+        const isTokenExpired = payload && typeof payload === 'object' && payload.code === 'TOKEN_EXPIRED';
+        
+        if (isTokenExpired) {
+          state.user = null;
+          state.token = null;
+          state.isAuthenticated = false;
+          localStorage.removeItem('token');
+        }
+        state.error = typeof payload === 'object' ? payload.message : payload;
       });
 
     // handleGoogleAuthCompletion
@@ -466,7 +503,16 @@ const authSlice = createSlice({
       })
       .addCase(handleGoogleAuthCompletion.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        const payload = action.payload;
+        const isTokenExpired = payload && typeof payload === 'object' && payload.code === 'TOKEN_EXPIRED';
+        
+        if (isTokenExpired) {
+          state.user = null;
+          state.token = null;
+          state.isAuthenticated = false;
+          localStorage.removeItem('token');
+        }
+        state.error = typeof payload === 'object' ? payload.message : payload;
       });
 
     // checkSignupProgress
@@ -483,7 +529,16 @@ const authSlice = createSlice({
       })
       .addCase(checkSignupProgress.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        const payload = action.payload;
+        const isTokenExpired = payload && typeof payload === 'object' && payload.code === 'TOKEN_EXPIRED';
+        
+        if (isTokenExpired) {
+          state.user = null;
+          state.token = null;
+          state.isAuthenticated = false;
+          localStorage.removeItem('token');
+        }
+        state.error = typeof payload === 'object' ? payload.message : payload;
       });
 
     // saveSignupProgress
@@ -500,7 +555,16 @@ const authSlice = createSlice({
       })
       .addCase(saveSignupProgress.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        const payload = action.payload;
+        const isTokenExpired = payload && typeof payload === 'object' && payload.code === 'TOKEN_EXPIRED';
+        
+        if (isTokenExpired) {
+          state.user = null;
+          state.token = null;
+          state.isAuthenticated = false;
+          localStorage.removeItem('token');
+        }
+        state.error = typeof payload === 'object' ? payload.message : payload;
       });
   }
 });

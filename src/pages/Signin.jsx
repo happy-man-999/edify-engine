@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { useAuth } from '../hooks/useAuth';
+import { checkAuth } from '../store/authSlice';
+import { isTokenValid } from '../utils/token';
 import GlobalStyles from '../components/GlobalStyles';
 
 const Signin = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { signinUser, checkSignupProgress } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
@@ -12,6 +16,33 @@ const Signin = () => {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [checkingToken, setCheckingToken] = useState(true);
+
+  // Check if user already has a valid token on mount
+  useEffect(() => {
+    const checkExistingToken = async () => {
+      const storedToken = localStorage.getItem('token');
+      
+      if (storedToken && isTokenValid(storedToken)) {
+        // Token exists and is valid, verify it with server
+        try {
+          const result = await dispatch(checkAuth(storedToken));
+          if (result.type === 'auth/checkAuth/fulfilled' && result.payload?.user) {
+            // Token is valid, redirect to home
+            navigate('/home');
+            return;
+          }
+        } catch (error) {
+          // If checkAuth fails, clear invalid token and continue with signin
+          console.error('Token validation failed:', error);
+          localStorage.removeItem('token');
+        }
+      }
+      setCheckingToken(false);
+    };
+    
+    checkExistingToken();
+  }, [navigate, dispatch]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -78,6 +109,21 @@ const Signin = () => {
     const googleAuthUrl = '/api/auth/google';
     window.location.href = googleAuthUrl;
   };
+
+  // Show loading while checking token
+  if (checkingToken) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="bg-white rounded-xl shadow-sm p-8 max-w-md w-full mx-4">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#42677D] mx-auto mb-4"></div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Checking Authentication</h2>
+            <p className="text-gray-600">Please wait...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 pt-24">

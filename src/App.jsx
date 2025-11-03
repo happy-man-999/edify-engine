@@ -12,6 +12,7 @@ import AnimatedBackground from './components/AnimatedBackground';
 import PaymentModal from './components/PaymentModal';
 import FontProvider from './components/FontProvider';
 import ScrollToTop from './components/ScrollToTop';
+import AuthRedirect from './components/AuthRedirect';
 import Homepage from './pages/Homepage';
 import LandingPage from './pages/LandingPage';
 import Store from './pages/Store';
@@ -123,6 +124,7 @@ function App() {
             <Router>
                 <AnimatedBackground />
               <ScrollToTop>
+                <AuthRedirect />
                 <MainLayout>
                 <Routes>
                   <Route path="/home" element={<Navbar />} />
