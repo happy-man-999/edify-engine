@@ -315,6 +315,8 @@ const UserManagement = () => {
             >
               <option value="createdAt-desc">Sign-up Date (Newest)</option>
               <option value="createdAt-asc">Sign-up Date (Oldest)</option>
+              <option value="lastLogin-desc">Last Login (Newest)</option>
+              <option value="lastLogin-asc">Last Login (Oldest)</option>
               <option value="firstName-asc">First Name (A-Z)</option>
               <option value="firstName-desc">First Name (Z-A)</option>
               <option value="lastName-asc">Last Name (A-Z)</option>
