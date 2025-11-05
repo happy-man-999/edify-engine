@@ -28,8 +28,32 @@ const Signin = () => {
         try {
           const result = await dispatch(checkAuth(storedToken));
           if (result.type === 'auth/checkAuth/fulfilled' && result.payload?.user) {
-            // Token is valid, redirect to home
-            navigate('/home');
+            // Token is valid, check signup progress
+            const user = result.payload.user;
+            
+            // Skip onboarding for contributor role users
+            if (user.role === 'contributor') {
+              navigate('/home');
+              return;
+            }
+            
+            // Check if signup process is completed
+            try {
+              const progressData = await checkSignupProgress();
+              
+              if (progressData && progressData.shouldRedirectToSignup) {
+                // User hasn't completed signup, redirect to signup page
+                // The signup page will load the progress and navigate to the correct step
+                navigate('/signup');
+              } else {
+                // User has completed signup, redirect to home
+                navigate('/home');
+              }
+            } catch (progressError) {
+              console.error('Failed to check signup progress:', progressError);
+              // If we can't check progress, assume signup is incomplete and redirect to signup
+              navigate('/signup');
+            }
             return;
           }
         } catch (error) {
@@ -42,7 +66,7 @@ const Signin = () => {
     };
     
     checkExistingToken();
-  }, [navigate, dispatch]);
+  }, [navigate, dispatch, checkSignupProgress]);
 
   const validateForm = () => {
     const newErrors = {};

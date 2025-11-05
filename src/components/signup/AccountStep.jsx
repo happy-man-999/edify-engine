@@ -3,7 +3,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useSearchParams } from 'react-router-dom';
 import EmailVerificationModal from '../EmailVerificationModal';
 
-const AccountStep = ({ formData, errors, onInputChange, onNext, setErrors }) => {
+const AccountStep = ({ formData, errors, onInputChange, onNext, setErrors, goToStep }) => {
   const { 
     user, 
     isAuthenticated, 
@@ -30,12 +30,16 @@ const AccountStep = ({ formData, errors, onInputChange, onNext, setErrors }) => 
       onInputChange('email', user.email || '');
       
       // Skip password fields since user is authenticated via Google
-      // Continue to next step
+      // Skip to customization step (step 6) instead of next step
       setTimeout(() => {
-        onNext();
+        if (goToStep) {
+          goToStep(6);
+        } else {
+          onNext();
+        }
       }, 100);
     }
-  }, [searchParams, isAuthenticated, user, onInputChange, onNext]);
+  }, [searchParams, isAuthenticated, user, onInputChange, onNext, goToStep]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,7 +49,12 @@ const AccountStep = ({ formData, errors, onInputChange, onNext, setErrors }) => 
     
     // Don't proceed if using Google auth (password is 'google-auth')
     if (formData.password === 'google-auth') {
-      onNext();
+      // Skip to customization step (step 6) instead of next step
+      if (goToStep) {
+        goToStep(6);
+      } else {
+        onNext();
+      }
       return;
     }
     
@@ -120,7 +129,12 @@ const AccountStep = ({ formData, errors, onInputChange, onNext, setErrors }) => 
       });
       
       if (result.success) {
-        onNext();
+        // Skip to customization step (step 6) instead of next step
+        if (goToStep) {
+          goToStep(6);
+        } else {
+          onNext();
+        }
       } else {
         setSignupError(result.error || 'Signup failed. Please try again.');
         closeEmailVerification();

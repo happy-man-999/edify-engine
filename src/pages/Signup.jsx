@@ -37,7 +37,20 @@ const Signup = () => {
   const [isProcessingContact, setIsProcessingContact] = useState(false);
   const googleAuthProcessedRef = useRef(false);
 
-  const totalSteps = 7;
+  // Active steps: 1 (Welcome), 2 (Account), 6 (Customization), 7 (Payment)
+  // Steps 3, 4, 5 are skipped (UseCase, Persistent, Access)
+  const totalSteps = 4;
+
+  // Map internal step numbers to display step numbers
+  const getDisplayStep = (internalStep) => {
+    const stepMap = {
+      1: 1, // Welcome
+      2: 2, // Account
+      6: 3, // Customization
+      7: 4  // Payment
+    };
+    return stepMap[internalStep] || internalStep;
+  };
 
   // Initialize Stripe on component mount
   useEffect(() => {
@@ -51,15 +64,10 @@ const Signup = () => {
         return;
       }
       
-      if (!signupProgress) {
-        setCurrentStep(3);
-      }
-      else {
-        const nextStep = Math.min(signupProgress.currentStep + 1, totalSteps);
-        setCurrentStep(nextStep);
-      }
+      // Step navigation is handled in the signupProgress useEffect below
+      // This just ensures we don't start from step 1 if user is authenticated
     }
-  }, []);
+  }, [isAuthenticated, user, navigate]);
 
 
   // Load existing signup progress
@@ -106,10 +114,20 @@ const Signup = () => {
       }
       
       // Set current step to the next incomplete step
-      const nextStep = Math.min(signupProgress.currentStep + 1, totalSteps);
+      // signupProgress.currentStep is the internal step number (2, 6, or 7)
+      const currentInternalStep = signupProgress.currentStep;
+      let nextStep = currentInternalStep;
+      if (currentInternalStep === 2) nextStep = 6; // Account -> Customization
+      else if (currentInternalStep === 6) nextStep = 7; // Customization -> Payment
+      else if (currentInternalStep < 6) nextStep = 6; // If somehow on old step 3-5, go to 6
+      else nextStep = 7; // Default to payment (max step)
       setCurrentStep(nextStep);
+    } else if (isAuthenticated && !signupProgress) {
+      // User is authenticated but has no signup progress yet
+      // They've created an account, so skip to customization step
+      setCurrentStep(6);
     }
-  }, []);
+  }, [signupProgress, isAuthenticated]);
 
   // Handle Google auth completion
   useEffect(() => {
@@ -135,8 +153,8 @@ const Signup = () => {
             passwordConfirmation: 'google-auth'
           }));
           
-          // Continue to next step (Use Case step)
-          setCurrentStep(3);
+          // Continue directly to customization step (skip Use Case, Persistent, and Access steps)
+          setCurrentStep(6);
           
           // Clean up URL parameters
           window.history.replaceState({}, document.title, '/signup');
@@ -167,21 +185,22 @@ const Signup = () => {
     switch (step) {
       case 2:
         break;
-      case 3:
-        if (formData.useCases.length === 0) {
-          newErrors.useCases = 'Please select at least one option';
-        }
-        break;
-      case 4:
-        if (!formData.isPersistent) {
-          newErrors.isPersistent = 'Please select an option';
-        }
-        break;
-      case 5:
-        if (!formData.accessMethod) {
-          newErrors.accessMethod = 'Please select an option';
-        }
-        break;
+      // Steps 3, 4, 5 are skipped (UseCase, Persistent, Access)
+      // case 3:
+      //   if (formData.useCases.length === 0) {
+      //     newErrors.useCases = 'Please select at least one option';
+      //   }
+      //   break;
+      // case 4:
+      //   if (!formData.isPersistent) {
+      //     newErrors.isPersistent = 'Please select an option';
+      //   }
+      //   break;
+      // case 5:
+      //   if (!formData.accessMethod) {
+      //     newErrors.accessMethod = 'Please select an option';
+      //   }
+      //   break;
       case 6:
         if (!formData.customizationLevel) {
           newErrors.customizationLevel = 'Please select an option';
@@ -199,7 +218,7 @@ const Signup = () => {
     if (validateStep(currentStep)) {
       try {
         // Save progress for current step
-        if (currentStep >= 2 && currentStep <= 6) {
+        if (currentStep === 2 || currentStep === 6) {
           let stepData = {};
           
           switch (currentStep) {
@@ -211,15 +230,16 @@ const Signup = () => {
                 isGoogleAuth: formData.password === 'google-auth'
               };
               break;
-            case 3:
-              stepData = { useCases: formData.useCases };
-              break;
-            case 4:
-              stepData = { isPersistent: formData.isPersistent };
-              break;
-            case 5:
-              stepData = { accessMethod: formData.accessMethod };
-              break;
+            // Steps 3, 4, 5 are skipped (UseCase, Persistent, Access)
+            // case 3:
+            //   stepData = { useCases: formData.useCases };
+            //   break;
+            // case 4:
+            //   stepData = { isPersistent: formData.isPersistent };
+            //   break;
+            // case 5:
+            //   stepData = { accessMethod: formData.accessMethod };
+            //   break;
             case 6:
               stepData = { customizationLevel: formData.customizationLevel };
               break;
@@ -228,11 +248,22 @@ const Signup = () => {
           await saveSignupProgress(currentStep, stepData);
         }
         
-        setCurrentStep(prev => Math.min(prev + 1, totalSteps));
+        // Move to next step, skipping 3, 4, 5
+        setCurrentStep(prev => {
+          if (prev === 1) return 2; // Welcome -> Account
+          if (prev === 2) return 6; // Account -> Customization (skip 3, 4, 5)
+          if (prev === 6) return 7; // Customization -> Payment
+          return prev; // Already at last step
+        });
       } catch (error) {
         console.error('Failed to save progress:', error);
         // Still move to next step even if save fails
-        setCurrentStep(prev => Math.min(prev + 1, totalSteps));
+        setCurrentStep(prev => {
+          if (prev === 1) return 2; // Welcome -> Account
+          if (prev === 2) return 6; // Account -> Customization (skip 3, 4, 5)
+          if (prev === 6) return 7; // Customization -> Payment
+          return prev; // Already at last step
+        });
       }
     } else {
       console.error('Validation failed, errors:', errors);
@@ -240,7 +271,17 @@ const Signup = () => {
   };
 
   const handleBack = () => {
-    setCurrentStep(prev => Math.max(prev - 1, 1));
+    setCurrentStep(prev => {
+      // Map internal steps back, skipping 3, 4, 5
+      if (prev === 7) return 6; // Payment -> Customization
+      if (prev === 6) return 2; // Customization -> Account
+      if (prev === 2) return 1; // Account -> Welcome
+      return 1; // Default to first step
+    });
+  };
+
+  const goToStep = (step) => {
+    setCurrentStep(step);
   };
 
   const handleInputChange = (field, value) => {
@@ -317,35 +358,37 @@ const Signup = () => {
             onInputChange={handleInputChange}
             onNext={handleNext}
             setErrors={setErrors}
+            goToStep={goToStep}
           />
         );
-      case 3:
-        return (
-          <UseCaseStep
-            formData={formData}
-            errors={errors}
-            onUseCaseToggle={handleUseCaseToggle}
-            onNext={handleNext}
-          />
-        );
-      case 4:
-        return (
-          <PersistentStep
-            formData={formData}
-            errors={errors}
-            onInputChange={handleInputChange}
-            onNext={handleNext}
-          />
-        );
-      case 5:
-        return (
-          <AccessStep
-            formData={formData}
-            errors={errors}
-            onInputChange={handleInputChange}
-            onNext={handleNext}
-          />
-        );
+      // Steps 3, 4, 5 are skipped (UseCase, Persistent, Access)
+      // case 3:
+      //   return (
+      //     <UseCaseStep
+      //       formData={formData}
+      //       errors={errors}
+      //       onUseCaseToggle={handleUseCaseToggle}
+      //       onNext={handleNext}
+      //     />
+      //   );
+      // case 4:
+      //   return (
+      //     <PersistentStep
+      //       formData={formData}
+      //       errors={errors}
+      //       onInputChange={handleInputChange}
+      //       onNext={handleNext}
+      //     />
+      //   );
+      // case 5:
+      //   return (
+      //     <AccessStep
+      //       formData={formData}
+      //       errors={errors}
+      //       onInputChange={handleInputChange}
+      //       onNext={handleNext}
+      //     />
+      //   );
       case 6:
         return (
           <CustomizationStep
@@ -390,13 +433,13 @@ const Signup = () => {
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-gray-600">Step {currentStep} of {totalSteps}</span>
-            <span className="text-sm text-gray-600">{Math.round((currentStep / totalSteps) * 100)}%</span>
+            <span className="text-sm text-gray-600">Step {getDisplayStep(currentStep)} of {totalSteps}</span>
+            <span className="text-sm text-gray-600">{Math.round((getDisplayStep(currentStep) / totalSteps) * 100)}%</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
               className="bg-[#42677D] h-2 rounded-full transition-all duration-300"
-              style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+              style={{ width: `${(getDisplayStep(currentStep) / totalSteps) * 100}%` }}
             ></div>
           </div>
         </div>
@@ -408,7 +451,7 @@ const Signup = () => {
           {renderStep()}
 
           {/* Navigation Buttons */}
-          {currentStep > 1 && currentStep < totalSteps && (
+          {currentStep > 1 && currentStep < 7 && (
             <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
               <button
                 onClick={handleBack}
