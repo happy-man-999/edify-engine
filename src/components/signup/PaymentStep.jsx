@@ -26,7 +26,10 @@ const PaymentStep = ({ formData, onPayment, onContactScheduled, isProcessingPaym
   }, []);
 
   const isTestMode = paymentSettings.isTestMode || paymentSettings.stripeMode === 'test' || paymentSettings.solanaMode === 'devnet';
-  const plan = customizationOptions.find(option => `${option.id}-plan` === formData.customizationLevel) || customizationOptions[0];
+  const availablePlans = customizationOptions.filter(option => !option.isExternal);
+  const plan =
+    availablePlans.find(option => `${option.id}-plan` === formData.customizationLevel) ||
+    availablePlans[0];
   const isEnterprisePlan = formData.customizationLevel === 'enterprise-plan';
 
   // If enterprise plan, show contact step instead of payment

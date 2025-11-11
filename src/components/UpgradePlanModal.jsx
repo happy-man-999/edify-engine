@@ -14,7 +14,9 @@ const UpgradePlanModal = ({ open, onClose, currentPlan }) => {
   
   // For signed-in users: show all plans but only enable upper plans
   // For non-signed-in users: show and enable all plans
-  const availablePlans = customizationOptions.map(plan => {    
+  const availablePlans = customizationOptions
+    .filter(plan => !plan.isExternal)
+    .map(plan => {    
     const planHierarchy = { basic: 1, premium: 2, enterprise: 3 };
     const currentLevel = planHierarchy[currentPlan] || 0;
     const planLevel = planHierarchy[plan.id] || 0;
@@ -22,12 +24,12 @@ const UpgradePlanModal = ({ open, onClose, currentPlan }) => {
     const isUpperPlan = planLevel > currentLevel;
     const isCurrentPlan = plan.id === currentPlan;
     
-    return {
-      ...plan,
-      selectable: isUpperPlan,
-      isCurrentPlan
-    };
-  });
+      return {
+        ...plan,
+        selectable: isUpperPlan,
+        isCurrentPlan
+      };
+    });
 
   const handlePlanSelect = (plan) => {
     if (plan.selectable && !plan.disabled) {

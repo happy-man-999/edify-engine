@@ -32,20 +32,29 @@ export const customizationOptions = [
     price: 48
   },
   {
-    id: 'enterprise',
-    title: 'Enterprise',
-    subtitle: 'Scale Without Limits',
-    description: 'Designed for teams, brands, and large-scale projects.',
-    icon: 'fa-building',
-    color: '#223A4C',
-    details: [
-    ],
-    price: 0, // Contact us for pricing
-  },
+    id: 'not-ready',
+    title: 'Not Ready to Sign Up?',
+    subtitle: 'Experience Edify First',
+    description: 'Jump into an interactive tour to see what you can build.',
+    icon: 'fa-play-circle',
+    color: '#374151',
+    isExternal: true,
+    link: 'https://try.edifyengine.com',
+    details: []
+  }
 ];
 
 const CustomizationStep = ({ formData, errors, onInputChange, onNext }) => {
+  const openExternalLink = (link) => {
+    window.open(link, '_blank', 'noopener,noreferrer');
+  };
+
   const handleCardClick = (option) => {
+    if (option.isExternal && option.link) {
+      openExternalLink(option.link);
+      return;
+    }
+
     onInputChange('customizationLevel', `${option.id}-plan`);
   };
 

@@ -15,6 +15,7 @@ const SettingsConfigs = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isUpdatingSnapshot, setIsUpdatingSnapshot] = useState(false);
+  const [isUpdatingTryWorld, setIsUpdatingTryWorld] = useState(false);
   const [message, setMessage] = useState('');
 
   // Fetch settings on component mount
@@ -212,6 +213,39 @@ const SettingsConfigs = () => {
     }
   };
 
+  const handleUpdateTryWorld = async () => {
+    try {
+      setIsUpdatingTryWorld(true);
+      setMessage('Syncing Try world... This may take a moment.');
+
+      const response = await fetch('/api/admin/update-try-world', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update Try world');
+      }
+
+      const data = await response.json();
+
+      if (data.actionId) {
+        pollTryWorldStatus(data.actionId);
+      } else {
+        throw new Error('No action ID received from server');
+      }
+    } catch (error) {
+      console.error('Error updating Try world:', error);
+      setMessage(error.message || 'Failed to update Try world');
+      setIsUpdatingTryWorld(false);
+
+      setTimeout(() => setMessage(''), 7000);
+    }
+  };
+
   const pollSnapshotStatus = async (actionId) => {
     const maxAttempts = 180; // 5 minutes with 5-second intervals
     let attempts = 0;
@@ -292,6 +326,88 @@ const SettingsConfigs = () => {
     poll();
   };
 
+  const pollTryWorldStatus = async (actionId) => {
+    const maxAttempts = 180;
+    let attempts = 0;
+
+    const poll = async () => {
+      try {
+        attempts++;
+        setMessage(`Checking Try world update status... (Attempt ${attempts}/${maxAttempts})`);
+
+        const response = await fetch(`/api/user/status/${actionId}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to check Try world update status');
+        }
+
+        const data = await response.json();
+        console.log('Try world update status:', data);
+
+        if (data.status === 'completed') {
+          const successMessage =
+            data.result?.message || 'Try world updated successfully!';
+          setMessage(successMessage);
+          setIsUpdatingTryWorld(false);
+          setTimeout(() => setMessage(''), 5000);
+          return;
+        } else if (data.status === 'failed') {
+          const errorMsg = data.error ? data.error.message : 'Unknown error occurred';
+          setMessage(`Try world update failed: ${errorMsg}`);
+          setIsUpdatingTryWorld(false);
+          setTimeout(() => setMessage(''), 7000);
+          return;
+        } else if (data.status === 'in_progress') {
+          if (data.progressMessage) {
+            setMessage(`${data.progressMessage} (${data.progress || 0}%)`);
+          }
+
+          if (attempts >= maxAttempts) {
+            setMessage('Try world update is taking longer than expected. Please check the server logs.');
+            setIsUpdatingTryWorld(false);
+            return;
+          }
+
+          setTimeout(poll, 5000);
+        }
+      } catch (error) {
+        console.error('Error polling Try world update status:', error);
+
+        if (attempts >= maxAttempts) {
+          setMessage('Failed to check Try world update status. Please check the server logs.');
+          setIsUpdatingTryWorld(false);
+          return;
+        }
+
+        setTimeout(poll, 5000);
+      }
+    };
+
+    poll();
+  };
+
+  const renderMessageAlert = () => {
+    if (!message) return null;
+
+    const isErrorMessage = /failed|error/i.test(message);
+    const isSuccessMessage = /success/i.test(message);
+    const alertClasses = isErrorMessage
+      ? 'bg-red-50 text-red-800 border border-red-200'
+      : isSuccessMessage
+      ? 'bg-green-50 text-green-800 border border-green-200'
+      : 'bg-blue-50 text-blue-800 border border-blue-200';
+
+    return (
+      <div className={`p-4 rounded-lg ${alertClasses}`}>
+        {message}
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -341,15 +457,7 @@ const SettingsConfigs = () => {
       </div>
 
       {/* Message */}
-      {message && (
-        <div className={`p-4 rounded-lg ${
-          message.includes('successfully') 
-            ? 'bg-green-50 text-green-800 border border-green-200' 
-            : 'bg-red-50 text-red-800 border border-red-200'
-        }`}>
-          {message}
-        </div>
-      )}
+      {renderMessageAlert()}
 
       {/* Settings Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -417,6 +525,33 @@ const SettingsConfigs = () => {
               </button>
               <p className="text-xs text-gray-500 mt-1">
                 Creates a new snapshot from the sample droplet and updates the default snapshot ID
+              </p>
+            </div>
+
+            <div>
+              <button
+                onClick={handleUpdateTryWorld}
+                disabled={isUpdatingTryWorld}
+                className={`w-full px-4 py-2 rounded-md font-medium transition-colors ${
+                  isUpdatingTryWorld
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-gray-900 hover:bg-black text-white'
+                }`}
+              >
+                {isUpdatingTryWorld ? (
+                  <>
+                    <i className="fas fa-spinner fa-spin mr-2"></i>
+                    Updating Try World...
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-play-circle mr-2"></i>
+                    Update Try World
+                  </>
+                )}
+              </button>
+              <p className="text-xs text-gray-500 mt-1">
+                Syncs the Try environment with the latest Hyperfy build and reloads the service
               </p>
             </div>
           </div>
