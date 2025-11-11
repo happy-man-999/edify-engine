@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import LandingPageHeroImage from '../../assets/landing-hero.png';
 import TryWorldPreviewPng from '../../assets/preview.png';
-import TryWorldPreviewGif from '../../assets/preview.gif';
 
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -11,7 +10,6 @@ const HeroSection = () => {
   const [ctaEngaged, setCtaEngaged] = useState(false);
   const [ctaTextLeft, setCtaTextLeft] = useState(false);
   const [ctaLatched, setCtaLatched] = useState(false);
-  const [gifLoaded, setGifLoaded] = useState(false);
   const disengageTimeoutRef = useRef(null);
   const alignTimeoutRef = useRef(null);
   const [parallax, setParallax] = useState({ x: 0, y: 0 });
@@ -236,30 +234,6 @@ const HeroSection = () => {
       }
     };
   }, [ctaEngaged, ctaLatched]);
-
-  useEffect(() => {
-    if (!ctaEngaged || gifLoaded) {
-      return undefined;
-    }
-
-    let cancelled = false;
-    const preloader = new Image();
-    preloader.src = TryWorldPreviewGif;
-    preloader.onload = () => {
-      if (!cancelled) {
-        setGifLoaded(true);
-      }
-    };
-    preloader.onerror = () => {
-      /* swallow */
-    };
-
-    return () => {
-      cancelled = true;
-      preloader.onload = null;
-      preloader.onerror = null;
-    };
-  }, [ctaEngaged, gifLoaded]);
 
   const handleTryWorldInteraction = () => {
     if (!hasInteracted) {
@@ -509,24 +483,9 @@ const HeroSection = () => {
                 <img
                   src={TryWorldPreviewPng}
                   alt="Preview of the Try World experience"
-                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-                    gifLoaded ? 'opacity-0' : 'opacity-100'
-                  }`}
+                  className="absolute inset-0 w-full h-full object-cover"
                   loading="lazy"
                 />
-                {gifLoaded && (
-                  <img
-                    src={TryWorldPreviewGif}
-                    alt="Preview of the Try World experience"
-                    className="absolute inset-0 w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                )}
-                {ctaEngaged && !gifLoaded && (
-                  <div className="absolute inset-0 z-30 flex items-center justify-center bg-[#0f1c29]/40 backdrop-blur-[1px] transition-opacity duration-500">
-                    <div className="w-12 h-12 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                  </div>
-                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0f1c29] via-transparent to-transparent z-10 pointer-events-none"></div>
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white z-20">
                   <div className="flex items-center gap-3 text-sm font-medium uppercase tracking-[0.18em] text-white/75 mb-2">
