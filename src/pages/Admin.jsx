@@ -7,6 +7,7 @@ import PaymentActivity from '../components/admin/PaymentActivity';
 import LogsStatus from '../components/admin/LogsStatus';
 import SettingsConfigs from '../components/admin/SettingsConfigs';
 import ItemsManagement from '../components/admin/ItemsManagement';
+import WithdrawManagement from '../components/admin/WithdrawManagement';
 import GlobalStyles from '../components/GlobalStyles';
 
 const Admin = () => {
@@ -40,6 +41,7 @@ const Admin = () => {
     { id: 'droplets', label: 'Droplets', icon: 'fas fa-server' },
     { id: 'payments', label: 'Payments', icon: 'fas fa-credit-card' },
     { id: 'items', label: 'Items', icon: 'fas fa-box' },
+    { id: 'withdrawals', label: 'Withdrawals', icon: 'fas fa-money-bill-wave' },
     { id: 'logs', label: 'Logs & Status', icon: 'fas fa-chart-line' },
     { id: 'settings', label: 'Settings & Configs', icon: 'fas fa-cog' },
   ];
@@ -54,6 +56,8 @@ const Admin = () => {
         return <DropletManagement />;
       case 'payments':
         return <PaymentActivity />;
+      case 'withdrawals':
+        return <WithdrawManagement />;
       case 'logs':
         return <LogsStatus />;
       case 'settings':

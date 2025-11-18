@@ -10,6 +10,7 @@ import LoadingSpinner from './components/LoadingSpinner';
 import CustomWalletModal from './components/CustomWalletModal';
 import AnimatedBackground from './components/AnimatedBackground';
 import PaymentModal from './components/PaymentModal';
+import WithdrawModal from './components/navbar/WithdrawModal';
 import FontProvider from './components/FontProvider';
 import ScrollToTop from './components/ScrollToTop';
 import AuthRedirect from './components/AuthRedirect';
@@ -51,6 +52,7 @@ import SnapshotNameModal from './components/SnapshotNameModal';
 import SnapshotSelectionModal from './components/SnapshotSelectionModal';
 import EditorPasswordModal from './components/EditorPasswordModal';
 import { usePaymentModal } from './hooks/usePaymentModal';
+import { useWithdrawModal } from './hooks/useWithdrawModal';
 import { initializeFontLoading } from './utils/fontLoader';
 
 import './App.css';
@@ -61,6 +63,9 @@ function App() {
 
   // Global payment modal state
   const { isOpen, paymentData, openPaymentModal, closePaymentModal } = usePaymentModal();
+  
+  // Global withdraw modal state
+  const { isOpen: isWithdrawModalOpen, balance, closeWithdrawModal } = useWithdrawModal();
 
   // Initialize font loading on app start
   useEffect(() => {
@@ -168,6 +173,11 @@ function App() {
                   open={isOpen}
                   onClose={closePaymentModal}
                   {...paymentData}
+                />
+                <WithdrawModal
+                  open={isWithdrawModalOpen}
+                  balance={balance}
+                  onClose={closeWithdrawModal}
                 />
               </MainLayout>
               </ScrollToTop>
