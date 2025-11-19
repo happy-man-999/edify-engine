@@ -14,7 +14,7 @@ const Footer = () => {
     tabs = tabs.filter(tab => tab.title !== "Sign In" && tab.title !== "Try");
     
     // Add role-based tabs
-    if (user?.role === 'contributor') {
+    if (user?.isContributor) {
       tabs.push({ title: "Contribute", href: "/contribute" });
     }
     

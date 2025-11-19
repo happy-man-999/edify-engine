@@ -95,7 +95,32 @@ const UserManagement = () => {
       // Refetch users to get updated data
       fetchUsersWithParams();
     } catch (error) {
-      showError(error || 'Failed to update user role' );
+      showError(error || 'Failed to update user role');
+    }
+  };
+
+  // Handle contributor status update
+  const handleContributorToggle = async (userId, isContributor) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/admin/users/${userId}/contributor`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ isContributor })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update contributor status');
+      }
+
+      dispatch(showNotification('Contributor status updated successfully'));
+      fetchUsersWithParams();
+    } catch (error) {
+      showError(error || 'Failed to update contributor status');
     }
   };
 
@@ -411,51 +436,60 @@ const UserManagement = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          user.role === 'admin'
-                            ? 'bg-red-100 text-red-800'
-                            : user.role === 'contributor'
-                            ? 'bg-purple-100 text-purple-800'
-                            : user.role === 'lead'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-blue-100 text-blue-800'
-                        }`}>
-                          {user.role}
-                        </span>
+                        {/* Display role */}
+                        <div className="flex flex-wrap gap-1 mb-2">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            user.role === 'admin'
+                              ? 'bg-red-100 text-red-800'
+                              : user.role === 'lead'
+                              ? 'bg-yellow-100 text-yellow-800'
+                              : 'bg-blue-100 text-blue-800'
+                          }`}>
+                            {user.role}
+                          </span>
+                          {user.isContributor && (
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                              Contributor
+                            </span>
+                          )}
+                        </div>
+                        {/* Role management buttons */}
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {user.role !== 'admin' && (
+                            <button
+                              onClick={() => handleRoleUpdate(user._id, 'admin')}
+                              disabled={currentUser?._id === user._id}
+                              className="text-xs text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              Make Admin
+                            </button>
+                          )}
+                          {user.role === 'admin' && currentUser?._id !== user._id && (
+                            <button
+                              onClick={() => handleRoleUpdate(user._id, 'user')}
+                              className="text-xs text-red-500 hover:text-red-700"
+                            >
+                              Remove Admin
+                            </button>
+                          )}
+                          {!user.isContributor && (
+                            <button
+                              onClick={() => handleContributorToggle(user._id, true)}
+                              className="text-xs text-purple-500 hover:text-purple-700"
+                            >
+                              +Contributor
+                            </button>
+                          )}
+                          {user.isContributor && (
+                            <button
+                              onClick={() => handleContributorToggle(user._id, false)}
+                              className="text-xs text-red-500 hover:text-red-700"
+                            >
+                              -Contributor
+                            </button>
+                          )}
+                        </div>
                       </div>
-                      {user.role === 'admin' && (
-                        <button
-                          onClick={() => handleRoleUpdate(user._id, 'user')}
-                          disabled={currentUser?._id === user._id}
-                          className="text-xs text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {currentUser?._id === user._id ? 'Cannot change own role' : 'Make User'}
-                        </button>
-                      )}
-                      {user.role === 'contributor' && (
-                        <button
-                          onClick={() => handleRoleUpdate(user._id, 'admin')}
-                          className="text-xs text-gray-500 hover:text-gray-700"
-                        >
-                          Make Admin
-                        </button>
-                      )}
-                      {user.role === 'user' && (
-                        <button
-                          onClick={() => handleRoleUpdate(user._id, 'admin')}
-                          className="text-xs text-gray-500 hover:text-gray-700"
-                        >
-                          Make Admin
-                        </button>
-                      )}
-                      {user.role === 'lead' && (
-                        <button
-                          onClick={() => handleRoleUpdate(user._id, 'contributor')}
-                          className="text-xs text-gray-500 hover:text-gray-700"
-                        >
-                          Make Contributor
-                        </button>
-                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${

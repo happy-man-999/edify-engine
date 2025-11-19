@@ -47,7 +47,8 @@ export const usePayment = () => {
       throw new Error('User must be authenticated to make payments');
     }
     
-    if (user.role !== 'admin' && user.role !== 'user' && user.role !== 'contributor') {
+    // Allow payments for admin, user role, or contributors
+    if (user.role !== 'admin' && user.role !== 'user' && !user.isContributor) {
       throw new Error('Only subscribed users can make payments');
     }
 

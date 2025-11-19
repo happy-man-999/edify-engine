@@ -57,13 +57,13 @@ const Signup = () => {
   useEffect(() => {
     initializeStripe();
 
-    // After sign in, not yet completed signup progress.
-    if (isAuthenticated) {
-      // Skip onboarding for contributor role users
-      if (user?.role === 'contributor') {
-        navigate('/home');
-        return;
-      }
+      // After sign in, not yet completed signup progress.
+      if (isAuthenticated) {
+        // Skip onboarding for contributor users
+        if (user?.isContributor) {
+          navigate('/home');
+          return;
+        }
       
       // Step navigation is handled in the signupProgress useEffect below
       // This just ensures we don't start from step 1 if user is authenticated

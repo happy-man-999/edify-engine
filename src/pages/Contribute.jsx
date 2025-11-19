@@ -24,8 +24,8 @@ const Contribute = () => {
     );
   }
 
-  // Check if user is authenticated and has contributor role
-  if (!isAuthenticated || user?.role !== 'contributor') {
+  // Check if user is authenticated and is a contributor
+  if (!isAuthenticated || !user?.isContributor) {
     navigate('/home');
     return null;
   }
