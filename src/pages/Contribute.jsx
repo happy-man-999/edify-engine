@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import GlobalStyles from '../components/GlobalStyles';
@@ -8,6 +8,38 @@ const Contribute = () => {
   const { user, isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [stats, setStats] = useState({ itemCount: 0, totalEarnedSOL: 0 });
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  // Fetch contributor stats - MUST be called before any early returns
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (!isAuthenticated || !user?.isContributor) return;
+      
+      try {
+        setStatsLoading(true);
+        const token = localStorage.getItem('token');
+        const response = await fetch('/api/items/contributor/stats', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setStats(data);
+        } else {
+          console.error('Failed to fetch contributor stats');
+        }
+      } catch (error) {
+        console.error('Error fetching contributor stats:', error);
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, [isAuthenticated, user]);
 
   // Show loading while checking authentication
   if (loading) {
@@ -133,18 +165,26 @@ const Contribute = () => {
             <div className="space-y-4">
               <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
                 <div>
-                  <p className="text-sm text-gray-600">Content Submitted</p>
-                  <p className="text-2xl font-bold text-gray-900">0</p>
+                  <p className="text-sm text-gray-600">Uploaded Items</p>
+                  {statsLoading ? (
+                    <div className="animate-pulse h-8 w-16 bg-gray-200 rounded mt-1"></div>
+                  ) : (
+                    <p className="text-2xl font-bold text-gray-900">{stats.itemCount}</p>
+                  )}
                 </div>
-                <i className="fas fa-file-alt text-gray-400 text-xl"></i>
+                <i className="fas fa-box text-gray-400 text-xl"></i>
               </div>
               
               <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
                 <div>
-                  <p className="text-sm text-gray-600">Community Interactions</p>
-                  <p className="text-2xl font-bold text-gray-900">0</p>
+                  <p className="text-sm text-gray-600">Total Earned SOL</p>
+                  {statsLoading ? (
+                    <div className="animate-pulse h-8 w-24 bg-gray-200 rounded mt-1"></div>
+                  ) : (
+                    <p className="text-2xl font-bold text-gray-900">{stats.totalEarnedSOL.toFixed(6)} SOL</p>
+                  )}
                 </div>
-                <i className="fas fa-comments text-gray-400 text-xl"></i>
+                <i className="fas fa-coins text-yellow-500 text-xl"></i>
               </div>
               
               <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
@@ -200,13 +240,31 @@ const Contribute = () => {
         </div>
       </div>
 
-      {/* Item Upload Modal */}
+        {/* Item Upload Modal */}
       {isUploadModalOpen && (
         <ItemUploadForm
           onClose={() => setIsUploadModalOpen(false)}
           onSuccess={(newItem) => {
             console.log('Item uploaded successfully:', newItem);
-            // You could add logic here to refresh stats or show success message
+            // Refresh stats after successful upload
+            const fetchStats = async () => {
+              try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/items/contributor/stats', {
+                  headers: {
+                    'Authorization': `Bearer ${token}`
+                  }
+                });
+
+                if (response.ok) {
+                  const data = await response.json();
+                  setStats(data);
+                }
+              } catch (error) {
+                console.error('Error fetching contributor stats:', error);
+              }
+            };
+            fetchStats();
           }}
         />
       )}
