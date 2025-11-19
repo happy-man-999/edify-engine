@@ -159,71 +159,145 @@ const CustomizationStep = ({ formData, errors, onInputChange, onNext, billingPer
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {customizationOptions.map((option) => (
-          <div
-            key={option.id}
-            onClick={() => !option.disabled && !option.isExternal && handleCardClick(option)}
-            className={`bg-white p-6 rounded-xl border-2 transition-all duration-200 ${
-              option.disabled
-                ? 'cursor-not-allowed opacity-50'
-                : option.isExternal
-                ? 'cursor-pointer hover:shadow-md'
-                : 'cursor-pointer hover:shadow-md'
-            } ${
-              formData.customizationLevel === `${option.id}-plan` && !option.disabled
-                ? 'border-[#42677D] shadow-lg ring-2 ring-[#42677D] ring-opacity-20'
-                : 'border-gray-200 hover:border-[#42677D]'
-            } ${option.isExternal ? 'border-dashed' : ''}`}
-            aria-disabled={option.disabled}
-          >
-            <div className="text-center">
-              <div
-                className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
-                style={{ backgroundColor: `${option.color}1A` }}
-              >
-                <i className={`fas ${option.icon} text-2xl`} style={{ color: option.color }}></i>
-              </div>
-              <h4 className="font-semibold text-gray-900 text-lg mb-1">{option.title}</h4>
-              <p className="text-sm text-gray-500 mb-2">{option.subtitle}</p>
-              {!option.isExternal && (
-                <>
-                  <div className="mb-3">
-                    <div className="text-2xl font-bold text-gray-900 mb-1">
-                      {getPriceDisplay(option)}
+      <div className="space-y-6 mb-8">
+        {/* First Row: 3 cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {customizationOptions.slice(0, 3).map((option) => (
+            <div
+              key={option.id}
+              onClick={() => !option.disabled && !option.isExternal && handleCardClick(option)}
+              className={`bg-white p-6 rounded-xl border-2 transition-all duration-200 h-full flex flex-col ${
+                option.disabled
+                  ? 'cursor-not-allowed opacity-50'
+                  : option.isExternal
+                  ? 'cursor-pointer hover:shadow-md'
+                  : 'cursor-pointer hover:shadow-md'
+              } ${
+                formData.customizationLevel === `${option.id}-plan` && !option.disabled
+                  ? 'border-[#42677D] shadow-lg ring-2 ring-[#42677D] ring-opacity-20'
+                  : 'border-gray-200 hover:border-[#42677D]'
+              } ${option.isExternal ? 'border-dashed' : ''}`}
+              aria-disabled={option.disabled}
+            >
+              <div className="text-center flex-1 flex flex-col">
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                  style={{ backgroundColor: `${option.color}1A` }}
+                >
+                  <i className={`fas ${option.icon} text-2xl`} style={{ color: option.color }}></i>
+                </div>
+                <h4 className="font-semibold text-gray-900 text-lg mb-1">{option.title}</h4>
+                <p className="text-sm text-gray-500 mb-2">{option.subtitle}</p>
+                {!option.isExternal && (
+                  <>
+                    <div className="mb-3">
+                      <div className="text-2xl font-bold text-gray-900 mb-1">
+                        {getPriceDisplay(option)}
+                      </div>
+                      {billingPeriod === 'annual' && !option.isCustom && (
+                        <div className="text-xs text-gray-500">
+                          ${(option.priceAnnual / 12).toFixed(0)}/month billed annually
+                        </div>
+                      )}
                     </div>
-                    {billingPeriod === 'annual' && !option.isCustom && (
-                      <div className="text-xs text-gray-500">
-                        ${(option.priceAnnual / 12).toFixed(0)}/month billed annually
+                    {option.worlds && (
+                      <div className="text-sm font-medium text-gray-700 mb-2">
+                        {typeof option.worlds === 'number' ? `Up to ${option.worlds} world${option.worlds > 1 ? 's' : ''}` : option.worlds}
                       </div>
                     )}
-                  </div>
-                  {option.worlds && (
-                    <div className="text-sm font-medium text-gray-700 mb-2">
-                      {typeof option.worlds === 'number' ? `Up to ${option.worlds} world${option.worlds > 1 ? 's' : ''}` : option.worlds}
+                    {option.audience && (
+                      <p className="text-xs text-gray-500 mb-3">{option.audience}</p>
+                    )}
+                  </>
+                )}
+                {option.isExternal && (
+                  <p className="text-sm text-gray-600 mb-3">{option.description}</p>
+                )}
+                {option.disabled && (
+                  <div className="mt-4 text-xs text-gray-400">Coming soon</div>
+                )}
+                {formData.customizationLevel === `${option.id}-plan` && !option.disabled && !option.isExternal && (
+                  <div className="mt-4">
+                    <div className="w-6 h-6 bg-[#42677D] rounded-full flex items-center justify-center mx-auto">
+                      <i className="fas fa-check text-white text-sm"></i>
                     </div>
-                  )}
-                  {option.audience && (
-                    <p className="text-xs text-gray-500 mb-3">{option.audience}</p>
-                  )}
-                </>
-              )}
-              {option.isExternal && (
-                <p className="text-sm text-gray-600 mb-3">{option.description}</p>
-              )}
-              {option.disabled && (
-                <div className="mt-4 text-xs text-gray-400">Coming soon</div>
-              )}
-              {formData.customizationLevel === `${option.id}-plan` && !option.disabled && !option.isExternal && (
-                <div className="mt-4">
-                  <div className="w-6 h-6 bg-[#42677D] rounded-full flex items-center justify-center mx-auto">
-                    <i className="fas fa-check text-white text-sm"></i>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        
+        {/* Second Row: 2 cards centered */}
+        <div className="flex flex-col md:flex-row justify-center gap-6">
+          {customizationOptions.slice(3).map((option) => (
+            <div
+              key={option.id}
+              onClick={() => !option.disabled && handleCardClick(option)}
+              className={`bg-white p-6 rounded-xl border-2 transition-all duration-200 h-full flex flex-col w-full md:w-[calc(33.333%-1rem)] ${
+                option.disabled
+                  ? 'cursor-not-allowed opacity-50'
+                  : option.isExternal
+                  ? 'cursor-pointer hover:shadow-md'
+                  : 'cursor-pointer hover:shadow-md'
+              } ${
+                formData.customizationLevel === `${option.id}-plan` && !option.disabled
+                  ? 'border-[#42677D] shadow-lg ring-2 ring-[#42677D] ring-opacity-20'
+                  : 'border-gray-200 hover:border-[#42677D]'
+              } ${option.isExternal ? 'border-dashed' : ''}`}
+              aria-disabled={option.disabled}
+            >
+              <div className="text-center flex-1 flex flex-col">
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                  style={{ backgroundColor: `${option.color}1A` }}
+                >
+                  <i className={`fas ${option.icon} text-2xl`} style={{ color: option.color }}></i>
+                </div>
+                <h4 className="font-semibold text-gray-900 text-lg mb-1">{option.title}</h4>
+                <p className="text-sm text-gray-500 mb-2">{option.subtitle}</p>
+                {!option.isExternal && (
+                  <>
+                    <div className="mb-3">
+                      <div className="text-2xl font-bold text-gray-900 mb-1">
+                        {getPriceDisplay(option)}
+                      </div>
+                      {billingPeriod === 'annual' && !option.isCustom && (
+                        <div className="text-xs text-gray-500">
+                          ${(option.priceAnnual / 12).toFixed(0)}/month billed annually
+                        </div>
+                      )}
+                    </div>
+                    {option.worlds && (
+                      <div className="text-sm font-medium text-gray-700 mb-2">
+                        {typeof option.worlds === 'number' ? `Up to ${option.worlds} world${option.worlds > 1 ? 's' : ''}` : option.worlds}
+                      </div>
+                    )}
+                    {option.audience && (
+                      <p className="text-xs text-gray-500 mb-3">{option.audience}</p>
+                    )}
+                  </>
+                )}
+                {option.isExternal && (
+                  <>
+                    <p className="text-sm text-gray-600 mb-3">{option.description}</p>
+                    <div className="flex-1"></div>
+                  </>
+                )}
+                {option.disabled && (
+                  <div className="mt-4 text-xs text-gray-400">Coming soon</div>
+                )}
+                {formData.customizationLevel === `${option.id}-plan` && !option.disabled && !option.isExternal && (
+                  <div className="mt-4">
+                    <div className="w-6 h-6 bg-[#42677D] rounded-full flex items-center justify-center mx-auto">
+                      <i className="fas fa-check text-white text-sm"></i>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
       
       {errors.customizationLevel && (

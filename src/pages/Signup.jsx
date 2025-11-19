@@ -466,7 +466,7 @@ const Signup = () => {
           {renderStep()}
 
           {/* Navigation Buttons */}
-          {currentStep > 1 && currentStep < 7 && (
+          {currentStep > 1 && (
             <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
               <button
                 onClick={handleBack}

@@ -26,6 +26,7 @@ import AuthCallback from './pages/AuthCallback';
 import Admin from './pages/Admin';
 import Contribute from './pages/Contribute';
 import Contact from './pages/Contact';
+import Pricing from './pages/Pricing';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -138,6 +139,7 @@ function App() {
                   <Route path="/checkout" element={<Navbar />} />
                   <Route path="/contribute" element={<Navbar />} />
                   <Route path="/contact" element={<Navbar />} />
+                  <Route path="/pricing" element={<Navbar />} />
                   <Route path="/admin" element={<Navbar />} />
                 </Routes>
                 <Routes>
@@ -153,6 +155,7 @@ function App() {
                   <Route path="/admin" element={<Admin />} />
                   <Route path="/contribute" element={<Contribute />} />
                   <Route path="/contact" element={<Contact />} />
+                  <Route path="/pricing" element={<Pricing />} />
                 </Routes>
 
                 <Routes>
@@ -160,6 +163,7 @@ function App() {
                   <Route path="/store" element={<Footer />} />
                   <Route path="/contribute" element={<Footer />} />
                   <Route path="/contact" element={<Footer />} />
+                  <Route path="/pricing" element={<Footer />} />
                 </Routes>
                 <LoadingSpinner />
                 {notification && <Notification message={notification} onClose={() => dispatch(clearNotification())} />}
