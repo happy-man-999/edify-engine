@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { usePaymentModal } from '../hooks/usePaymentModal';
 import { useAuth } from '../hooks/useAuth';
 import { customizationOptions } from './signup/CustomizationStep';
 
 const UpgradePlanModal = ({ open, onClose, currentPlan }) => {
+  const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [billingPeriod, setBillingPeriod] = useState('annual'); // Default to annual
@@ -13,25 +15,54 @@ const UpgradePlanModal = ({ open, onClose, currentPlan }) => {
   // Determine which plans to show and enable based on user status
   const isSignedIn = !!user;
   
-  // For signed-in users: show all plans but only enable upper plans
-  // For non-signed-in users: show and enable all plans
-  const planHierarchy = { start: 1, growth: 2, studio: 3, enterprise: 4, basic: 1, premium: 2 }; // Legacy support
-  const currentLevel = planHierarchy[currentPlan] || 0;
+  // Map user plan to plan hierarchy IDs
+  const mapUserPlanToPlanId = (plan) => {
+    if (!plan) return null;
+    const planMap = {
+      'basic': 'start',
+      'starter': 'start',
+      'premium': 'growth',
+      'growth': 'growth',
+      'studio': 'studio',
+      'enterprise': 'enterprise'
+    };
+    return planMap[plan.toLowerCase()] || plan.toLowerCase();
+  };
+  
+  // Plan hierarchy for comparison
+  const planHierarchy = { 
+    start: 1, 
+    growth: 2, 
+    studio: 3, 
+    enterprise: 4, 
+    basic: 1,  // Legacy support
+    premium: 2, // Legacy support
+    starter: 1, // Alias for start
+  };
+  
+  const currentPlanId = mapUserPlanToPlanId(currentPlan);
+  const currentLevel = planHierarchy[currentPlanId] || 0;
   
   const availablePlans = customizationOptions
     .filter(plan => !plan.isExternal)
     .map(plan => {    
-    const planLevel = planHierarchy[plan.id] || 0;
-    
-    const isUpperPlan = planLevel > currentLevel;
-    const isCurrentPlan = plan.id === currentPlan || 
-      (currentPlan === 'basic' && plan.id === 'start') ||
-      (currentPlan === 'premium' && plan.id === 'growth');
+      const planLevel = planHierarchy[plan.id] || 0;
+      
+      // Plan is selectable only if it's above the current plan level
+      const isUpperPlan = planLevel > currentLevel;
+      // Plan is current if it matches the current plan ID
+      const isCurrentPlan = plan.id === currentPlanId || 
+        (currentPlan === 'basic' && plan.id === 'start') ||
+        (currentPlan === 'premium' && plan.id === 'growth') ||
+        (currentPlan === 'starter' && plan.id === 'start');
+      // Plan is below or same as current (should be disabled)
+      const isBelowOrSamePlan = planLevel <= currentLevel && !plan.isCustom;
     
       return {
         ...plan,
-        selectable: isUpperPlan,
-        isCurrentPlan
+        selectable: isUpperPlan && !plan.disabled,
+        isCurrentPlan,
+        isBelowOrSamePlan
       };
     });
 
@@ -54,6 +85,13 @@ const UpgradePlanModal = ({ open, onClose, currentPlan }) => {
 
   const handleUpgrade = async () => {
     if (!selectedPlan) return;
+
+    // Enterprise plan always navigates to contact page
+    if (selectedPlan.id === 'enterprise' || selectedPlan.isCustom) {
+      onClose();
+      navigate('/contact');
+      return;
+    }
 
     setIsProcessing(true);
     
@@ -151,7 +189,7 @@ const UpgradePlanModal = ({ open, onClose, currentPlan }) => {
                 className={`border-2 rounded-xl p-6 transition-all duration-200 min-w-[320px] xl:min-w-0 xl:flex-1 ${
                   plan.disabled
                     ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60'
-                    : !plan.selectable
+                    : !plan.selectable || plan.isBelowOrSamePlan
                     ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60'
                     : plan.isCurrentPlan
                     ? 'border-[#5E8EA9] bg-[#5E8EA9]/5 cursor-default'
@@ -172,6 +210,11 @@ const UpgradePlanModal = ({ open, onClose, currentPlan }) => {
                     {plan.isCurrentPlan && (
                       <span className="ml-2 px-2 py-1 bg-[#5E8EA9] text-white text-xs rounded-full">
                         Current
+                      </span>
+                    )}
+                    {plan.isBelowOrSamePlan && !plan.isCurrentPlan && (
+                      <span className="ml-2 px-2 py-1 bg-gray-400 text-white text-xs rounded-full">
+                        Downgrade
                       </span>
                     )}
                     {plan.disabled && (

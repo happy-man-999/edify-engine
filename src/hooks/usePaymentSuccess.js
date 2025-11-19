@@ -187,33 +187,24 @@ export const usePaymentSuccess = () => {
           console.log(result);
           // Handle item purchase success
           dispatch(showNotification(`Cart purchased successfully!`));
-        } else if (result.itemType === 'start-plan' || result.itemType === 'basic-plan') {
-          // Handle start plan success (basic-plan is legacy)
-          dispatch(showNotification(`Start plan activated successfully!`));
-          // Refresh user data to get updated plan information
-          const token = localStorage.getItem('token');
-          if (token) {
-            dispatch(checkAuth(token));
+        } else if (result.itemType === 'start-plan' || result.itemType === 'growth-plan' || result.itemType === 'studio-plan' || result.itemType === 'enterprise-plan' || result.itemType === 'basic-plan' || result.itemType === 'premium-plan') {
+          // Handle plan purchase/update success
+          const planName = result.planName || (result.itemType === 'start-plan' || result.itemType === 'basic-plan' ? 'Starter' :
+                                               result.itemType === 'growth-plan' || result.itemType === 'premium-plan' ? 'Growth' :
+                                               result.itemType === 'studio-plan' ? 'Studio' :
+                                               result.itemType === 'enterprise-plan' ? 'Enterprise' : 'Plan');
+          
+          // Show appropriate notification based on upgrade/downgrade
+          if (result.isUpgrade) {
+            dispatch(showNotification(`Plan upgraded to ${planName} successfully!`));
+          } else if (result.isDowngrade) {
+            dispatch(showNotification(`Plan downgraded to ${planName} successfully!`));
+          } else if (result.isDirectSubscriptionUpdate) {
+            dispatch(showNotification(`${planName} plan updated successfully!`));
+          } else {
+            dispatch(showNotification(`${planName} plan activated successfully!`));
           }
-        } else if (result.itemType === 'growth-plan') {
-          // Handle growth plan success
-          dispatch(showNotification(`Growth plan activated successfully!`));
-          // Refresh user data to get updated plan information
-          const token = localStorage.getItem('token');
-          if (token) {
-            dispatch(checkAuth(token));
-          }
-        } else if (result.itemType === 'studio-plan') {
-          // Handle studio plan success
-          dispatch(showNotification(`Studio plan activated successfully!`));
-          // Refresh user data to get updated plan information
-          const token = localStorage.getItem('token');
-          if (token) {
-            dispatch(checkAuth(token));
-          }
-        } else if (result.itemType === 'premium-plan') {
-          // Handle premium plan success (legacy, maps to growth)
-          dispatch(showNotification(`Growth plan activated successfully!`));
+          
           // Refresh user data to get updated plan information
           const token = localStorage.getItem('token');
           if (token) {

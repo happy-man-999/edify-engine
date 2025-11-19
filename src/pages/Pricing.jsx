@@ -1,9 +1,23 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useAuth } from '../hooks/useAuth';
+import { usePaymentModal } from '../hooks/usePaymentModal';
+import { usePaymentSuccess } from '../hooks/usePaymentSuccess';
+import { useYesNoModal } from '../hooks/useYesNoModal';
+import { useErrorModal } from '../hooks/useErrorModal';
+import { showNotification } from '../store/uiSlice';
 import GlobalStyles from '../components/GlobalStyles';
 
 const Pricing = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const { user } = useAuth();
+  const { openPaymentModal } = usePaymentModal();
+  const { handleStripePaymentSuccess } = usePaymentSuccess();
+  const { showModal: showYesNoModal } = useYesNoModal();
+  const { showError } = useErrorModal();
   const [billingPeriod, setBillingPeriod] = useState('annual');
 
   const plans = [
@@ -96,13 +110,168 @@ const Pricing = () => {
     return billingPeriod === 'annual' ? `$${price}/year` : `$${price}/month`;
   };
 
-  const handleGetStarted = (planId) => {
-    if (planId === 'enterprise') {
+  // Map user plan to pricing page plan IDs
+  const getUserPlanId = () => {
+    if (!user?.plan) return null;
+    const planMap = {
+      'basic': 'start',
+      'starter': 'start',
+      'premium': 'growth',
+      'growth': 'growth',
+      'studio': 'studio',
+      'enterprise': 'enterprise'
+    };
+    return planMap[user.plan.toLowerCase()] || null;
+  };
+
+  // Plan hierarchy for comparison
+  const planHierarchy = {
+    'start': 1,
+    'growth': 2,
+    'studio': 3,
+    'enterprise': 4
+  };
+
+  const getPlanButtonState = (planId) => {
+    const currentPlanId = getUserPlanId();
+    
+    // If user is not logged in, show "Get Started" for all plans
+    if (!currentPlanId) {
+      return {
+        text: planId === 'enterprise' ? 'Contact Sales' : 'Get Started',
+        disabled: false,
+        action: 'signup',
+        isUpgrade: false
+      };
+    }
+
+    // If this is the current plan, disable the button
+    if (planId === currentPlanId) {
+      return {
+        text: 'Current Plan',
+        disabled: true,
+        action: 'none',
+        isUpgrade: false
+      };
+    }
+
+    const currentLevel = planHierarchy[currentPlanId] || 0;
+    const planLevel = planHierarchy[planId] || 0;
+
+    // If this is a lower plan, show "Downgrade"
+    if (planLevel < currentLevel) {
+      return {
+        text: 'Downgrade',
+        disabled: false,
+        action: planId === 'enterprise' ? 'contact' : 'downgrade',
+        isUpgrade: false
+      };
+    }
+
+    // If this is a higher plan, show "Upgrade"
+    return {
+      text: planId === 'enterprise' ? 'Contact Sales' : 'Upgrade',
+      disabled: false,
+      action: planId === 'enterprise' ? 'contact' : 'upgrade',
+      isUpgrade: true
+    };
+  };
+
+  const handleGetStarted = async (planId, buttonState, plan) => {
+    if (buttonState.disabled) return;
+    
+    // Enterprise plan always navigates to contact page
+    if (planId === 'enterprise' || buttonState.action === 'contact') {
       navigate('/contact');
+      return;
+    }
+    
+    if (buttonState.action === 'downgrade' && user) {
+      // Handle downgrade directly without payment modal (no payment needed)
+      try {
+        const confirmDowngrade = await showYesNoModal(
+          `Are you sure you want to downgrade to the ${plan.title} plan? ` +
+          `You'll receive a credit for unused time on your current plan. ` +
+          `The change will take effect immediately.`
+        );
+        
+        if (!confirmDowngrade) {
+          return;
+        }
+
+        // Call downgrade endpoint directly
+        const token = localStorage.getItem('token');
+        const response = await fetch('/api/stripe/downgrade-subscription', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            itemId: `${planId}-plan`,
+            billingPeriod: billingPeriod
+          })
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          // Refresh user data to show updated plan
+          window.location.reload(); // Simple refresh - could be improved with state management
+        } else {
+          const error = await response.json();
+          showError(error.error || 'Failed to downgrade subscription');
+        }
+      } catch (error) {
+        console.error('Plan downgrade failed:', error);
+        showError('Failed to downgrade subscription. Please try again.');
+      }
+    } else if (buttonState.action === 'upgrade' && user) {
+      // Handle upgrade using payment modal (payment required)
+      try {
+        const price = billingPeriod === 'annual' ? plan.priceAnnual : plan.priceMonthly;
+        const result = await openPaymentModal({
+          amount: price,
+          itemName: `${plan.title} Plan Upgrade`,
+          itemId: `${planId}-plan`,
+          subscriptionMode: true,
+          metadata: {
+            billingPeriod: billingPeriod,
+            price: price
+          }
+        });
+
+        if (result && result.paymentMethod) {
+          // Payment successful - user data will be refreshed automatically
+          // Optionally show a success message or redirect
+        }
+      } catch (error) {
+        console.error('Plan upgrade failed:', error);
+        // Error handling is done by the payment modal
+      }
     } else {
+      // For non-logged-in users, navigate to signup
       navigate('/signup', { state: { selectedPlan: `${planId}-plan` } });
     }
   };
+
+  // Check for pending Stripe payment success on component mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment');
+    const sessionId = urlParams.get('session_id');
+    
+    // Check if this is a successful payment return from Stripe
+    if (paymentStatus === 'success' && sessionId) {
+      handleStripePaymentSuccess(sessionId).then((result) => {
+        // Payment success is handled by the hook, which will show notifications
+        // and refresh user data automatically
+      });
+      navigate(location.pathname, { replace: true });
+    } else if (paymentStatus === 'cancelled') {
+      dispatch(showNotification('Payment was cancelled'));
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.search, location.pathname, navigate, dispatch, handleStripePaymentSuccess]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -213,18 +382,26 @@ const Pricing = () => {
                   ))}
                 </ul>
 
-                <button
-                  onClick={() => handleGetStarted(plan.id)}
-                  className={`w-full py-3 rounded-lg font-semibold transition-all ${
-                    plan.id === 'growth'
-                      ? 'bg-[#5E8EA9] text-white hover:bg-[#4a7a95]'
-                      : plan.isCustom
-                      ? 'bg-[#F59E0B] text-white hover:bg-[#d97706]'
-                      : 'bg-[#42677D] text-white hover:bg-[#355263]'
-                  }`}
-                >
-                  {plan.isCustom ? 'Contact Sales' : 'Get Started'}
-                </button>
+                {(() => {
+                  const buttonState = getPlanButtonState(plan.id);
+                  return (
+                    <button
+                      onClick={() => handleGetStarted(plan.id, buttonState, plan)}
+                      disabled={buttonState.disabled}
+                      className={`w-full py-3 rounded-lg font-semibold transition-all ${
+                        buttonState.disabled
+                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                          : plan.id === 'growth'
+                          ? 'bg-[#5E8EA9] text-white hover:bg-[#4a7a95]'
+                          : plan.isCustom
+                          ? 'bg-[#F59E0B] text-white hover:bg-[#d97706]'
+                          : 'bg-[#42677D] text-white hover:bg-[#355263]'
+                      }`}
+                    >
+                      {buttonState.text}
+                    </button>
+                  );
+                })()}
               </div>
             </div>
           ))}

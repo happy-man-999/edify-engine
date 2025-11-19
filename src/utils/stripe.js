@@ -142,10 +142,12 @@ export const createCheckoutSession = async (amount, currency = 'usd', successUrl
 // Create Stripe Checkout session
 export const createSubscriptionSession = async (successUrl = null, cancelUrl = null, itemId = null, itemName = null, metadata = {}) => {
   try {
+    const token = localStorage.getItem('token');
     const response = await fetch('/api/stripe/create-subscription-session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` })
       },
       body: JSON.stringify({
         success_url: successUrl || `${window.location.origin}/signup-success?session_id={CHECKOUT_SESSION_ID}`,
@@ -176,6 +178,17 @@ export const createSubscriptionSession = async (successUrl = null, cancelUrl = n
     }
 
     const data = await response.json();
+    
+    // If subscription was updated directly (not through checkout), return special flag
+    if (data.isUpdate) {
+      return {
+        sessionId: data.sessionId || data.subscriptionId,
+        isUpdate: true,
+        subscriptionId: data.subscriptionId,
+        customerId: data.customerId
+      };
+    }
+    
     return data.sessionId;
   } catch (error) {
     console.error('Error creating checkout session:', error);

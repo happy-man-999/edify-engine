@@ -8,6 +8,7 @@ import LogsStatus from '../components/admin/LogsStatus';
 import SettingsConfigs from '../components/admin/SettingsConfigs';
 import ItemsManagement from '../components/admin/ItemsManagement';
 import WithdrawManagement from '../components/admin/WithdrawManagement';
+import DemoEmailsManagement from '../components/admin/DemoEmailsManagement';
 import GlobalStyles from '../components/GlobalStyles';
 
 const Admin = () => {
@@ -38,6 +39,7 @@ const Admin = () => {
 
   const tabs = [
     { id: 'users', label: 'Users', icon: 'fas fa-users' },
+    { id: 'demo-emails', label: 'Demo Emails', icon: 'fas fa-envelope' },
     { id: 'droplets', label: 'Droplets', icon: 'fas fa-server' },
     { id: 'payments', label: 'Payments', icon: 'fas fa-credit-card' },
     { id: 'items', label: 'Items', icon: 'fas fa-box' },
@@ -50,6 +52,8 @@ const Admin = () => {
     switch (activeTab) {
       case 'users':
         return <UserManagement />;
+      case 'demo-emails':
+        return <DemoEmailsManagement />;
       case 'items':
         return <ItemsManagement />;
       case 'droplets':

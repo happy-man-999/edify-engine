@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useAuth } from './useAuth';
 import { useLoadingSpinner } from './useLoadingSpinner';
 import { useErrorModal } from './useErrorModal';
@@ -7,8 +8,11 @@ import { useCurrency } from './useCurrency';
 import { useSettings } from './useSettings';
 import { createCheckoutSession, createSubscriptionSession, redirectToCheckout, initializeStripe } from '../utils/stripe';
 import { sendSOLWithReference } from '../utils/paySolana';
+import { showNotification } from '../store/uiSlice';
+import { checkAuth } from '../store/authSlice';
 
 export const usePayment = () => {
+  const dispatch = useDispatch();
   const [isProcessing, setIsProcessing] = useState(false);
   const [stripeInitialized, setStripeInitialized] = useState(false);
   const { user } = useAuth();
@@ -112,9 +116,68 @@ export const usePayment = () => {
     const successUrl = `${currentUrl}?payment=success&session_id={CHECKOUT_SESSION_ID}`;
     const cancelUrl = `${currentUrl}?payment=cancelled`;
     
-    const sessionId = await createSubscriptionSession(successUrl, cancelUrl, itemId, itemName, metadata);
+    const sessionResult = await createSubscriptionSession(successUrl, cancelUrl, itemId, itemName, metadata);
     
-    // Redirect to Stripe checkout
+    // If subscription was updated directly (not through checkout), handle it differently
+    if (sessionResult && typeof sessionResult === 'object' && sessionResult.isUpdate) {
+      // Call payment-success endpoint directly for subscription updates
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/stripe/payment-success', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          sessionId: sessionResult.sessionId || sessionResult.subscriptionId
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to update subscription');
+      }
+
+      const result = await response.json();
+      
+      // Handle subscription update notifications and refresh user info
+      if (result.itemType === 'start-plan' || result.itemType === 'growth-plan' || result.itemType === 'studio-plan' || result.itemType === 'enterprise-plan' || result.itemType === 'basic-plan' || result.itemType === 'premium-plan') {
+        const planName = result.planName || (result.itemType === 'start-plan' || result.itemType === 'basic-plan' ? 'Starter' :
+                                             result.itemType === 'growth-plan' || result.itemType === 'premium-plan' ? 'Growth' :
+                                             result.itemType === 'studio-plan' ? 'Studio' :
+                                             result.itemType === 'enterprise-plan' ? 'Enterprise' : 'Plan');
+        
+        // Show appropriate notification based on upgrade/downgrade
+        if (result.isUpgrade) {
+          dispatch(showNotification(`Plan upgraded to ${planName} successfully!`));
+        } else if (result.isDowngrade) {
+          dispatch(showNotification(`Plan downgraded to ${planName} successfully!`));
+        } else {
+          dispatch(showNotification(`${planName} plan updated successfully!`));
+        }
+        
+        // Refresh user data to get updated plan information
+        const token = localStorage.getItem('token');
+        if (token) {
+          dispatch(checkAuth(token));
+        }
+      }
+      
+      // Return result with all the information needed for notifications
+      return {
+        sessionId: sessionResult.subscriptionId,
+        subscriptionId: sessionResult.subscriptionId,
+        token: sessionResult.subscriptionId,
+        success: true,
+        paymentMethod: 'stripe',
+        isUpdate: true,
+        // Include payment success result for notification handling
+        paymentResult: result
+      };
+    }
+    
+    // Normal flow: redirect to Stripe checkout
+    const sessionId = typeof sessionResult === 'string' ? sessionResult : sessionResult.sessionId;
     const checkoutResult = await redirectToCheckout(sessionId);
     
     if (checkoutResult.error) {

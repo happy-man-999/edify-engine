@@ -8,6 +8,7 @@ import { useUserDroplets } from "../hooks/useUserDroplets";
 import { useAuth } from "../hooks/useAuth";
 import { useSnapshotSelectionModal } from "../hooks/useSnapshotSelectionModal";
 import { shortAddress } from "../utils/format";
+import { getWorldLimit, hasReachedWorldLimit as checkWorldLimit } from "../utils/planUtils";
 import { showNotification, openDomainModal, hideDomainModal } from "../store/uiSlice";
 import WorldCard from "./WorldCard";
 import DomainSelectionModal from "./DomainSelectionModal";
@@ -142,7 +143,9 @@ const WorldsSection = () => {
   const handleCreateWorld = async () => {
     // Check if user has reached the world limit
     if (hasReachedWorldLimit) {
-      showError('You have reached the maximum limit of 3 worlds. Please delete an existing world before creating a new one.');
+      const limit = getWorldLimit(user?.plan);
+      const limitText = limit === null ? 'unlimited' : limit;
+      showError(`You have reached the maximum limit of ${limitText} world${limit !== 1 ? 's' : ''}. Please delete an existing world before creating a new one.`);
       return;
     }
     
@@ -260,9 +263,9 @@ const WorldsSection = () => {
   };
 
   // Check if user has reached the world limit
-  const hasReachedWorldLimit = !user || user && user.plan === 'basic' && userDroplets.length >= 1 || user && user.plan === 'premium' && userDroplets.length >= 3;
-  const remainingWorlds = !user ? 0 : (user.plan === 'basic' ? 1 : 3) - userDroplets.length;
-  const dropletLimit = !user ? 0 : user.plan === 'basic' ? 1 : 3;
+  const dropletLimit = !user ? 0 : getWorldLimit(user.plan) ?? Infinity;
+  const hasReachedWorldLimit = !user || (dropletLimit !== null && userDroplets.length >= dropletLimit);
+  const remainingWorlds = !user ? 0 : (dropletLimit === null ? Infinity : Math.max(0, dropletLimit - userDroplets.length));
 
   return (
     <section className="mb-12">
@@ -271,8 +274,8 @@ const WorldsSection = () => {
           <h2 className="text-2xl font-bold text-gray-900">Your Worlds</h2>
           {!loading && !error && (
             <p className="text-sm text-gray-600 mt-1">
-              {userDroplets.length} of {dropletLimit} worlds created
-              {remainingWorlds > 0 && ` • ${remainingWorlds} remaining`}
+              {userDroplets.length} of {dropletLimit === null ? 'Unlimited' : dropletLimit} worlds created
+              {remainingWorlds > 0 && remainingWorlds !== Infinity && ` • ${remainingWorlds} remaining`}
             </p>
           )}
         </div>
