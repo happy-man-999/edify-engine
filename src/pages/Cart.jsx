@@ -80,6 +80,7 @@ const Cart = () => {
         amount: totalAmount,
         itemName: `Cart Purchase (${cartItems.length} items)`,
         itemId: 'cart-purchase',
+        solanaOnly: true, // Store purchases are SOL only
         metadata: {
           cartItems: JSON.stringify(cartItemIds),
           totalItems: cartItems.length.toString(),

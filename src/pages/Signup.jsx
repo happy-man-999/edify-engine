@@ -30,6 +30,7 @@ const Signup = () => {
     isPersistent: '',
     accessMethod: '',
     customizationLevel: '',
+    billingPeriod: 'annual', // Default to annual
   });
 
   const [errors, setErrors] = useState({});
@@ -303,7 +304,7 @@ const Signup = () => {
     }
   };
 
-  const handlePayment = async () => {
+  const handlePayment = async (billingPeriod, price) => {
     try {
       setIsProcessingPayment(true);
       
@@ -313,7 +314,18 @@ const Signup = () => {
         throw new Error('Failed to initialize Stripe');
       }
 
-      const sessionId = await createSubscriptionSession(null, null, formData.customizationLevel, 'Edify Engine Plan');
+      // Update formData with billing period if provided
+      if (billingPeriod) {
+        setFormData(prev => ({ ...prev, billingPeriod }));
+      }
+
+      const sessionId = await createSubscriptionSession(
+        null, 
+        null, 
+        formData.customizationLevel, 
+        'Edify Engine Plan',
+        { billingPeriod: billingPeriod || formData.billingPeriod, price }
+      );
       await redirectToCheckout(sessionId);
       
       // Note: User will be redirected to Stripe, then back to success page
@@ -396,6 +408,8 @@ const Signup = () => {
             errors={errors}
             onInputChange={handleInputChange}
             onNext={handleNext}
+            billingPeriod={formData.billingPeriod}
+            onBillingPeriodChange={(period) => handleInputChange('billingPeriod', period)}
           />
         );
       case 7:
@@ -407,6 +421,7 @@ const Signup = () => {
             onPayment={handlePayment}
             onContactScheduled={handleContactScheduled}
             signupProgress={signupProgress}
+            billingPeriod={formData.billingPeriod}
           />
         );
       default:

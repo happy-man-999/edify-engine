@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useWalletWithRedirects } from '../../hooks/useWalletWithRedirects';
+import { useCurrency } from '../../hooks/useCurrency';
+import { sendSOLWithReference } from '../../utils/paySolana';
+import { showNotification } from '../../store/uiSlice';
 
 export default function WithdrawManagement() {
   const [withdrawals, setWithdrawals] = useState([]);
@@ -11,6 +16,34 @@ export default function WithdrawManagement() {
   const [actionType, setActionType] = useState(''); // approve or reject
   const [notes, setNotes] = useState('');
   const [rejectionReason, setRejectionReason] = useState('');
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [paymentDetails, setPaymentDetails] = useState(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [detailWithdrawal, setDetailWithdrawal] = useState(null);
+  const [solanaNetwork, setSolanaNetwork] = useState('devnet');
+  
+  const dispatch = useDispatch();
+  const { connected: solanaConnected } = useWalletWithRedirects();
+  const { convertUsdToSol } = useCurrency();
+
+  // Fetch Solana network settings
+  useEffect(() => {
+    const fetchNetworkSettings = async () => {
+      try {
+        const response = await fetch('/api/admin/payment-settings');
+        if (response.ok) {
+          const { settings } = await response.json();
+          const solanaMode = settings.solanaMode || 'devnet';
+          const isTestMode = settings.isTestMode || false;
+          const effectiveMode = isTestMode ? 'devnet' : solanaMode;
+          setSolanaNetwork(effectiveMode);
+        }
+      } catch (error) {
+        console.warn('Failed to fetch network settings:', error);
+      }
+    };
+    fetchNetworkSettings();
+  }, []);
 
   useEffect(() => {
     fetchWithdrawals();
@@ -39,10 +72,48 @@ export default function WithdrawManagement() {
     }
   };
 
-  const handleApprove = (withdrawal) => {
-    setSelectedWithdrawal(withdrawal);
-    setActionType('approve');
-    setShowActionModal(true);
+  const handleViewDetails = (withdrawal) => {
+    setDetailWithdrawal(withdrawal);
+    setShowDetailModal(true);
+  };
+
+  const handleApprove = async (withdrawal) => {
+    // Check if user has Solana address
+    const solanaAddress = withdrawal.solanaAddress || withdrawal.user?.solanaAddress;
+    if (!solanaAddress) {
+      dispatch(showNotification('User has no Solana address linked. Cannot process withdrawal.', 'error'));
+      return;
+    }
+
+    // Check if wallet is connected
+    if (!solanaConnected) {
+      dispatch(showNotification('Please connect your Solana wallet first to process the withdrawal payment.', 'error'));
+      return;
+    }
+
+    try {
+      // Fetch withdrawal approval details (amount in SOL, etc.)
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/withdrawals/${withdrawal._id}/approve-details`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to get withdrawal details');
+      }
+
+      const data = await response.json();
+      setPaymentDetails(data);
+      setSelectedWithdrawal(withdrawal);
+      setActionType('approve');
+      setShowActionModal(true);
+    } catch (error) {
+      console.error('Error fetching withdrawal details:', error);
+      dispatch(showNotification(error.message || 'Failed to get withdrawal details', 'error'));
+    }
   };
 
   const handleReject = (withdrawal) => {
@@ -51,26 +122,79 @@ export default function WithdrawManagement() {
     setShowActionModal(true);
   };
 
+  const processWithdrawalPayment = async () => {
+    if (!selectedWithdrawal || !paymentDetails) return;
+
+    if (!solanaConnected) {
+      alert('Please connect your Solana wallet first.');
+      return;
+    }
+
+    setIsProcessingPayment(true);
+
+    try {
+      // Send SOL payment to user's address
+      const reference = `Withdrawal-${selectedWithdrawal._id}`;
+      const signature = await sendSOLWithReference(
+        paymentDetails.solanaAddress,
+        paymentDetails.amountSOL,
+        reference
+      );
+
+      // Confirm payment with backend
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/withdrawals/${selectedWithdrawal._id}/confirm-payment`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          paymentSignature: signature,
+          notes
+        })
+      });
+
+      if (response.ok) {
+        setShowActionModal(false);
+        setSelectedWithdrawal(null);
+        setPaymentDetails(null);
+        setNotes('');
+        fetchWithdrawals();
+        dispatch(showNotification(`Withdrawal approved! Payment signature: ${signature.substring(0, 8)}...`));
+      } else {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to confirm payment');
+      }
+    } catch (error) {
+      console.error('Error processing withdrawal payment:', error);
+      dispatch(showNotification(error.message || 'Payment failed. Please try again.', 'error'));
+    } finally {
+      setIsProcessingPayment(false);
+    }
+  };
+
   const submitAction = async () => {
     if (!selectedWithdrawal) return;
 
+    // For approve, process payment instead of direct API call
+    if (actionType === 'approve') {
+      await processWithdrawalPayment();
+      return;
+    }
+
+    // For reject, use the existing flow
     try {
       const token = localStorage.getItem('token');
-      const endpoint = actionType === 'approve' 
-        ? `/api/withdrawals/${selectedWithdrawal._id}/approve`
-        : `/api/withdrawals/${selectedWithdrawal._id}/reject`;
+      const endpoint = `/api/withdrawals/${selectedWithdrawal._id}/reject`;
       
-      const body = actionType === 'approve'
-        ? { notes }
-        : { rejectionReason, notes };
-
       const response = await fetch(endpoint, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify({ rejectionReason, notes })
       });
 
       if (response.ok) {
@@ -79,13 +203,14 @@ export default function WithdrawManagement() {
         setNotes('');
         setRejectionReason('');
         fetchWithdrawals();
+        dispatch(showNotification('Withdrawal rejected successfully'));
       } else {
         const data = await response.json();
-        alert(data.error || 'Failed to process withdrawal');
+        dispatch(showNotification(data.error || 'Failed to reject withdrawal', 'error'));
       }
     } catch (error) {
-      console.error('Error processing withdrawal:', error);
-      alert('Network error. Please try again.');
+      console.error('Error rejecting withdrawal:', error);
+      dispatch(showNotification('Network error. Please try again.', 'error'));
     }
   };
 
@@ -174,7 +299,11 @@ export default function WithdrawManagement() {
               </tr>
             ) : (
               withdrawals.map((withdrawal) => (
-                <tr key={withdrawal._id} className="hover:bg-gray-50">
+                <tr 
+                  key={withdrawal._id} 
+                  className="hover:bg-gray-50 cursor-pointer"
+                  onClick={() => handleViewDetails(withdrawal)}
+                >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div>
                       <div className="text-sm font-medium text-gray-900">
@@ -197,7 +326,7 @@ export default function WithdrawManagement() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-semibold text-gray-900">
-                      ${withdrawal.amount.toFixed(2)}
+                      {withdrawal.amount.toFixed(6)} SOL
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -211,17 +340,23 @@ export default function WithdrawManagement() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {withdrawal.processedAt ? formatDate(withdrawal.processedAt) : '-'}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium" onClick={(e) => e.stopPropagation()}>
                     {withdrawal.status === 'pending' && (
                       <div className="flex space-x-2">
                         <button
-                          onClick={() => handleApprove(withdrawal)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleApprove(withdrawal);
+                          }}
                           className="text-green-600 hover:text-green-900"
                         >
                           Approve
                         </button>
                         <button
-                          onClick={() => handleReject(withdrawal)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleReject(withdrawal);
+                          }}
                           className="text-red-600 hover:text-red-900"
                         >
                           Reject
@@ -280,24 +415,49 @@ export default function WithdrawManagement() {
               <div className="text-sm text-gray-500">{selectedWithdrawal.user?.email}</div>
             </div>
 
-            <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-              <div className="text-sm text-gray-600 mb-1">Solana Address</div>
-              <div className="font-mono text-sm text-gray-900 break-all">
-                {selectedWithdrawal.solanaAddress || selectedWithdrawal.user?.solanaAddress || 'Not provided'}
-              </div>
-              {!selectedWithdrawal.solanaAddress && !selectedWithdrawal.user?.solanaAddress && actionType === 'approve' && (
-                <div className="text-xs text-red-600 mt-1">
-                  Cannot approve: No Solana address linked
+            {actionType === 'approve' && paymentDetails && (
+              <>
+                <div className="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="text-sm font-semibold text-blue-900 mb-2">Payment Details</div>
+                  <div className="text-sm text-blue-800 mb-1">
+                    <span className="font-medium">Amount:</span> {paymentDetails.amountSOL.toFixed(6)} SOL
+                  </div>
+                  <div className="text-sm text-blue-800">
+                    <span className="font-medium">Recipient:</span>
+                    <div className="font-mono text-xs mt-1 break-all">
+                      {paymentDetails.solanaAddress}
+                    </div>
+                  </div>
                 </div>
-              )}
-            </div>
+                
+                {!solanaConnected && (
+                  <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <div className="text-sm text-yellow-800">
+                      <i className="fas fa-exclamation-triangle mr-2"></i>
+                      Please connect your Solana wallet to process this payment.
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
 
-            <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-              <div className="text-sm text-gray-600 mb-1">Amount</div>
-              <div className="text-2xl font-bold text-gray-900">
-                ${selectedWithdrawal.amount.toFixed(2)}
-              </div>
-            </div>
+            {actionType === 'reject' && (
+              <>
+                <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+                  <div className="text-sm text-gray-600 mb-1">Solana Address</div>
+                  <div className="font-mono text-sm text-gray-900 break-all">
+                    {selectedWithdrawal.solanaAddress || selectedWithdrawal.user?.solanaAddress || 'Not provided'}
+                  </div>
+                </div>
+
+                <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+                  <div className="text-sm text-gray-600 mb-1">Amount</div>
+                  <div className="text-2xl font-bold text-gray-900">
+                    {selectedWithdrawal.amount.toFixed(6)} SOL
+                  </div>
+                </div>
+              </>
+            )}
 
             {actionType === 'reject' && (
               <div className="mb-4">
@@ -335,24 +495,178 @@ export default function WithdrawManagement() {
                   setSelectedWithdrawal(null);
                   setNotes('');
                   setRejectionReason('');
+                  setPaymentDetails(null);
                 }}
-                className="flex-1 py-2 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+                disabled={isProcessingPayment}
+                className="flex-1 py-2 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 onClick={submitAction}
                 disabled={
+                  isProcessingPayment ||
                   (actionType === 'reject' && !rejectionReason) ||
-                  (actionType === 'approve' && !selectedWithdrawal.solanaAddress && !selectedWithdrawal.user?.solanaAddress)
+                  (actionType === 'approve' && !solanaConnected)
                 }
-                className={`flex-1 py-2 px-4 rounded-lg text-white transition ${
+                className={`flex-1 py-2 px-4 rounded-lg text-white transition disabled:opacity-50 disabled:cursor-not-allowed ${
                   actionType === 'approve'
                     ? 'bg-green-600 hover:bg-green-700'
                     : 'bg-red-600 hover:bg-red-700'
-                } disabled:bg-gray-300 disabled:cursor-not-allowed`}
+                }`}
               >
-                {actionType === 'approve' ? 'Approve' : 'Reject'}
+                {isProcessingPayment ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Processing Payment...
+                  </div>
+                ) : (
+                  actionType === 'approve' ? 'Pay & Approve' : 'Reject'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Withdrawal Detail Modal */}
+      {showDetailModal && detailWithdrawal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">Withdrawal Details</h3>
+              <button
+                onClick={() => {
+                  setShowDetailModal(false);
+                  setDetailWithdrawal(null);
+                }}
+                className="text-gray-400 hover:text-gray-600 transition"
+              >
+                <i className="fas fa-times text-xl"></i>
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {/* User Information */}
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <h4 className="text-sm font-semibold text-gray-700 mb-3">User Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">Name</div>
+                    <div className="text-sm font-medium text-gray-900">
+                      {detailWithdrawal.user?.firstName} {detailWithdrawal.user?.lastName}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">Email</div>
+                    <div className="text-sm text-gray-900">{detailWithdrawal.user?.email}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Withdrawal Information */}
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <h4 className="text-sm font-semibold text-gray-700 mb-3">Withdrawal Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">Amount</div>
+                    <div className="text-lg font-bold text-gray-900">
+                      {detailWithdrawal.amount.toFixed(6)} SOL
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">Status</div>
+                    <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadge(detailWithdrawal.status)}`}>
+                      {detailWithdrawal.status}
+                    </span>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">Requested At</div>
+                    <div className="text-sm text-gray-900">
+                      {formatDate(detailWithdrawal.requestedAt)}
+                    </div>
+                  </div>
+                  {detailWithdrawal.processedAt && (
+                    <div>
+                      <div className="text-xs text-gray-500 mb-1">Processed At</div>
+                      <div className="text-sm text-gray-900">
+                        {formatDate(detailWithdrawal.processedAt)}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Solana Address */}
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <h4 className="text-sm font-semibold text-gray-700 mb-2">Solana Address</h4>
+                <div className="font-mono text-sm text-gray-900 break-all bg-white p-2 rounded border">
+                  {detailWithdrawal.solanaAddress || detailWithdrawal.user?.solanaAddress || 'Not provided'}
+                </div>
+              </div>
+
+              {/* Payment Information */}
+              {detailWithdrawal.paymentSignature && (
+                <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                  <h4 className="text-sm font-semibold text-green-900 mb-2">Payment Information</h4>
+                  <div>
+                    <div className="text-xs text-green-700 mb-1">Transaction Signature</div>
+                    <div className="font-mono text-sm text-green-900 break-all bg-white p-2 rounded border border-green-200">
+                      {detailWithdrawal.paymentSignature}
+                    </div>
+                    <a
+                      href={`https://solscan.io/tx/${detailWithdrawal.paymentSignature}${solanaNetwork === 'devnet' ? '?cluster=devnet' : ''}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-green-700 hover:text-green-900 mt-2 inline-block"
+                    >
+                      View on Solscan <i className="fas fa-external-link-alt ml-1"></i>
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {/* Rejection Information */}
+              {detailWithdrawal.status === 'rejected' && detailWithdrawal.rejectionReason && (
+                <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+                  <h4 className="text-sm font-semibold text-red-900 mb-2">Rejection Reason</h4>
+                  <div className="text-sm text-red-800">{detailWithdrawal.rejectionReason}</div>
+                </div>
+              )}
+
+              {/* Notes */}
+              {detailWithdrawal.notes && (
+                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <h4 className="text-sm font-semibold text-blue-900 mb-2">Notes</h4>
+                  <div className="text-sm text-blue-800">{detailWithdrawal.notes}</div>
+                </div>
+              )}
+
+              {/* Processed By */}
+              {detailWithdrawal.processedBy && (
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2">Processed By</h4>
+                  <div className="text-sm text-gray-900">
+                    {detailWithdrawal.processedBy.firstName} {detailWithdrawal.processedBy.lastName}
+                  </div>
+                  {detailWithdrawal.processedBy.email && (
+                    <div className="text-xs text-gray-500 mt-1">
+                      {detailWithdrawal.processedBy.email}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={() => {
+                  setShowDetailModal(false);
+                  setDetailWithdrawal(null);
+                }}
+                className="px-6 py-2 bg-[#42677D] text-white rounded-lg hover:bg-[#355263] transition"
+              >
+                Close
               </button>
             </div>
           </div>

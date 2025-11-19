@@ -77,7 +77,8 @@ const Store = () => {
     openPaymentModal({
       amount: item.priceUSD,
       itemName: item.title,
-      itemId: item._id || item.id
+      itemId: item._id || item.id,
+      solanaOnly: true // Store purchases are SOL only
     }).then(async (result) => {
       if (!result || !result.paymentMethod) return;
       

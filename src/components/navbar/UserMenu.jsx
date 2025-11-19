@@ -233,10 +233,10 @@ export default function UserMenu() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-2xl font-bold text-gray-900">
-                    ${balance.toFixed(2)}
+                    {balance.toFixed(6)} SOL
                   </div>
                   <div className="text-xs text-gray-500">
-                    {balance >= 50 ? 'Available to withdraw' : `Minimum $50 required to withdraw`}
+                    {balance >= 0.33333 ? 'Available to withdraw' : `Minimum 0.33333 SOL required to withdraw`}
                   </div>
                 </div>
                 <button
@@ -246,9 +246,9 @@ export default function UserMenu() {
                     });
                     setMenuOpen(false);
                   }}
-                  disabled={balance < 50}
+                  disabled={balance < 0.33333}
                   className={`px-4 py-2 rounded text-sm font-medium transition ${
-                    balance >= 50
+                    balance >= 0.33333
                       ? 'bg-[#42677D] text-white hover:bg-[#355263]'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
@@ -410,17 +410,17 @@ function WithdrawalsHistory({ onWithdrawClick, balance, onBalanceUpdate }) {
         <div className="flex items-center justify-between">
           <div>
             <div className="text-2xl font-bold text-gray-900">
-              ${balance.toFixed(2)}
+              {balance.toFixed(6)} SOL
             </div>
             <div className="text-xs text-gray-500">
-              {balance >= 50 ? 'Available to withdraw' : `Minimum $50 required to withdraw`}
+              {balance >= 0.33333 ? 'Available to withdraw' : `Minimum 0.33333 SOL required to withdraw`}
             </div>
           </div>
           <button
             onClick={onWithdrawClick}
-            disabled={balance < 50}
+            disabled={balance < 0.33333}
             className={`px-4 py-2 rounded text-sm font-medium transition ${
-              balance >= 50
+              balance >= 0.33333
                 ? 'bg-[#42677D] text-white hover:bg-[#355263]'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}

@@ -6,6 +6,7 @@ import { customizationOptions } from './signup/CustomizationStep';
 const UpgradePlanModal = ({ open, onClose, currentPlan }) => {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [billingPeriod, setBillingPeriod] = useState('annual'); // Default to annual
   const { openPaymentModal } = usePaymentModal();
   const { user } = useAuth();
 
@@ -14,15 +15,18 @@ const UpgradePlanModal = ({ open, onClose, currentPlan }) => {
   
   // For signed-in users: show all plans but only enable upper plans
   // For non-signed-in users: show and enable all plans
+  const planHierarchy = { start: 1, growth: 2, studio: 3, enterprise: 4, basic: 1, premium: 2 }; // Legacy support
+  const currentLevel = planHierarchy[currentPlan] || 0;
+  
   const availablePlans = customizationOptions
     .filter(plan => !plan.isExternal)
     .map(plan => {    
-    const planHierarchy = { basic: 1, premium: 2, enterprise: 3 };
-    const currentLevel = planHierarchy[currentPlan] || 0;
     const planLevel = planHierarchy[plan.id] || 0;
     
     const isUpperPlan = planLevel > currentLevel;
-    const isCurrentPlan = plan.id === currentPlan;
+    const isCurrentPlan = plan.id === currentPlan || 
+      (currentPlan === 'basic' && plan.id === 'start') ||
+      (currentPlan === 'premium' && plan.id === 'growth');
     
       return {
         ...plan,
@@ -30,6 +34,17 @@ const UpgradePlanModal = ({ open, onClose, currentPlan }) => {
         isCurrentPlan
       };
     });
+
+  const getPrice = (plan) => {
+    if (plan.isCustom) return null;
+    return billingPeriod === 'annual' ? plan.priceAnnual : plan.priceMonthly;
+  };
+
+  const getPriceDisplay = (plan) => {
+    if (plan.isCustom) return 'Custom';
+    const price = getPrice(plan);
+    return billingPeriod === 'annual' ? `$${price}/year` : `$${price}/month`;
+  };
 
   const handlePlanSelect = (plan) => {
     if (plan.selectable && !plan.disabled) {
@@ -44,12 +59,16 @@ const UpgradePlanModal = ({ open, onClose, currentPlan }) => {
     
     try {
       // Open payment modal for the selected plan
+      const price = getPrice(selectedPlan);
       const result = await openPaymentModal({
-        amount: selectedPlan.price,
+        amount: price,
         itemName: `${selectedPlan.title} Plan Upgrade`,
         itemId: `${selectedPlan.id}-plan`,
         subscriptionMode: true,
-        metadata: {}
+        metadata: {
+          billingPeriod: billingPeriod,
+          price: price
+        }
       });
 
       if (result && result.paymentMethod) {
@@ -94,7 +113,36 @@ const UpgradePlanModal = ({ open, onClose, currentPlan }) => {
         </div>
 
         {/* Available Plans */}
-        <div className="p-6">          
+        <div className="p-6">
+          {/* Billing Period Toggle */}
+          <div className="flex justify-center mb-6">
+            <div className="bg-gray-100 rounded-lg p-1 inline-flex">
+              <button
+                onClick={() => setBillingPeriod('monthly')}
+                className={`px-6 py-2 rounded-md font-medium transition-all ${
+                  billingPeriod === 'monthly'
+                    ? 'bg-white text-[#42677D] shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Monthly
+              </button>
+              <button
+                onClick={() => setBillingPeriod('annual')}
+                className={`px-6 py-2 rounded-md font-medium transition-all ${
+                  billingPeriod === 'annual'
+                    ? 'bg-white text-[#42677D] shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Annual
+                <span className="ml-2 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                  Save
+                </span>
+              </button>
+            </div>
+          </div>
+          
           <div className="flex flex-col xl:flex-row gap-6 mb-6 overflow-x-auto px-1">
             {availablePlans.map((plan) => (
               <div
@@ -150,12 +198,22 @@ const UpgradePlanModal = ({ open, onClose, currentPlan }) => {
                       <div className="border-t border-gray-200 pt-4">
                         <div className="text-center mb-2">
                           <span className="text-2xl font-bold text-[#42677D]">
-                            {plan.price === 0 ? 'Contact Us' : `$${plan.price}`}
+                            {getPriceDisplay(plan)}
                           </span>
-                          {plan.price > 0 && (
-                            <span className="text-sm text-gray-500 ml-1">monthly</span>
+                          {billingPeriod === 'annual' && !plan.isCustom && (
+                            <div className="text-xs text-gray-500 mt-1">
+                              ${(plan.priceAnnual / 12).toFixed(0)}/month billed annually
+                            </div>
                           )}
                         </div>
+                        {plan.worlds && (
+                          <div className="text-sm font-medium text-gray-700 text-center mb-2">
+                            {typeof plan.worlds === 'number' ? `Up to ${plan.worlds} world${plan.worlds > 1 ? 's' : ''}` : plan.worlds}
+                          </div>
+                        )}
+                        {plan.audience && (
+                          <p className="text-xs text-gray-500 text-center">{plan.audience}</p>
+                        )}
                       </div>
                     </>
                   )}

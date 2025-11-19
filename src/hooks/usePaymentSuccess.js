@@ -187,17 +187,33 @@ export const usePaymentSuccess = () => {
           console.log(result);
           // Handle item purchase success
           dispatch(showNotification(`Cart purchased successfully!`));
-        } else if (result.itemType === 'basic-plan') {
-          // Handle basic plan success
-          dispatch(showNotification(`Basic plan activated successfully!`));
+        } else if (result.itemType === 'start-plan' || result.itemType === 'basic-plan') {
+          // Handle start plan success (basic-plan is legacy)
+          dispatch(showNotification(`Start plan activated successfully!`));
+          // Refresh user data to get updated plan information
+          const token = localStorage.getItem('token');
+          if (token) {
+            dispatch(checkAuth(token));
+          }
+        } else if (result.itemType === 'growth-plan') {
+          // Handle growth plan success
+          dispatch(showNotification(`Growth plan activated successfully!`));
+          // Refresh user data to get updated plan information
+          const token = localStorage.getItem('token');
+          if (token) {
+            dispatch(checkAuth(token));
+          }
+        } else if (result.itemType === 'studio-plan') {
+          // Handle studio plan success
+          dispatch(showNotification(`Studio plan activated successfully!`));
           // Refresh user data to get updated plan information
           const token = localStorage.getItem('token');
           if (token) {
             dispatch(checkAuth(token));
           }
         } else if (result.itemType === 'premium-plan') {
-          // Handle premium plan success
-          dispatch(showNotification(`Premium plan activated successfully!`));
+          // Handle premium plan success (legacy, maps to growth)
+          dispatch(showNotification(`Growth plan activated successfully!`));
           // Refresh user data to get updated plan information
           const token = localStorage.getItem('token');
           if (token) {

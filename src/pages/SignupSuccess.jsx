@@ -92,8 +92,8 @@ const SignupSuccess = () => {
                 method: 'stripe',
                 type: 'new-world'
               });
-            } else if (result.itemType === 'basic-plan' || result.itemType === 'premium-plan') {
-              // Premium basic/premium payment completed
+            } else if (result.itemType === 'start-plan' || result.itemType === 'growth-plan' || result.itemType === 'studio-plan' || result.itemType === 'basic-plan' || result.itemType === 'premium-plan') {
+              // Plan payment completed
               setIsProcessing(false);
             }
           } else {

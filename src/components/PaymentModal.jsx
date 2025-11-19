@@ -12,7 +12,8 @@ const PaymentModal = ({
   itemName = 'Purchase',
   itemId = null,
   subscriptionMode = false,
-  metadata = {}
+  metadata = {},
+  solanaOnly = false // New prop: if true, only show Solana payment option
 }) => {
   const [selectedMethod, setSelectedMethod] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -26,9 +27,10 @@ const PaymentModal = ({
 
   useEffect(() => {
     if (open) {
-      setSelectedMethod('stripe'); // Default to Stripe
+      // If solanaOnly, default to Solana; otherwise default to Stripe
+      setSelectedMethod(solanaOnly ? 'solana' : 'stripe');
     }
-  }, [open]);
+  }, [open, solanaOnly]);
 
   const handleMethodSelect = (methodId) => {
     // Prevent selecting Stripe if not initialized or settings are loading
@@ -107,17 +109,18 @@ const PaymentModal = ({
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Choose Payment Method</h3>
           
           <div className="space-y-3 mb-6">
-            {/* Stripe Payment Method */}
-            <div
-              className={`border-2 rounded-lg p-4 transition-all ${
-                stripeInitialized && !settingsLoading
-                  ? selectedMethod === 'stripe'
-                    ? 'border-[#42677D] bg-[#42677D]/5 cursor-pointer'
-                    : 'border-gray-200 hover:border-gray-300 cursor-pointer'
-                  : 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60'
-              }`}
-              onClick={() => stripeInitialized && !settingsLoading && handleMethodSelect('stripe')}
-            >
+            {/* Stripe Payment Method - Only show if not solanaOnly */}
+            {!solanaOnly && (
+              <div
+                className={`border-2 rounded-lg p-4 transition-all ${
+                  stripeInitialized && !settingsLoading
+                    ? selectedMethod === 'stripe'
+                      ? 'border-[#42677D] bg-[#42677D]/5 cursor-pointer'
+                      : 'border-gray-200 hover:border-gray-300 cursor-pointer'
+                    : 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60'
+                }`}
+                onClick={() => stripeInitialized && !settingsLoading && handleMethodSelect('stripe')}
+              >
               <div className="flex items-center space-x-3">
                 <div className="text-2xl">💳</div>
                 <div className="flex-1">
@@ -169,9 +172,10 @@ const PaymentModal = ({
                 </div>
               </div>
             </div>
+            )}
 
-            {/* Solana Payment Method - Only show when not in subscription mode */}
-            {!subscriptionMode && (
+            {/* Solana Payment Method - Show when not in subscription mode OR when solanaOnly is true */}
+            {(!subscriptionMode || solanaOnly) && (
               <div
                 className={`border-2 rounded-lg p-4 transition-all ${
                   solanaConnected && !solPriceLoading
