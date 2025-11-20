@@ -22,6 +22,7 @@ import Checkout from './pages/Checkout';
 import Signup from './pages/Signup';
 import Signin from './pages/Signin';
 import SignupSuccess from './pages/SignupSuccess';
+import DiscountedPlan from './pages/DiscountedPlan';
 import AuthCallback from './pages/AuthCallback';
 import Admin from './pages/Admin';
 import Contribute from './pages/Contribute';
@@ -140,6 +141,7 @@ function App() {
                   <Route path="/contribute" element={<Navbar />} />
                   <Route path="/contact" element={<Navbar />} />
                   <Route path="/pricing" element={<Navbar />} />
+                  <Route path="/discounted-plan" element={<Navbar />} />
                   <Route path="/admin" element={<Navbar />} />
                 </Routes>
                 <Routes>
@@ -151,6 +153,7 @@ function App() {
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/signin" element={<Signin />} />
                   <Route path="/signup-success" element={<SignupSuccess />} />
+                  <Route path="/discounted-plan" element={<DiscountedPlan />} />
                   <Route path="/auth-callback" element={<AuthCallback />} />
                   <Route path="/admin" element={<Admin />} />
                   <Route path="/contribute" element={<Contribute />} />
