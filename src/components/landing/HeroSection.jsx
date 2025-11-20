@@ -19,12 +19,12 @@ const HeroSection = () => {
   }, []);
 
   useEffect(() => {
-    const styleId = 'hero-try-world-enhancements';
+    const styleId = 'hero-demo-world-enhancements';
     const existingStyle = document.getElementById(styleId);
     const styleEl = existingStyle || document.createElement('style');
     styleEl.id = styleId;
     styleEl.innerHTML = `
-        @keyframes tryWorldPulse {
+        @keyframes demoWorldPulse {
           0%   { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 193, 120, 0.45); }
           45%  { transform: scale(1.035); box-shadow: 0 0 40px 0 rgba(255, 193, 120, 0.65); }
           100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 193, 120, 0); }
@@ -43,7 +43,7 @@ const HeroSection = () => {
           100% { transform: translateX(60%); opacity: 0; }
         }
 
-        .try-world-btn {
+        .demo-world-btn {
           position: relative;
           display: inline-flex;
           align-items: center;
@@ -54,7 +54,7 @@ const HeroSection = () => {
           font-size: 1.15rem;
           font-weight: 600;
           letter-spacing: 0.01em;
-          animation: tryWorldPulse 2.6s ease-in-out infinite;
+          animation: demoWorldPulse 2.6s ease-in-out infinite;
           transition: transform 0.35s ease, box-shadow 0.35s ease;
           box-shadow: 0 20px 30px rgba(255, 163, 80, 0.35);
           background: linear-gradient(120deg, #ff915a 0%, #ffc46b 50%, #ffd180 100%);
@@ -105,11 +105,11 @@ const HeroSection = () => {
           animation: nudgeFloat 1.9s ease-in-out infinite;
         }
 
-        .try-world-cta {
+        .demo-world-cta {
           position: relative;
         }
 
-        .try-world-sparkles {
+        .demo-world-sparkles {
           position: absolute;
           pointer-events: none;
           top: 50%;
@@ -235,15 +235,15 @@ const HeroSection = () => {
     };
   }, [ctaEngaged, ctaLatched]);
 
-  const handleTryWorldInteraction = () => {
+  const handleDemoWorldInteraction = () => {
     if (!hasInteracted) {
       setHasInteracted(true);
     }
     setShowNudge(false);
   };
 
-  const handleTryWorldEngage = () => {
-    handleTryWorldInteraction();
+  const handleDemoWorldEngage = () => {
+    handleDemoWorldInteraction();
     if (!ctaEngaged) {
       setCtaEngaged(true);
     }
@@ -256,7 +256,7 @@ const HeroSection = () => {
     }
   };
 
-  const handleTryWorldDisengage = () => {
+  const handleDemoWorldDisengage = () => {
     if (ctaLatched) {
       return;
     }
@@ -351,7 +351,7 @@ const HeroSection = () => {
                   }`}
                 >
                   <div
-                    className={`try-world-cta relative flex flex-col items-center transition-all duration-500 transform ${
+                      className={`demo-world-cta relative flex flex-col items-center transition-all duration-500 transform ${
                       ctaEngaged ? 'lg:items-start lg:translate-x-0' : 'lg:items-center'
                     }`}
                   >
@@ -364,30 +364,30 @@ const HeroSection = () => {
                       href="https://try.edifyengine.com"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="try-world-btn focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f1c29] focus-visible:ring-[#ffd180]"
-                      onMouseEnter={handleTryWorldEngage}
-                      onFocus={handleTryWorldEngage}
-                      onMouseLeave={handleTryWorldDisengage}
-                      onBlur={handleTryWorldDisengage}
-                      onClick={handleTryWorldInteraction}
+                      className="demo-world-btn focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f1c29] focus-visible:ring-[#ffd180]"
+                      onMouseEnter={handleDemoWorldEngage}
+                      onFocus={handleDemoWorldEngage}
+                      onMouseLeave={handleDemoWorldDisengage}
+                      onBlur={handleDemoWorldDisengage}
+                      onClick={handleDemoWorldInteraction}
                     >
                       <span className="icon" role="img" aria-hidden="true">🚀</span>
-                      <span>Launch Try World Demo</span>
+                      <span>Launch Demo World</span>
                     </a>
                     <svg
-                      className="try-world-sparkles"
+                      className="demo-world-sparkles"
                       aria-hidden="true"
                       viewBox="0 0 200 200"
                     >
                       <defs>
-                        <radialGradient id="tryWorldSparkGradient" cx="50%" cy="50%" r="50%">
+                        <radialGradient id="demoWorldSparkGradient" cx="50%" cy="50%" r="50%">
                           <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
                           <stop offset="45%" stopColor="#ffe7b8" stopOpacity="0.85" />
                           <stop offset="100%" stopColor="#ffb96a" stopOpacity="0" />
                         </radialGradient>
                       </defs>
 
-                      <circle cx="40" cy="120" r="6" fill="url(#tryWorldSparkGradient)">
+                      <circle cx="40" cy="120" r="6" fill="url(#demoWorldSparkGradient)">
                         <animate attributeName="cy" values="120;10" dur="2.3s" repeatCount="indefinite" begin="0s" />
                         <animate attributeName="opacity" values="0;1;0" keyTimes="0;0.35;1" dur="2.3s" repeatCount="indefinite" begin="0s" />
                         <animate attributeName="r" values="6;2" dur="2.3s" repeatCount="indefinite" begin="0s" />
@@ -473,16 +473,16 @@ const HeroSection = () => {
                 transition: 'transform 0.55s ease, opacity 0.55s ease, max-width 0.55s ease, width 0.55s ease',
                 visibility: ctaEngaged ? 'visible' : 'hidden',
               }}
-              onMouseEnter={handleTryWorldEngage}
-              onMouseLeave={handleTryWorldDisengage}
-              onFocus={handleTryWorldEngage}
-              onBlur={handleTryWorldDisengage}
-              onClick={handleTryWorldInteraction}
+              onMouseEnter={handleDemoWorldEngage}
+              onMouseLeave={handleDemoWorldDisengage}
+              onFocus={handleDemoWorldEngage}
+              onBlur={handleDemoWorldDisengage}
+              onClick={handleDemoWorldInteraction}
             >
               <div className="relative overflow-hidden rounded-2xl aspect-[4/5] bg-[#0b1825]">
                 <img
                   src={TryWorldPreviewPng}
-                  alt="Preview of the Try World experience"
+                  alt="Preview of the Demo World experience"
                   className="absolute inset-0 w-full h-full object-cover"
                   loading="lazy"
                 />
@@ -492,7 +492,7 @@ const HeroSection = () => {
                     <span className="inline-flex h-2 w-2 rounded-full bg-green-400 animate-pulse"></span>
                     Live Preview
                   </div>
-                  <h3 className="text-2xl font-semibold">Inside Try World</h3>
+                  <h3 className="text-2xl font-semibold">Inside Demo World</h3>
                   <p className="text-white/80 mt-2 text-sm">
                     What your demo looks like
                   </p>

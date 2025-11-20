@@ -15,7 +15,7 @@ const SettingsConfigs = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isUpdatingSnapshot, setIsUpdatingSnapshot] = useState(false);
-  const [isUpdatingTryWorld, setIsUpdatingTryWorld] = useState(false);
+  const [isUpdatingDemoWorld, setIsUpdatingDemoWorld] = useState(false);
   const [message, setMessage] = useState('');
 
   // Fetch settings on component mount
@@ -213,12 +213,12 @@ const SettingsConfigs = () => {
     }
   };
 
-  const handleUpdateTryWorld = async () => {
+  const handleUpdateDemoWorld = async () => {
     try {
-      setIsUpdatingTryWorld(true);
-      setMessage('Syncing Try world... This may take a moment.');
+      setIsUpdatingDemoWorld(true);
+      setMessage('Syncing Demo world... This may take a moment.');
 
-      const response = await fetch('/api/admin/update-try-world', {
+      const response = await fetch('/api/admin/update-demo-world', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -227,20 +227,20 @@ const SettingsConfigs = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to update Try world');
+        throw new Error(errorData.message || 'Failed to update Demo world');
       }
 
       const data = await response.json();
 
       if (data.actionId) {
-        pollTryWorldStatus(data.actionId);
+        pollDemoWorldStatus(data.actionId);
       } else {
         throw new Error('No action ID received from server');
       }
     } catch (error) {
-      console.error('Error updating Try world:', error);
-      setMessage(error.message || 'Failed to update Try world');
-      setIsUpdatingTryWorld(false);
+      console.error('Error updating Demo world:', error);
+      setMessage(error.message || 'Failed to update Demo world');
+      setIsUpdatingDemoWorld(false);
 
       setTimeout(() => setMessage(''), 7000);
     }
@@ -326,14 +326,14 @@ const SettingsConfigs = () => {
     poll();
   };
 
-  const pollTryWorldStatus = async (actionId) => {
+  const pollDemoWorldStatus = async (actionId) => {
     const maxAttempts = 180;
     let attempts = 0;
 
     const poll = async () => {
       try {
         attempts++;
-        setMessage(`Checking Try world update status... (Attempt ${attempts}/${maxAttempts})`);
+        setMessage(`Checking Demo world update status... (Attempt ${attempts}/${maxAttempts})`);
 
         const response = await fetch(`/api/user/status/${actionId}`, {
           headers: {
@@ -342,11 +342,11 @@ const SettingsConfigs = () => {
         });
 
         if (!response.ok) {
-          throw new Error('Failed to check Try world update status');
+          throw new Error('Failed to check Demo world update status');
         }
 
         const data = await response.json();
-        console.log('Try world update status:', data);
+        console.log('Demo world update status:', data);
 
         if (data.status === 'completed') {
           const successMessage =
@@ -357,8 +357,8 @@ const SettingsConfigs = () => {
           return;
         } else if (data.status === 'failed') {
           const errorMsg = data.error ? data.error.message : 'Unknown error occurred';
-          setMessage(`Try world update failed: ${errorMsg}`);
-          setIsUpdatingTryWorld(false);
+          setMessage(`Demo world update failed: ${errorMsg}`);
+          setIsUpdatingDemoWorld(false);
           setTimeout(() => setMessage(''), 7000);
           return;
         } else if (data.status === 'in_progress') {
@@ -367,19 +367,19 @@ const SettingsConfigs = () => {
           }
 
           if (attempts >= maxAttempts) {
-            setMessage('Try world update is taking longer than expected. Please check the server logs.');
-            setIsUpdatingTryWorld(false);
+            setMessage('Demo world update is taking longer than expected. Please check the server logs.');
+            setIsUpdatingDemoWorld(false);
             return;
           }
 
           setTimeout(poll, 5000);
         }
       } catch (error) {
-        console.error('Error polling Try world update status:', error);
+        console.error('Error polling Demo world update status:', error);
 
         if (attempts >= maxAttempts) {
-          setMessage('Failed to check Try world update status. Please check the server logs.');
-          setIsUpdatingTryWorld(false);
+          setMessage('Failed to check Demo world update status. Please check the server logs.');
+          setIsUpdatingDemoWorld(false);
           return;
         }
 
@@ -530,28 +530,28 @@ const SettingsConfigs = () => {
 
             <div>
               <button
-                onClick={handleUpdateTryWorld}
-                disabled={isUpdatingTryWorld}
+                onClick={handleUpdateDemoWorld}
+                disabled={isUpdatingDemoWorld}
                 className={`w-full px-4 py-2 rounded-md font-medium transition-colors ${
-                  isUpdatingTryWorld
+                  isUpdatingDemoWorld
                     ? 'bg-gray-400 cursor-not-allowed'
                     : 'bg-gray-900 hover:bg-black text-white'
                 }`}
               >
-                {isUpdatingTryWorld ? (
+                {isUpdatingDemoWorld ? (
                   <>
                     <i className="fas fa-spinner fa-spin mr-2"></i>
-                    Updating Try World...
+                    Updating Demo World...
                   </>
                 ) : (
                   <>
                     <i className="fas fa-play-circle mr-2"></i>
-                    Update Try World
+                    Update Demo World
                   </>
                 )}
               </button>
               <p className="text-xs text-gray-500 mt-1">
-                Syncs the Try environment with the latest Hyperfy build and reloads the service
+                Syncs the Demo environment with the latest Hyperfy build and reloads the service
               </p>
             </div>
           </div>

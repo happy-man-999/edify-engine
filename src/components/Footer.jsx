@@ -11,7 +11,7 @@ const Footer = () => {
   
   // Filter out "Sign In" and "Try" tabs if user is authenticated
   if (isAuthenticated) {
-    tabs = tabs.filter(tab => tab.title !== "Sign In" && tab.title !== "Try");
+    tabs = tabs.filter(tab => tab.title !== "Sign In" && tab.title !== "Demo");
     
     // Add role-based tabs
     if (user?.isContributor) {
