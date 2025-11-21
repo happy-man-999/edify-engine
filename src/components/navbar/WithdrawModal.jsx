@@ -1,13 +1,31 @@
 import React, { useState, useEffect } from 'react';
 
-const MIN_WITHDRAWAL_AMOUNT_SOL = 0.33333; // Minimum 0.33333 SOL
-
 export default function WithdrawModal({ balance, onClose, open = false }) {
   const [amount, setAmount] = useState('');
   const [solanaAddress, setSolanaAddress] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [minWithdrawAmount, setMinWithdrawAmount] = useState(0.33333); // Default fallback
+
+  // Fetch minimum withdrawal amount from settings
+  useEffect(() => {
+    const fetchMinWithdrawAmount = async () => {
+      try {
+        const response = await fetch('/api/admin/payment-settings');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.settings?.requiredWithdrawAmount !== undefined) {
+            setMinWithdrawAmount(data.settings.requiredWithdrawAmount);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching minimum withdrawal amount:', error);
+        // Keep default value
+      }
+    };
+    fetchMinWithdrawAmount();
+  }, []);
 
   // Reset form when modal closes
   useEffect(() => {
@@ -33,8 +51,8 @@ export default function WithdrawModal({ balance, onClose, open = false }) {
       return;
     }
 
-    if (withdrawAmount < MIN_WITHDRAWAL_AMOUNT_SOL) {
-      setError(`Minimum withdrawal amount is ${MIN_WITHDRAWAL_AMOUNT_SOL} SOL`);
+    if (withdrawAmount < minWithdrawAmount) {
+      setError(`Minimum withdrawal amount is ${minWithdrawAmount} SOL`);
       setLoading(false);
       return;
     }
@@ -136,9 +154,9 @@ export default function WithdrawModal({ balance, onClose, open = false }) {
         <div className="mb-4 p-4 bg-gray-50 rounded-lg">
           <div className="text-sm text-gray-600 mb-1">Available Balance</div>
           <div className="text-2xl font-bold text-gray-900">{balance.toFixed(6)} SOL</div>
-          {balance < MIN_WITHDRAWAL_AMOUNT_SOL && (
+          {balance < minWithdrawAmount && (
             <div className="text-xs text-orange-600 mt-1">
-              Minimum withdrawal: {MIN_WITHDRAWAL_AMOUNT_SOL} SOL
+              Minimum withdrawal: {minWithdrawAmount} SOL
             </div>
           )}
         </div>
@@ -163,19 +181,19 @@ export default function WithdrawModal({ balance, onClose, open = false }) {
 
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Withdrawal Amount (Minimum: {MIN_WITHDRAWAL_AMOUNT_SOL} SOL)
+              Withdrawal Amount (Minimum: {minWithdrawAmount} SOL)
             </label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">SOL</span>
               <input
                 type="number"
                 step="0.000001"
-                min={MIN_WITHDRAWAL_AMOUNT_SOL}
+                min={minWithdrawAmount}
                 max={balance}
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 className="w-full pl-12 pr-20 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#42677D] focus:border-transparent"
-                placeholder={`${MIN_WITHDRAWAL_AMOUNT_SOL}`}
+                placeholder={`${minWithdrawAmount}`}
                 required
               />
               <button
@@ -204,7 +222,7 @@ export default function WithdrawModal({ balance, onClose, open = false }) {
             </button>
             <button
               type="submit"
-              disabled={loading || !amount || !solanaAddress || parseFloat(amount) < MIN_WITHDRAWAL_AMOUNT_SOL || parseFloat(amount) > balance || solanaAddress.trim().length !== 44}
+              disabled={loading || !amount || !solanaAddress || parseFloat(amount) < minWithdrawAmount || parseFloat(amount) > balance || solanaAddress.trim().length !== 44}
               className="flex-1 py-2 px-4 bg-[#42677D] text-white rounded-lg hover:bg-[#355263] transition disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
               {loading ? (

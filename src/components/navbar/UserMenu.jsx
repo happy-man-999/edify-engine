@@ -15,6 +15,7 @@ export default function UserMenu() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('profile'); // 'profile' or 'withdrawals'
   const [balance, setBalance] = useState(0);
+  const [minWithdrawAmount, setMinWithdrawAmount] = useState(0.33333); // Default fallback
   const menuRef = useRef(null);
   const navigate = useNavigate();
 
@@ -40,6 +41,25 @@ export default function UserMenu() {
       console.error('Error fetching balance:', error);
     }
   };
+
+  // Fetch minimum withdrawal amount from settings
+  useEffect(() => {
+    const fetchMinWithdrawAmount = async () => {
+      try {
+        const response = await fetch('/api/admin/payment-settings');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.settings?.requiredWithdrawAmount !== undefined) {
+            setMinWithdrawAmount(data.settings.requiredWithdrawAmount);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching minimum withdrawal amount:', error);
+        // Keep default value
+      }
+    };
+    fetchMinWithdrawAmount();
+  }, []);
 
   // Listen for balance update events (e.g., after purchase)
   useEffect(() => {
@@ -141,12 +161,14 @@ export default function UserMenu() {
               openCalendlyModal={openCalendlyModal}
               navigate={navigate}
               setMenuOpen={setMenuOpen}
+              minWithdrawAmount={minWithdrawAmount}
             />
           )}
 
           {/* Withdrawals Tab Content */}
           {activeTab === 'withdrawals' && isAuthenticated && (
-            <WithdrawalsHistory 
+            <WithdrawalsHistory
+              minWithdrawAmount={minWithdrawAmount}
               key={activeTab} // Force remount when tab changes to refresh data
               onWithdrawClick={() => {
                 openWithdrawModal(balance, () => {
@@ -182,7 +204,8 @@ function ProfileContent({
   openWithdrawModal,
   openCalendlyModal,
   navigate,
-  setMenuOpen
+  setMenuOpen,
+  minWithdrawAmount = 0.33333
 }) {
   useEffect(() => {
     if (isAuthenticated) {
@@ -309,7 +332,7 @@ function ProfileContent({
                 {balance.toFixed(6)} SOL
               </div>
               <div className="text-xs text-gray-500">
-                {balance >= 0.33333 ? 'Available to withdraw' : `Minimum 0.33333 SOL required to withdraw`}
+                {balance >= minWithdrawAmount ? 'Available to withdraw' : `Minimum ${minWithdrawAmount} SOL required to withdraw`}
               </div>
             </div>
             <button
@@ -319,9 +342,9 @@ function ProfileContent({
                 });
                 setMenuOpen(false);
               }}
-              disabled={balance < 0.33333}
+              disabled={balance < minWithdrawAmount}
               className={`px-4 py-2 rounded text-sm font-medium transition ${
-                balance >= 0.33333
+                balance >= minWithdrawAmount
                   ? 'bg-[#42677D] text-white hover:bg-[#355263]'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
@@ -386,7 +409,7 @@ function ProfileContent({
 }
 
 // Withdrawals History Component
-function WithdrawalsHistory({ onWithdrawClick, balance, onBalanceUpdate }) {
+function WithdrawalsHistory({ onWithdrawClick, balance, onBalanceUpdate, minWithdrawAmount = 0.33333 }) {
   const [withdrawals, setWithdrawals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all'); // all, pending, approved, rejected
@@ -464,14 +487,14 @@ function WithdrawalsHistory({ onWithdrawClick, balance, onBalanceUpdate }) {
               {balance.toFixed(6)} SOL
             </div>
             <div className="text-xs text-gray-500">
-              {balance >= 0.33333 ? 'Available to withdraw' : `Minimum 0.33333 SOL required to withdraw`}
+              {balance >= minWithdrawAmount ? 'Available to withdraw' : `Minimum ${minWithdrawAmount} SOL required to withdraw`}
             </div>
           </div>
           <button
             onClick={onWithdrawClick}
-            disabled={balance < 0.33333}
+            disabled={balance < minWithdrawAmount}
             className={`px-4 py-2 rounded text-sm font-medium transition ${
-              balance >= 0.33333
+              balance >= minWithdrawAmount
                 ? 'bg-[#42677D] text-white hover:bg-[#355263]'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}

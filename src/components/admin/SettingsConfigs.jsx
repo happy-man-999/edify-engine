@@ -9,7 +9,8 @@ const SettingsConfigs = () => {
     isTestMode: false,
     solanaWalletAddress: '11111111111111111111111111111111',
     stripePublicKey: '',
-    stripeSecretKey: ''
+    stripeSecretKey: '',
+    requiredWithdrawAmount: 0.33333
   });
 
   const [loading, setLoading] = useState(true);
@@ -585,6 +586,23 @@ const SettingsConfigs = () => {
                 maxLength="44"
               />
               <p className="text-xs text-gray-500 mt-1">Wallet address to receive Solana payments</p>
+            </div>
+
+            {/* Required Withdrawal Amount */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Required Withdrawal Amount (SOL)
+              </label>
+              <input
+                type="number"
+                step="0.00001"
+                min="0"
+                value={settings.requiredWithdrawAmount}
+                onChange={(e) => handleSettingChange('requiredWithdrawAmount', parseFloat(e.target.value) || 0)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="0.33333"
+              />
+              <p className="text-xs text-gray-500 mt-1">Minimum amount required for withdrawal requests (in SOL)</p>
             </div>
 
             {/* Stripe Public Key */}
