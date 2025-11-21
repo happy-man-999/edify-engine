@@ -24,13 +24,6 @@ export default function UserMenu() {
     setMenuOpen(false);
   };
 
-  // Fetch user balance
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchBalance();
-    }
-  }, [isAuthenticated]);
-
   const fetchBalance = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -47,6 +40,20 @@ export default function UserMenu() {
       console.error('Error fetching balance:', error);
     }
   };
+
+  // Listen for balance update events (e.g., after purchase)
+  useEffect(() => {
+    const handleBalanceUpdate = () => {
+      if (isAuthenticated) {
+        fetchBalance();
+      }
+    };
+
+    window.addEventListener('balanceUpdated', handleBalanceUpdate);
+    return () => {
+      window.removeEventListener('balanceUpdated', handleBalanceUpdate);
+    };
+  }, [isAuthenticated]);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -118,197 +125,23 @@ export default function UserMenu() {
 
           {/* Profile Tab Content */}
           {activeTab === 'profile' && (
-            <>
-          {/* User Profile Section */}
-          {isAuthenticated ? (
-            <div className="mb-4 pb-4 border-b border-gray-200">
-              <div className="flex items-center space-x-3 mb-3">
-                {user?.avatar ? (
-                  <img src={user.avatar} alt="Profile" className="w-12 h-12 rounded-full object-cover" />
-                ) : (
-                  <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
-                    <i className="fas fa-user text-gray-600"></i>
-                  </div>
-                )}
-                <div className="flex-1">
-                  <div className="font-semibold text-gray-900">
-                    {user?.firstName} {user?.lastName}
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    {user?.email}
-                  </div>
-                  {user?.googleId && (
-                    <div className="text-xs text-blue-600 flex items-center mt-1">
-                      <i className="fab fa-google mr-1"></i>
-                      Google Account
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="mb-4 pb-4 border-b border-gray-200">
-              <div className="text-center">
-                <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-2">
-                  <i className="fas fa-user text-gray-600"></i>
-                </div>
-                <div className="text-sm text-gray-500 mb-3">Not signed in</div>
-                <div className="space-y-2">
-                  <button
-                    onClick={() => {
-                      window.location.href = '/signin';
-                      setMenuOpen(false);
-                    }}
-                    className="w-full py-2 bg-[#42677D] text-white rounded hover:bg-[#355263] transition text-sm"
-                  >
-                    Sign In
-                  </button>
-                  <button
-                    onClick={() => {
-                      window.location.href = '/signup';
-                      setMenuOpen(false);
-                    }}
-                    className="w-full py-2 border border-[#42677D] text-[#42677D] rounded hover:bg-[#42677D] hover:text-white transition text-sm"
-                  >
-                    Sign Up
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Wallet Section */}
-          <div className="mb-4 pb-4 border-b border-gray-200">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium text-gray-700">Wallet</h3>
-              {connected && (
-                <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                  Connected
-                </span>
-              )}
-            </div>
-            
-            {connected ? (
-              <div className="flex items-center space-x-3">
-                <span className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 border border-gray-300">
-                  {wallet && wallet.adapter 
-                    ? <img src={walletLogos[wallet.adapter.name]} alt={wallet.adapter.name} className="w-5 h-5" /> 
-                    : <i className="fas fa-wallet text-gray-600"></i>
-                  }
-                </span>
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-gray-700">
-                    {wallet && wallet.adapter && wallet.adapter.name || 'Wallet'}
-                  </div>
-                  <div className="text-xs text-gray-500 break-all">
-                    {shortAddress(publicKey)}
-                  </div>
-                </div>
-                <button
-                  onClick={handleWalletDisconnect}
-                  className="text-xs text-red-600 hover:text-red-800"
-                >
-                  Disconnect
-                </button>
-              </div>
-            ) : (
-              <div className="text-center">
-                <div className="text-sm text-gray-500 mb-2">No wallet connected</div>
-                <button
-                  onClick={handleConnectWallet}
-                  className="w-full py-2 bg-[#42677D] text-white rounded hover:bg-[#355263] transition text-sm"
-                >
-                  Connect Wallet
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Earnings Balance Section - Only show if authenticated */}
-          {isAuthenticated && (
-            <div className="mb-4 pb-4 border-b border-gray-200">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-sm font-medium text-gray-700">Earnings Balance</h3>
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">
-                    {balance.toFixed(6)} SOL
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    {balance >= 0.33333 ? 'Available to withdraw' : `Minimum 0.33333 SOL required to withdraw`}
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    openWithdrawModal(balance, () => {
-                      fetchBalance(); // Refresh balance after withdrawal
-                    });
-                    setMenuOpen(false);
-                  }}
-                  disabled={balance < 0.33333}
-                  className={`px-4 py-2 rounded text-sm font-medium transition ${
-                    balance >= 0.33333
-                      ? 'bg-[#42677D] text-white hover:bg-[#355263]'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  }`}
-                >
-                  Withdraw
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Account Actions - Only show if authenticated */}
-          {isAuthenticated && (
-            <div className="space-y-2 mb-4">
-              <button
-                className="w-full py-2 px-3 text-left text-sm text-gray-700 hover:bg-gray-50 rounded transition-colors"
-                onClick={() => {
-                  // Navigate to profile settings
-                  window.location.href = 'http://billing.stripe.com/p/login/6oU14nfrg2Y1aza8317Re00';
-                  setMenuOpen(false);
-                }}
-              >
-                <i className="fas fa-cog mr-2"></i>
-                Manage Account
-              </button>
-              <button
-                className="w-full py-2 px-3 text-left text-sm text-gray-700 hover:bg-gray-50 rounded transition-colors"
-                onClick={() => {
-                  // Navigate to orders/purchases
-                  navigate('/store?tab=My%20Purchases', { replace: true });
-                  setMenuOpen(false);
-                }}
-              >
-                <i className="fas fa-shopping-bag mr-2"></i>
-                My Purchases
-              </button>
-              {user?.plan === 'premium' && (
-                <button
-                  className="w-full py-2 px-3 text-left text-sm text-gray-700 hover:bg-gray-50 rounded transition-colors"
-                  onClick={openCalendlyModal}
-                >
-                  <i className="fas fa-calendar-alt mr-2"></i>
-                  Schedule Meeting
-                </button>
-              )}
-            </div>
-          )}
-
-          {/* Sign Out Button - Only show if authenticated */}
-          {isAuthenticated && (
-            <div className="pt-3 border-t border-gray-200">
-              <button
-                className="w-full py-2 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm"
-                onClick={handleSignout}
-              >
-                <i className="fas fa-sign-out-alt mr-2"></i>
-                Sign Out
-              </button>
-            </div>
-          )}
-          </>
+            <ProfileContent 
+              key={activeTab} // Force remount when tab changes to refresh data
+              user={user}
+              isAuthenticated={isAuthenticated}
+              connected={connected}
+              wallet={wallet}
+              publicKey={publicKey}
+              balance={balance}
+              onBalanceUpdate={fetchBalance}
+              onWalletDisconnect={handleWalletDisconnect}
+              onConnectWallet={handleConnectWallet}
+              onSignout={handleSignout}
+              openWithdrawModal={openWithdrawModal}
+              openCalendlyModal={openCalendlyModal}
+              navigate={navigate}
+              setMenuOpen={setMenuOpen}
+            />
           )}
 
           {/* Withdrawals Tab Content */}
@@ -330,6 +163,224 @@ export default function UserMenu() {
           </div>
         )}
       </div>
+    </>
+  );
+}
+
+// Profile Content Component
+function ProfileContent({ 
+  user, 
+  isAuthenticated, 
+  connected, 
+  wallet, 
+  publicKey, 
+  balance, 
+  onBalanceUpdate,
+  onWalletDisconnect,
+  onConnectWallet,
+  onSignout,
+  openWithdrawModal,
+  openCalendlyModal,
+  navigate,
+  setMenuOpen
+}) {
+  useEffect(() => {
+    if (isAuthenticated) {
+      onBalanceUpdate(); // Fetch balance when component mounts
+    }
+  }, [isAuthenticated, onBalanceUpdate]);
+
+  return (
+    <>
+      {/* User Profile Section */}
+      {isAuthenticated ? (
+        <div className="mb-4 pb-4 border-b border-gray-200">
+          <div className="flex items-center space-x-3 mb-3">
+            {user?.avatar ? (
+              <img src={user.avatar} alt="Profile" className="w-12 h-12 rounded-full object-cover" />
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
+                <i className="fas fa-user text-gray-600"></i>
+              </div>
+            )}
+            <div className="flex-1">
+              <div className="font-semibold text-gray-900">
+                {user?.firstName} {user?.lastName}
+              </div>
+              <div className="text-sm text-gray-500">
+                {user?.email}
+              </div>
+              {user?.googleId && (
+                <div className="text-xs text-blue-600 flex items-center mt-1">
+                  <i className="fab fa-google mr-1"></i>
+                  Google Account
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="mb-4 pb-4 border-b border-gray-200">
+          <div className="text-center">
+            <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-2">
+              <i className="fas fa-user text-gray-600"></i>
+            </div>
+            <div className="text-sm text-gray-500 mb-3">Not signed in</div>
+            <div className="space-y-2">
+              <button
+                onClick={() => {
+                  window.location.href = '/signin';
+                  setMenuOpen(false);
+                }}
+                className="w-full py-2 bg-[#42677D] text-white rounded hover:bg-[#355263] transition text-sm"
+              >
+                Sign In
+              </button>
+              <button
+                onClick={() => {
+                  window.location.href = '/signup';
+                  setMenuOpen(false);
+                }}
+                className="w-full py-2 border border-[#42677D] text-[#42677D] rounded hover:bg-[#42677D] hover:text-white transition text-sm"
+              >
+                Sign Up
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Wallet Section */}
+      <div className="mb-4 pb-4 border-b border-gray-200">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-sm font-medium text-gray-700">Wallet</h3>
+          {connected && (
+            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+              Connected
+            </span>
+          )}
+        </div>
+        
+        {connected ? (
+          <div className="flex items-center space-x-3">
+            <span className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 border border-gray-300">
+              {wallet && wallet.adapter 
+                ? <img src={walletLogos[wallet.adapter.name]} alt={wallet.adapter.name} className="w-5 h-5" /> 
+                : <i className="fas fa-wallet text-gray-600"></i>
+              }
+            </span>
+            <div className="flex-1">
+              <div className="text-sm font-medium text-gray-700">
+                {wallet && wallet.adapter && wallet.adapter.name || 'Wallet'}
+              </div>
+              <div className="text-xs text-gray-500 break-all">
+                {shortAddress(publicKey)}
+              </div>
+            </div>
+            <button
+              onClick={onWalletDisconnect}
+              className="text-xs text-red-600 hover:text-red-800"
+            >
+              Disconnect
+            </button>
+          </div>
+        ) : (
+          <div className="text-center">
+            <div className="text-sm text-gray-500 mb-2">No wallet connected</div>
+            <button
+              onClick={onConnectWallet}
+              className="w-full py-2 bg-[#42677D] text-white rounded hover:bg-[#355263] transition text-sm"
+            >
+              Connect Wallet
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Earnings Balance Section - Only show if authenticated */}
+      {isAuthenticated && (
+        <div className="mb-4 pb-4 border-b border-gray-200">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-sm font-medium text-gray-700">Earnings Balance</h3>
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-2xl font-bold text-gray-900">
+                {balance.toFixed(6)} SOL
+              </div>
+              <div className="text-xs text-gray-500">
+                {balance >= 0.33333 ? 'Available to withdraw' : `Minimum 0.33333 SOL required to withdraw`}
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                openWithdrawModal(balance, () => {
+                  onBalanceUpdate(); // Refresh balance after withdrawal
+                });
+                setMenuOpen(false);
+              }}
+              disabled={balance < 0.33333}
+              className={`px-4 py-2 rounded text-sm font-medium transition ${
+                balance >= 0.33333
+                  ? 'bg-[#42677D] text-white hover:bg-[#355263]'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              Withdraw
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Account Actions - Only show if authenticated */}
+      {isAuthenticated && (
+        <div className="space-y-2 mb-4">
+          <button
+            className="w-full py-2 px-3 text-left text-sm text-gray-700 hover:bg-gray-50 rounded transition-colors"
+            onClick={() => {
+              // Navigate to profile settings
+              window.location.href = 'http://billing.stripe.com/p/login/6oU14nfrg2Y1aza8317Re00';
+              setMenuOpen(false);
+            }}
+          >
+            <i className="fas fa-cog mr-2"></i>
+            Manage Account
+          </button>
+          <button
+            className="w-full py-2 px-3 text-left text-sm text-gray-700 hover:bg-gray-50 rounded transition-colors"
+            onClick={() => {
+              // Navigate to orders/purchases
+              navigate('/store?tab=My%20Purchases', { replace: true });
+              setMenuOpen(false);
+            }}
+          >
+            <i className="fas fa-shopping-bag mr-2"></i>
+            My Purchases
+          </button>
+          {user?.plan === 'premium' && (
+            <button
+              className="w-full py-2 px-3 text-left text-sm text-gray-700 hover:bg-gray-50 rounded transition-colors"
+              onClick={openCalendlyModal}
+            >
+              <i className="fas fa-calendar-alt mr-2"></i>
+              Schedule Meeting
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Sign Out Button - Only show if authenticated */}
+      {isAuthenticated && (
+        <div className="pt-3 border-t border-gray-200">
+          <button
+            className="w-full py-2 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm"
+            onClick={onSignout}
+          >
+            <i className="fas fa-sign-out-alt mr-2"></i>
+            Sign Out
+          </button>
+        </div>
+      )}
     </>
   );
 }

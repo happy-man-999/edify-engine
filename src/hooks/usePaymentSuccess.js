@@ -1,6 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { showNotification, openDomainModal } from '../store/uiSlice';
 import { checkAuth } from '../store/authSlice';
+import { clearCart } from '../store/cartSlice';
 import { useErrorModal } from './useErrorModal';
 import { useLoadingSpinner } from './useLoadingSpinner';
 import { useWebhook } from './useWebhook';
@@ -185,8 +186,10 @@ export const usePaymentSuccess = () => {
           }
         } else if (result.itemType === 'cart-purchase') {
           console.log(result);
-          // Handle item purchase success
+          // Handle cart purchase success
           dispatch(showNotification(`Cart purchased successfully!`));
+          // Clear the cart after successful purchase
+          dispatch(clearCart());
         } else if (result.itemType === 'start-plan' || result.itemType === 'growth-plan' || result.itemType === 'studio-plan' || result.itemType === 'enterprise-plan' || result.itemType === 'basic-plan' || result.itemType === 'premium-plan') {
           // Handle plan purchase/update success
           const planName = result.planName || (result.itemType === 'start-plan' || result.itemType === 'basic-plan' ? 'Starter' :
@@ -301,8 +304,10 @@ export const usePaymentSuccess = () => {
             handleDownload(result.downloadUrl, result.itemName || 'item');
           }
         } else if (result.itemType === 'cart-purchase') {
-          // Handle item purchase success
+          // Handle cart purchase success
           dispatch(showNotification(`Cart purchased successfully!`));
+          // Clear the cart after successful purchase
+          dispatch(clearCart());
         } else {
           // Generic success message
           dispatch(showNotification(`Payment successful! Signature: ${signature.slice(0, 8)}...`));

@@ -39,6 +39,16 @@ const Contribute = () => {
     };
 
     fetchStats();
+
+    // Listen for balance update events (e.g., after purchase)
+    const handleBalanceUpdate = () => {
+      fetchStats();
+    };
+
+    window.addEventListener('balanceUpdated', handleBalanceUpdate);
+    return () => {
+      window.removeEventListener('balanceUpdated', handleBalanceUpdate);
+    };
   }, [isAuthenticated, user]);
 
   // Show loading while checking authentication
