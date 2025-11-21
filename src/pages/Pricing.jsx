@@ -439,7 +439,7 @@ const Pricing = () => {
                 Is there a free trial?
               </h3>
               <p className="text-gray-600">
-                We offer a free trial experience. Visit our <a href="https://try.edifyengine.com" target="_blank" rel="noopener noreferrer" className="text-[#42677D] hover:underline">try page</a> to explore our platform before signing up.
+                We offer a free trial experience. Visit our <a href="https://demo.edifyengine.com" target="_blank" rel="noopener noreferrer" className="text-[#42677D] hover:underline">try page</a> to explore our platform before signing up.
               </p>
             </div>
             

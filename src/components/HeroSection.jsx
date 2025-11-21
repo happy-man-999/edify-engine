@@ -15,7 +15,7 @@ const HeroSection = () => (
         <button onClick={() => window.location.href='https://form.typeform.com/to/KmQr2jrU'} className="btn-primary">
           <i className="fas fa-play mr-2"></i> Start Building
         </button>
-        <button onClick={() => window.location.href='https://try.edifyengine.com'} className="btn-secondary">
+        <button onClick={() => window.location.href='https://demo.edifyengine.com'} className="btn-secondary">
           <i className="fas fa-bolt mr-2"></i> Try Now
         </button>
       </div>

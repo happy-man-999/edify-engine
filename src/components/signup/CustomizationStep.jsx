@@ -84,7 +84,7 @@ export const customizationOptions = [
     icon: 'fa-play-circle',
     color: '#374151',
     isExternal: true,
-    link: 'https://try.edifyengine.com',
+    link: 'https://demo.edifyengine.com',
     details: []
   }
 ];

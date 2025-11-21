@@ -361,7 +361,7 @@ const HeroSection = () => {
                       </div>
                     )}
                     <a
-                      href="https://try.edifyengine.com"
+                      href="https://demo.edifyengine.com"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="demo-world-btn focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f1c29] focus-visible:ring-[#ffd180]"
@@ -457,7 +457,7 @@ const HeroSection = () => {
             </div>
 
             <a
-              href="https://try.edifyengine.com"
+              href="https://demo.edifyengine.com"
               target="_blank"
               rel="noopener noreferrer"
               className="preview-card w-full max-w-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f1c29] focus-visible:ring-[#88c0ff]"
