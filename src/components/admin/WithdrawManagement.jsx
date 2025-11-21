@@ -4,6 +4,7 @@ import { useWalletWithRedirects } from '../../hooks/useWalletWithRedirects';
 import { useCurrency } from '../../hooks/useCurrency';
 import { sendSOLWithReference } from '../../utils/paySolana';
 import { showNotification } from '../../store/uiSlice';
+import { shortAddress } from '../../utils/format';
 
 export default function WithdrawManagement() {
   const [withdrawals, setWithdrawals] = useState([]);
@@ -277,6 +278,12 @@ export default function WithdrawManagement() {
                 Amount
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Total Earned
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Total Withdrawn
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -293,7 +300,7 @@ export default function WithdrawManagement() {
           <tbody className="divide-y divide-gray-200">
             {withdrawals.length === 0 ? (
               <tr>
-                <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
+                <td colSpan="9" className="px-6 py-8 text-center text-gray-500">
                   No withdrawal requests found
                 </td>
               </tr>
@@ -315,18 +322,30 @@ export default function WithdrawManagement() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm font-mono text-gray-700 break-all max-w-xs">
-                      {withdrawal.solanaAddress || withdrawal.user?.solanaAddress || 'Not provided'}
+                    <div className="text-sm font-mono text-gray-700">
+                      {withdrawal.solanaAddress || withdrawal.user?.solanaAddress 
+                        ? shortAddress(withdrawal.solanaAddress || withdrawal.user?.solanaAddress)
+                        : 'Not provided'}
                     </div>
                     {withdrawal.paymentSignature && (
                       <div className="text-xs text-green-600 mt-1">
-                        Paid: {withdrawal.paymentSignature.substring(0, 8)}...
+                        Paid: {shortAddress(withdrawal.paymentSignature)}
                       </div>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-semibold text-gray-900">
                       {withdrawal.amount.toFixed(6)} SOL
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">
+                      {(withdrawal.totalEarned || 0).toFixed(6)} SOL
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">
+                      {(withdrawal.totalWithdrawn || 0).toFixed(6)} SOL
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -445,8 +464,10 @@ export default function WithdrawManagement() {
               <>
                 <div className="mb-4 p-4 bg-gray-50 rounded-lg">
                   <div className="text-sm text-gray-600 mb-1">Solana Address</div>
-                  <div className="font-mono text-sm text-gray-900 break-all">
-                    {selectedWithdrawal.solanaAddress || selectedWithdrawal.user?.solanaAddress || 'Not provided'}
+                  <div className="font-mono text-sm text-gray-900">
+                    {selectedWithdrawal.solanaAddress || selectedWithdrawal.user?.solanaAddress
+                      ? shortAddress(selectedWithdrawal.solanaAddress || selectedWithdrawal.user?.solanaAddress)
+                      : 'Not provided'}
                   </div>
                 </div>
 
@@ -581,6 +602,18 @@ export default function WithdrawManagement() {
                     </span>
                   </div>
                   <div>
+                    <div className="text-xs text-gray-500 mb-1">Total Earned</div>
+                    <div className="text-sm font-semibold text-green-700">
+                      {(detailWithdrawal.totalEarned || 0).toFixed(6)} SOL
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">Total Withdrawn</div>
+                    <div className="text-sm font-semibold text-blue-700">
+                      {(detailWithdrawal.totalWithdrawn || 0).toFixed(6)} SOL
+                    </div>
+                  </div>
+                  <div>
                     <div className="text-xs text-gray-500 mb-1">Requested At</div>
                     <div className="text-sm text-gray-900">
                       {formatDate(detailWithdrawal.requestedAt)}
@@ -600,8 +633,10 @@ export default function WithdrawManagement() {
               {/* Solana Address */}
               <div className="p-4 bg-gray-50 rounded-lg">
                 <h4 className="text-sm font-semibold text-gray-700 mb-2">Solana Address</h4>
-                <div className="font-mono text-sm text-gray-900 break-all bg-white p-2 rounded border">
-                  {detailWithdrawal.solanaAddress || detailWithdrawal.user?.solanaAddress || 'Not provided'}
+                <div className="font-mono text-sm text-gray-900 bg-white p-2 rounded border">
+                  {detailWithdrawal.solanaAddress || detailWithdrawal.user?.solanaAddress
+                    ? shortAddress(detailWithdrawal.solanaAddress || detailWithdrawal.user?.solanaAddress)
+                    : 'Not provided'}
                 </div>
               </div>
 
