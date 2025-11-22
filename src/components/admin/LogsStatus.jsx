@@ -177,6 +177,8 @@ const LogsStatus = () => {
       case 'webhook': return 'bg-indigo-100 text-indigo-800';
       case 'provisioning': return 'bg-teal-100 text-teal-800';
       case 'error': return 'bg-red-100 text-red-800';
+      case 'item_status_changed': return 'bg-amber-100 text-amber-800';
+      case 'item_files_deleted': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -424,6 +426,8 @@ const LogsStatus = () => {
               <option value="webhook">Webhook</option>
               <option value="provisioning">Provisioning</option>
               <option value="error">Error</option>
+              <option value="item_status_changed">Item Status Changed</option>
+              <option value="item_files_deleted">Item Files Deleted</option>
             </select>
           </div>
 
