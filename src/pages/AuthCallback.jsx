@@ -59,7 +59,16 @@ const AuthCallback = () => {
             <p className="text-gray-600 mb-6">{error}</p>
             <button
               onClick={() => navigate('/signin')}
-              className="bg-[#42677D] hover:bg-[#355263] text-white px-6 py-3 rounded-lg transition-colors font-medium"
+              className="text-white px-6 py-3 rounded-md transition-colors font-medium"
+              style={{
+                background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290 / 0.9), oklch(0.50 0.18 260 / 0.9))';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
+              }}
             >
               Try Again
             </button>

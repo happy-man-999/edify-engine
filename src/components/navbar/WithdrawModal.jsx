@@ -117,18 +117,30 @@ export default function WithdrawModal({ balance, onClose, open = false }) {
   if (success) {
     return (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <div className="rounded-lg p-6 max-w-md w-full mx-4" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}>
           <div className="text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <i className="fas fa-check text-green-600 text-2xl"></i>
+            <div 
+              className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+              style={{ backgroundColor: 'oklch(0.50 0.18 260 / 0.2)' }}
+            >
+              <i className="fas fa-check text-2xl" style={{ color: 'oklch(0.50 0.18 260)' }}></i>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Request Submitted</h2>
-            <p className="text-gray-600 mb-4">
+            <h2 className="text-2xl font-bold mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Request Submitted</h2>
+            <p className="mb-4" style={{ color: 'oklch(0.65 0.05 280)' }}>
               Your withdrawal request has been submitted and is pending approval.
             </p>
             <button
               onClick={onClose}
-              className="px-6 py-2 bg-[#42677D] text-white rounded hover:bg-[#355263] transition"
+              className="px-6 py-2 text-white rounded transition"
+              style={{
+                background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290 / 0.9), oklch(0.50 0.18 260 / 0.9))';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
+              }}
             >
               Close
             </button>
@@ -140,20 +152,23 @@ export default function WithdrawModal({ balance, onClose, open = false }) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+      <div className="rounded-lg p-6 max-w-md w-full mx-4" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}>
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-900">Withdraw Funds</h2>
+          <h2 className="text-2xl font-bold" style={{ color: 'oklch(0.98 0.01 280)' }}>Withdraw Funds</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition"
+            className="transition"
+            style={{ color: 'oklch(0.65 0.05 280)' }}
+            onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.98 0.01 280)'}
+            onMouseLeave={(e) => e.currentTarget.style.color = 'oklch(0.65 0.05 280)'}
           >
             <i className="fas fa-times text-xl"></i>
           </button>
         </div>
 
-        <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-          <div className="text-sm text-gray-600 mb-1">Available Balance</div>
-          <div className="text-2xl font-bold text-gray-900">{balance.toFixed(6)} SOL</div>
+        <div className="mb-4 p-4 rounded-lg" style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
+          <div className="text-sm mb-1" style={{ color: 'oklch(0.65 0.05 280)' }}>Available Balance</div>
+          <div className="text-2xl font-bold" style={{ color: 'oklch(0.98 0.01 280)' }}>{balance.toFixed(6)} SOL</div>
           {balance < minWithdrawAmount && (
             <div className="text-xs text-orange-600 mt-1">
               Minimum withdrawal: {minWithdrawAmount} SOL
@@ -163,28 +178,41 @@ export default function WithdrawModal({ balance, onClose, open = false }) {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
               Solana Wallet Address *
             </label>
               <input
                 type="text"
                 value={solanaAddress}
                 onChange={(e) => setSolanaAddress(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#42677D] focus:border-transparent font-mono text-sm"
+                className="w-full px-3 py-2 border rounded-md focus:ring-2 font-mono text-sm"
+                style={{
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  color: 'oklch(0.98 0.01 280)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
                 placeholder="Enter your Solana wallet address (44 characters)"
                 required
               />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs mt-1" style={{ color: 'oklch(0.65 0.05 280)' }}>
               Your withdrawal will be sent to this address
             </p>
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
               Withdrawal Amount (Minimum: {minWithdrawAmount} SOL)
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">SOL</span>
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2" style={{ color: 'oklch(0.65 0.05 280)' }}>SOL</span>
               <input
                 type="number"
                 step="0.000001"
@@ -192,14 +220,34 @@ export default function WithdrawModal({ balance, onClose, open = false }) {
                 max={balance}
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full pl-12 pr-20 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#42677D] focus:border-transparent"
+                className="w-full pl-12 pr-20 py-2 border rounded-md focus:ring-2"
+                style={{
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  color: 'oklch(0.98 0.01 280)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
                 placeholder={`${minWithdrawAmount}`}
                 required
               />
               <button
                 type="button"
                 onClick={handleMaxClick}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 text-sm text-[#42677D] hover:bg-gray-100 rounded"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 text-sm rounded transition-colors"
+                style={{ color: 'oklch(0.45 0.15 290)' }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}
               >
                 Max
               </button>
@@ -207,8 +255,8 @@ export default function WithdrawModal({ balance, onClose, open = false }) {
           </div>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-              {error}
+            <div className="mb-4 p-3 border rounded-md text-sm" style={{ backgroundColor: 'oklch(0.55 0.22 25 / 0.1)', borderColor: 'oklch(0.55 0.22 25 / 0.3)' }}>
+              <p style={{ color: 'oklch(0.55 0.22 25)' }}>{error}</p>
             </div>
           )}
 
@@ -216,14 +264,38 @@ export default function WithdrawModal({ balance, onClose, open = false }) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-2 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+              className="flex-1 py-2 px-4 border rounded-md transition"
+              style={{
+                borderColor: 'oklch(0.25 0.05 285)',
+                color: 'oklch(0.98 0.01 280)',
+                backgroundColor: 'transparent'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading || !amount || !solanaAddress || parseFloat(amount) < minWithdrawAmount || parseFloat(amount) > balance || solanaAddress.trim().length !== 44}
-              className="flex-1 py-2 px-4 bg-[#42677D] text-white rounded-lg hover:bg-[#355263] transition disabled:bg-gray-300 disabled:cursor-not-allowed"
+              className="flex-1 py-2 px-4 text-white rounded-md transition disabled:cursor-not-allowed"
+              style={{
+                background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))'
+              }}
+              onMouseEnter={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290 / 0.9), oklch(0.50 0.18 260 / 0.9))';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
+                }
+              }}
             >
               {loading ? (
                 <span className="flex items-center justify-center">

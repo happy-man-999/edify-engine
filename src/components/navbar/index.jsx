@@ -42,7 +42,9 @@ const NavbarTabs = () => {
               href={tab.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-[#5E8EA9] transition-colors duration-300 text-gray-700"
+              className="transition-colors duration-300 text-gray-300"
+              onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.85 0.18 130)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'rgb(209, 213, 219)'}
             >
               {tab.title}
             </a>
@@ -51,7 +53,13 @@ const NavbarTabs = () => {
         
         // Handle internal links
         return (
-          <Link key={id} to={tab.href} className="hover:text-[#5E8EA9] transition-colors duration-300 text-gray-700">
+          <Link 
+            key={id} 
+            to={tab.href} 
+            className="transition-colors duration-300 text-gray-300"
+            onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.85 0.18 130)'}
+            onMouseLeave={(e) => e.currentTarget.style.color = 'rgb(209, 213, 219)'}
+          >
             {tab.title}
           </Link>
         );
@@ -65,7 +73,13 @@ const NavbarAction = () => {
 };
 
 const Navbar = () => (
-  <nav className="glass navbar navbar-fixed border-b border-gray-200 px-6 py-4 flex items-center justify-between backdrop-blur-md">
+  <nav 
+    className="navbar navbar-fixed border-b px-6 py-4 flex items-center justify-between backdrop-blur-md"
+    style={{
+      borderColor: 'oklch(0.25 0.05 285 / 0.5)',
+      backgroundColor: 'oklch(0.12 0.02 280 / 0.95)'
+    }}
+  >
     <div className="w-full flex items-center space-x-4">
       <a href="/" className="flex items-center">
         <video autoPlay loop muted playsInline className="logo-video mr-2" width={32} height={32}>

@@ -164,11 +164,16 @@ const SignupSuccess = () => {
   // Enterprise success page
   if (signupType === 'enterprise') {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
         <div className="max-w-2xl mx-auto text-center">
-          <div className="bg-white rounded-lg shadow-sm p-8">
+          <div className="rounded-lg shadow-sm p-8" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}>
             <div className="mb-6">
-              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-[#223A4C] to-[#42677D] mb-6">
+              <div 
+                className="mx-auto flex items-center justify-center h-16 w-16 rounded-full mb-6"
+                style={{
+                  background: 'linear-gradient(to bottom right, oklch(0.12 0.02 280), oklch(0.45 0.15 290))'
+                }}
+              >
                 <i className="fas fa-building text-white text-2xl"></i>
               </div>
               <h1 className="text-3xl font-bold text-gray-900 mb-4">Enterprise Consultation Scheduled!</h1>
@@ -213,7 +218,16 @@ const SignupSuccess = () => {
             <div className="space-y-4">
               <Link
                 to="/home"
-                className="block w-full bg-[#42677D] text-white py-3 px-4 rounded-lg hover:bg-[#355263] transition-colors"
+                className="block w-full text-white py-3 px-4 rounded-md transition-colors"
+                style={{
+                  background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290 / 0.9), oklch(0.50 0.18 260 / 0.9))';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
+                }}
               >
                 Go to Dashboard
               </Link>

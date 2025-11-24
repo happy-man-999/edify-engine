@@ -205,7 +205,7 @@ const Store = () => {
   else if (activeTab === "World Templates") tabContent = <WorldTemplatesSection currency={currency} onAddToCart={handleAddToCart} onItemSelect={handleItemSelect} />;
   else if (activeTab === "3D Objects") tabContent = <ThreeDObjectsSection currency={currency} onAddToCart={handleAddToCart} onItemSelect={handleItemSelect} />;
   else if (activeTab === "My Purchases") tabContent = <MyPurchasesSection onItemSelect={handleItemSelect} onBrowseStore={() => handleTabClick("Featured")} />;
-  else tabContent = <div className="text-center text-gray-500 py-16">Coming soon...</div>;
+  else tabContent = <div className="text-center py-16" style={{ color: 'oklch(0.65 0.05 280)' }}>Coming soon...</div>;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">

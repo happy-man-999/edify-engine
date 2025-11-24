@@ -1,82 +1,86 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+import { Zap, Wand2, Layers, Users, Brain, Globe } from 'lucide-react';
+import Badge from './Badge';
+import FeatureCard from './FeatureCard';
 
 const FeaturesSection = () => {
-  const features = [
-    {
-      icon: "fas fa-cube",
-      title: "3D Asset Library",
-      description: "Access thousands of high-quality 3D models, textures, and animations"
-    },
-    {
-      icon: "fas fa-code",
-      title: "No-Code Builder",
-      description: "Create complex virtual worlds without writing a single line of code"
-    },
-    {
-      icon: "fas fa-users",
-      title: "Multiplayer Ready",
-      description: "Built-in networking for real-time collaborative experiences"
-    },
-    {
-      icon: "fas fa-mobile-alt",
-      title: "Cross-Platform",
-      description: "Deploy to VR, AR, web, and mobile devices seamlessly"
-    },
-    {
-      icon: "fas fa-rocket",
-      title: "Instant Deployment",
-      description: "Go from concept to live experience in minutes, not months"
-    },
-    {
-      icon: "fas fa-shield-alt",
-      title: "Enterprise Security",
-      description: "Bank-grade security with role-based access controls"
-    }
-  ];
-
   return (
-    <section className="py-20 bg-white relative overflow-hidden">
-      {/* Background Person Image */}
-      <div className="absolute inset-0 z-0">
-        <img 
-          src="https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=1920&h=1080&fit=crop" 
-          alt="Man wearing VR glasses experiencing 3D virtual world" 
-          className="w-full h-full object-cover opacity-70"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/80 to-white/70"></div>
-      </div>
-      
-      <div className="max-w-6xl mx-auto px-6 relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            Everything You Need to Build
-            <span className="block bg-gradient-to-r from-[#42677D] to-[#5E8EA9] bg-clip-text text-transparent leading-tight">
-              Amazing Virtual Worlds
-            </span>
+    <section className="py-24 px-4 relative" style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
+      <div className="max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <Badge 
+            className="mb-4 px-4 py-2 border"
+            style={{
+              backgroundColor: 'oklch(0.85 0.18 130 / 0.2)',
+              color: 'oklch(0.85 0.18 130)',
+              borderColor: 'oklch(0.85 0.18 130 / 0.5)'
+            }}
+          >
+            <Zap className="w-4 h-4 mr-2" />
+            Platform Features
+          </Badge>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 gradient-text">
+            Everything You Need to Create
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Our comprehensive platform provides all the tools, assets, and infrastructure 
-            you need to create stunning 3D experiences.
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            Powerful no-code tools that make 3D creation accessible to everyone
           </p>
-        </div>
-        
+        </motion.div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <div 
-              key={index} 
-              className="group p-8 rounded-2xl border border-gray-200 hover:border-[#42677D] transition-all duration-300 hover:shadow-xl hover:-translate-y-2 bg-white/80 backdrop-blur-sm"
-            >
-              <div className="w-16 h-16 bg-gradient-to-r from-[#42677D] to-[#5E8EA9] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <i className={`${feature.icon} text-white text-2xl`}></i>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">{feature.title}</h3>
-              <p className="text-gray-600 leading-relaxed">{feature.description}</p>
-            </div>
-          ))}
+          <FeatureCard
+            icon={Wand2}
+            title="Visual Builder"
+            description="Intuitive drag-and-drop interface"
+            details="Create complex 3D scenes with our visual editor. No modeling software or technical knowledge required."
+            delay={0}
+          />
+          <FeatureCard
+            icon={Layers}
+            title="Asset Library"
+            description="Thousands of ready assets"
+            details="Access a vast library of 3D models, textures, and environments to jumpstart your project."
+            delay={0.1}
+          />
+          <FeatureCard
+            icon={Zap}
+            title="Instant Deploy"
+            description="Launch in minutes"
+            details="One-click deployment to share your world. Deploy to web, mobile, and VR instantly."
+            delay={0.2}
+          />
+          <FeatureCard
+            icon={Users}
+            title="Multiplayer Ready"
+            description="Social experiences built-in"
+            details="Add real-time multiplayer with built-in networking, voice chat, and avatars."
+            delay={0.3}
+          />
+          <FeatureCard
+            icon={Brain}
+            title="Visual Scripting"
+            description="Logic without code"
+            details="Build interactive behaviors using visual scripting. Animate, trigger, and respond to actions."
+            delay={0.4}
+          />
+          <FeatureCard
+            icon={Globe}
+            title="Cross-Platform"
+            description="Works everywhere"
+            details="Your worlds run on desktop, mobile, and VR headsets. Build once, deploy everywhere."
+            delay={0.5}
+          />
         </div>
       </div>
     </section>
   );
 };
 
-export default FeaturesSection; 
+export default FeaturesSection;

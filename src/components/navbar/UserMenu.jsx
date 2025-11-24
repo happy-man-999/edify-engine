@@ -106,7 +106,17 @@ export default function UserMenu() {
     <>
       <div className="relative" ref={menuRef}>
         <div
-          className="w-10 h-10 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors"
+          className="w-10 h-10 rounded-full border flex items-center justify-center cursor-pointer transition-colors text-gray-300"
+          style={{
+            backgroundColor: 'oklch(0.18 0.05 285)',
+            borderColor: 'oklch(0.25 0.05 285 / 0.5)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+          }}
           onClick={() => setMenuOpen((open) => !open)}
         >
           {isAuthenticated && user?.avatar ? (
@@ -116,17 +126,39 @@ export default function UserMenu() {
           )}
         </div>
         {menuOpen && (
-          <div className="absolute right-0 mt-2 w-96 bg-white border border-gray-200 rounded-lg shadow-lg z-50 p-4 max-h-[600px] overflow-y-auto">
+          <div 
+            className="absolute right-0 mt-2 w-96 border rounded-lg shadow-lg z-50 p-4 max-h-[600px] overflow-y-auto"
+            style={{
+              backgroundColor: 'oklch(0.18 0.05 285)',
+              borderColor: 'oklch(0.25 0.05 285)'
+            }}
+          >
           {/* Tabs */}
           {isAuthenticated && (
-            <div className="flex space-x-2 mb-4 border-b border-gray-200">
+            <div className="flex space-x-2 mb-4 border-b" style={{ borderColor: 'oklch(0.25 0.05 285)' }}>
               <button
                 onClick={() => setActiveTab('profile')}
                 className={`px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === 'profile'
-                    ? 'text-[#42677D] border-b-2 border-[#42677D]'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'border-b-2'
+                    : ''
                 }`}
+                style={activeTab === 'profile' ? {
+                  color: 'oklch(0.45 0.15 290)',
+                  borderColor: 'oklch(0.45 0.15 290)'
+                } : {
+                  color: 'oklch(0.65 0.05 280)'
+                }}
+                onMouseEnter={(e) => {
+                  if (activeTab !== 'profile') {
+                    e.currentTarget.style.color = 'oklch(0.98 0.01 280)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeTab !== 'profile') {
+                    e.currentTarget.style.color = 'oklch(0.65 0.05 280)';
+                  }
+                }}
               >
                 Profile
               </button>
@@ -134,9 +166,25 @@ export default function UserMenu() {
                 onClick={() => setActiveTab('withdrawals')}
                 className={`px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === 'withdrawals'
-                    ? 'text-[#42677D] border-b-2 border-[#42677D]'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'border-b-2'
+                    : ''
                 }`}
+                style={activeTab === 'withdrawals' ? {
+                  color: 'oklch(0.45 0.15 290)',
+                  borderColor: 'oklch(0.45 0.15 290)'
+                } : {
+                  color: 'oklch(0.65 0.05 280)'
+                }}
+                onMouseEnter={(e) => {
+                  if (activeTab !== 'withdrawals') {
+                    e.currentTarget.style.color = 'oklch(0.98 0.01 280)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeTab !== 'withdrawals') {
+                    e.currentTarget.style.color = 'oklch(0.65 0.05 280)';
+                  }
+                }}
               >
                 Withdrawals
               </button>
@@ -217,20 +265,23 @@ function ProfileContent({
     <>
       {/* User Profile Section */}
       {isAuthenticated ? (
-        <div className="mb-4 pb-4 border-b border-gray-200">
+        <div className="mb-4 pb-4 border-b" style={{ borderColor: 'oklch(0.25 0.05 285)' }}>
           <div className="flex items-center space-x-3 mb-3">
             {user?.avatar ? (
               <img src={user.avatar} alt="Profile" className="w-12 h-12 rounded-full object-cover" />
             ) : (
-              <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
-                <i className="fas fa-user text-gray-600"></i>
+              <div 
+                className="w-12 h-12 rounded-full flex items-center justify-center"
+                style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}
+              >
+                <i className="fas fa-user" style={{ color: 'oklch(0.65 0.05 280)' }}></i>
               </div>
             )}
             <div className="flex-1">
-              <div className="font-semibold text-gray-900">
+              <div className="font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 {user?.firstName} {user?.lastName}
               </div>
-              <div className="text-sm text-gray-500">
+              <div className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 {user?.email}
               </div>
               {user?.googleId && (
@@ -243,19 +294,31 @@ function ProfileContent({
           </div>
         </div>
       ) : (
-        <div className="mb-4 pb-4 border-b border-gray-200">
+        <div className="mb-4 pb-4 border-b" style={{ borderColor: 'oklch(0.25 0.05 285)' }}>
           <div className="text-center">
-            <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-2">
-              <i className="fas fa-user text-gray-600"></i>
+            <div 
+              className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2"
+              style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}
+            >
+              <i className="fas fa-user" style={{ color: 'oklch(0.65 0.05 280)' }}></i>
             </div>
-            <div className="text-sm text-gray-500 mb-3">Not signed in</div>
+            <div className="text-sm mb-3" style={{ color: 'oklch(0.65 0.05 280)' }}>Not signed in</div>
             <div className="space-y-2">
               <button
                 onClick={() => {
                   window.location.href = '/signin';
                   setMenuOpen(false);
                 }}
-                className="w-full py-2 bg-[#42677D] text-white rounded hover:bg-[#355263] transition text-sm"
+                className="w-full py-2 text-white rounded transition text-sm"
+                style={{
+                  background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290 / 0.9), oklch(0.50 0.18 260 / 0.9))';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
+                }}
               >
                 Sign In
               </button>
@@ -264,7 +327,19 @@ function ProfileContent({
                   window.location.href = '/signup';
                   setMenuOpen(false);
                 }}
-                className="w-full py-2 border border-[#42677D] text-[#42677D] rounded hover:bg-[#42677D] hover:text-white transition text-sm"
+                className="w-full py-2 border rounded transition text-sm"
+                style={{
+                  borderColor: 'oklch(0.45 0.15 290)',
+                  color: 'oklch(0.45 0.15 290)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.color = 'oklch(0.45 0.15 290)';
+                }}
               >
                 Sign Up
               </button>
@@ -274,11 +349,14 @@ function ProfileContent({
       )}
 
       {/* Wallet Section */}
-      <div className="mb-4 pb-4 border-b border-gray-200">
+      <div className="mb-4 pb-4 border-b" style={{ borderColor: 'oklch(0.25 0.05 285)' }}>
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-medium text-gray-700">Wallet</h3>
+          <h3 className="text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>Wallet</h3>
           {connected && (
-            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+            <span 
+              className="text-xs px-2 py-1 rounded-full"
+              style={{ backgroundColor: 'oklch(0.50 0.18 260 / 0.2)', color: 'oklch(0.50 0.18 260)' }}
+            >
               Connected
             </span>
           )}
@@ -286,17 +364,20 @@ function ProfileContent({
         
         {connected ? (
           <div className="flex items-center space-x-3">
-            <span className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 border border-gray-300">
+            <span 
+              className="w-8 h-8 flex items-center justify-center rounded-full border"
+              style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)' }}
+            >
               {wallet && wallet.adapter 
                 ? <img src={walletLogos[wallet.adapter.name]} alt={wallet.adapter.name} className="w-5 h-5" /> 
-                : <i className="fas fa-wallet text-gray-600"></i>
+                : <i className="fas fa-wallet" style={{ color: 'oklch(0.65 0.05 280)' }}></i>
               }
             </span>
             <div className="flex-1">
-              <div className="text-sm font-medium text-gray-700">
+              <div className="text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 {wallet && wallet.adapter && wallet.adapter.name || 'Wallet'}
               </div>
-              <div className="text-xs text-gray-500 break-all">
+              <div className="text-xs break-all" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 {shortAddress(publicKey)}
               </div>
             </div>
@@ -309,10 +390,19 @@ function ProfileContent({
           </div>
         ) : (
           <div className="text-center">
-            <div className="text-sm text-gray-500 mb-2">No wallet connected</div>
+            <div className="text-sm mb-2" style={{ color: 'oklch(0.65 0.05 280)' }}>No wallet connected</div>
             <button
               onClick={onConnectWallet}
-              className="w-full py-2 bg-[#42677D] text-white rounded hover:bg-[#355263] transition text-sm"
+              className="w-full py-2 text-white rounded transition text-sm"
+              style={{
+                background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290 / 0.9), oklch(0.50 0.18 260 / 0.9))';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
+              }}
             >
               Connect Wallet
             </button>
@@ -322,16 +412,16 @@ function ProfileContent({
 
       {/* Earnings Balance Section - Only show if authenticated */}
       {isAuthenticated && (
-        <div className="mb-4 pb-4 border-b border-gray-200">
+        <div className="mb-4 pb-4 border-b" style={{ borderColor: 'oklch(0.25 0.05 285)' }}>
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-medium text-gray-700">Earnings Balance</h3>
+            <h3 className="text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>Earnings Balance</h3>
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-2xl font-bold" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 {balance.toFixed(6)} SOL
               </div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 {balance >= minWithdrawAmount ? 'Available to withdraw' : `Minimum ${minWithdrawAmount} SOL required to withdraw`}
               </div>
             </div>
@@ -345,9 +435,25 @@ function ProfileContent({
               disabled={balance < minWithdrawAmount}
               className={`px-4 py-2 rounded text-sm font-medium transition ${
                 balance >= minWithdrawAmount
-                  ? 'bg-[#42677D] text-white hover:bg-[#355263]'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  ? 'text-white'
+                  : 'cursor-not-allowed'
               }`}
+              style={balance >= minWithdrawAmount ? {
+                background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))'
+              } : {
+                backgroundColor: 'oklch(0.25 0.04 285)',
+                color: 'oklch(0.65 0.05 280)'
+              }}
+              onMouseEnter={(e) => {
+                if (balance >= minWithdrawAmount) {
+                  e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290 / 0.9), oklch(0.50 0.18 260 / 0.9))';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (balance >= minWithdrawAmount) {
+                  e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
+                }
+              }}
             >
               Withdraw
             </button>
@@ -359,7 +465,10 @@ function ProfileContent({
       {isAuthenticated && (
         <div className="space-y-2 mb-4">
           <button
-            className="w-full py-2 px-3 text-left text-sm text-gray-700 hover:bg-gray-50 rounded transition-colors"
+            className="w-full py-2 px-3 text-left text-sm rounded transition-colors"
+            style={{ color: 'oklch(0.98 0.01 280)' }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
             onClick={() => {
               // Navigate to profile settings
               window.location.href = 'http://billing.stripe.com/p/login/6oU14nfrg2Y1aza8317Re00';
@@ -370,7 +479,10 @@ function ProfileContent({
             Manage Account
           </button>
           <button
-            className="w-full py-2 px-3 text-left text-sm text-gray-700 hover:bg-gray-50 rounded transition-colors"
+            className="w-full py-2 px-3 text-left text-sm rounded transition-colors"
+            style={{ color: 'oklch(0.98 0.01 280)' }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
             onClick={() => {
               // Navigate to orders/purchases
               navigate('/store?tab=My%20Purchases', { replace: true });
@@ -382,7 +494,10 @@ function ProfileContent({
           </button>
           {user?.plan === 'premium' && (
             <button
-              className="w-full py-2 px-3 text-left text-sm text-gray-700 hover:bg-gray-50 rounded transition-colors"
+              className="w-full py-2 px-3 text-left text-sm rounded transition-colors"
+            style={{ color: 'oklch(0.98 0.01 280)' }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
               onClick={openCalendlyModal}
             >
               <i className="fas fa-calendar-alt mr-2"></i>
@@ -394,7 +509,7 @@ function ProfileContent({
 
       {/* Sign Out Button - Only show if authenticated */}
       {isAuthenticated && (
-        <div className="pt-3 border-t border-gray-200">
+        <div className="pt-3 border-t" style={{ borderColor: 'oklch(0.25 0.05 285)' }}>
           <button
             className="w-full py-2 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm"
             onClick={onSignout}
@@ -460,7 +575,7 @@ function WithdrawalsHistory({ onWithdrawClick, balance, onBalanceUpdate, minWith
       approved: 'bg-green-100 text-green-800',
       rejected: 'bg-red-100 text-red-800'
     };
-    return badges[status] || 'bg-gray-100 text-gray-800';
+    return badges[status] || { backgroundColor: 'oklch(0.18 0.05 285)', color: 'oklch(0.98 0.01 280)' };
   };
 
   const formatDate = (dateString) => {
@@ -512,9 +627,25 @@ function WithdrawalsHistory({ onWithdrawClick, balance, onBalanceUpdate, minWith
             onClick={() => setFilter(status)}
             className={`px-3 py-1 text-xs rounded transition ${
               filter === status
-                ? 'bg-[#42677D] text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'text-white'
+                : ''
             }`}
+            style={filter === status ? {
+              backgroundColor: 'oklch(0.45 0.15 290)'
+            } : {
+              backgroundColor: 'oklch(0.18 0.05 285)',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              if (filter !== status) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (filter !== status) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+              }
+            }}
           >
             {status.charAt(0).toUpperCase() + status.slice(1)}
           </button>
@@ -524,10 +655,13 @@ function WithdrawalsHistory({ onWithdrawClick, balance, onBalanceUpdate, minWith
       {/* Withdrawals List */}
       {loading ? (
         <div className="text-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#42677D] mx-auto"></div>
+          <div 
+            className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto"
+            style={{ borderColor: 'oklch(0.45 0.15 290)' }}
+          ></div>
         </div>
       ) : filteredWithdrawals.length === 0 ? (
-        <div className="text-center py-8 text-gray-500 text-sm">
+        <div className="text-center py-8 text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>
           No {filter !== 'all' ? filter : ''} withdrawals found
         </div>
       ) : (

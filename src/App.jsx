@@ -28,6 +28,9 @@ import Admin from './pages/Admin';
 import Contribute from './pages/Contribute';
 import Contact from './pages/Contact';
 import Pricing from './pages/Pricing';
+import FeaturesPage from './pages/FeaturesPage';
+import ResourcesPage from './pages/ResourcesPage';
+import AboutPage from './pages/AboutPage';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -140,7 +143,6 @@ function App() {
                   <Route path="/checkout" element={<Navbar />} />
                   <Route path="/contribute" element={<Navbar />} />
                   <Route path="/contact" element={<Navbar />} />
-                  <Route path="/pricing" element={<Navbar />} />
                   <Route path="/discounted-plan" element={<Navbar />} />
                   <Route path="/admin" element={<Navbar />} />
                 </Routes>
@@ -159,6 +161,9 @@ function App() {
                   <Route path="/contribute" element={<Contribute />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/pricing" element={<Pricing />} />
+                  <Route path="/features" element={<FeaturesPage />} />
+                  <Route path="/resources" element={<ResourcesPage />} />
+                  <Route path="/about" element={<AboutPage />} />
                 </Routes>
 
                 <Routes>

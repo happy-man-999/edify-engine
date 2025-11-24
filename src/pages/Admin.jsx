@@ -19,12 +19,15 @@ const Admin = () => {
   // Show loading while checking authentication
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white rounded-xl shadow-sm p-8 max-w-md w-full mx-4">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
+        <div className="rounded-xl shadow-sm p-8 max-w-md w-full mx-4" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}>
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Loading Admin Panel</h2>
-            <p className="text-gray-600">Please wait while we verify your access...</p>
+            <div 
+              className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4"
+              style={{ borderColor: 'oklch(0.45 0.15 290)' }}
+            ></div>
+            <h2 className="text-2xl font-bold mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Loading Admin Panel</h2>
+            <p style={{ color: 'oklch(0.65 0.05 280)' }}>Please wait while we verify your access...</p>
           </div>
         </div>
       </div>
@@ -81,13 +84,23 @@ const Admin = () => {
           <div className="clouds absolute inset-0"></div>
           <div className="hero-content max-w-4xl mx-auto text-center relative z-10">
             <h1 className="text-4xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-[#42677D] to-[#5E8EA9] bg-clip-text text-transparent">Admin Dashboard</span>
+              <span 
+                className="bg-clip-text text-transparent"
+                style={{
+                  background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}
+              >Admin Dashboard</span>
             </h1>
-            <p className="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">
+            <p className="text-lg mb-6 max-w-2xl mx-auto" style={{ color: 'oklch(0.65 0.05 280)' }}>
               Manage users, droplets, payments, and system configurations
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <span className="bg-[#42677D] text-white px-4 py-2 rounded-md font-medium">
+              <span 
+                className="text-white px-4 py-2 rounded-md font-medium"
+                style={{ backgroundColor: 'oklch(0.45 0.15 290)' }}
+              >
                 <i className="fas fa-shield-alt mr-2"></i>
                 Welcome, {user?.name || user?.email}
               </span>
@@ -111,9 +124,26 @@ const Admin = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-6 py-3 mx-2 mb-2 rounded-xl font-medium text-sm transition-all duration-200 ${
                   activeTab === tab.id
-                    ? 'bg-[#42677D] text-white shadow-md'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    ? 'text-white shadow-md'
+                    : ''
                 }`}
+                style={activeTab === tab.id ? {
+                  backgroundColor: 'oklch(0.45 0.15 290)'
+                } : {
+                  color: 'oklch(0.65 0.05 280)'
+                }}
+                onMouseEnter={(e) => {
+                  if (activeTab !== tab.id) {
+                    e.currentTarget.style.color = 'oklch(0.98 0.01 280)';
+                    e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeTab !== tab.id) {
+                    e.currentTarget.style.color = 'oklch(0.65 0.05 280)';
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }
+                }}
               >
                 <i className={`${tab.icon} mr-2`}></i>
                 {tab.label}
@@ -123,7 +153,13 @@ const Admin = () => {
         </div>
 
         {/* Main Content */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <div 
+          className="rounded-2xl shadow-sm border p-6"
+          style={{
+            backgroundColor: 'oklch(0.18 0.05 285)',
+            borderColor: 'oklch(0.25 0.05 285)'
+          }}
+        >
           {renderTabContent()}
         </div>
       </div>

@@ -82,7 +82,14 @@ const Contribute = () => {
           <div className="clouds absolute inset-0"></div>
           <div className="hero-content max-w-4xl mx-auto text-center relative z-10">
             <h1 className="text-4xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-[#42677D] to-[#5E8EA9] bg-clip-text text-transparent">Contribute</span>
+              <span 
+                className="bg-clip-text text-transparent"
+                style={{
+                  background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}
+              >Contribute</span>
             </h1>
             <p className="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">
               Welcome to the contributor dashboard! Here you can contribute to the platform and access exclusive features.
@@ -92,7 +99,10 @@ const Contribute = () => {
                 <i className="fas fa-user-plus mr-2"></i>
                 Contributor Access
               </span>
-              <span className="bg-[#42677D] text-white px-4 py-2 rounded-md font-medium">
+              <span 
+                className="text-white px-4 py-2 rounded-md font-medium"
+                style={{ backgroundColor: 'oklch(0.45 0.15 290)' }}
+              >
                 <i className="fas fa-shield-alt mr-2"></i>
                 Welcome, {user?.firstName || user?.email}
               </span>

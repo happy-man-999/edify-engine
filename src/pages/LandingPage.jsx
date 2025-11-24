@@ -1,4 +1,5 @@
 import React from 'react';
+import LandingNavbar from '../components/landing/LandingNavbar';
 import HeroSection from '../components/landing/HeroSection';
 import StatsSection from '../components/landing/StatsSection';
 import FeaturesSection from '../components/landing/FeaturesSection';
@@ -7,20 +8,29 @@ import SolanaPaymentSection from '../components/landing/SolanaPaymentSection';
 import ReviewsSection from '../components/landing/ReviewsSection';
 import CTASection from '../components/landing/CTASection';
 import LandingFooter from '../components/landing/LandingFooter';
+import Separator from '../components/landing/Separator';
 import GlobalStyles from '../components/GlobalStyles';
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
       <GlobalStyles />
+      <LandingNavbar />
       <HeroSection />
       <StatsSection />
-      <FeaturesSection />
+      <Separator className="my-8" />
+      <div id="features">
+        <FeaturesSection />
+      </div>
+      <Separator className="my-8" />
       <UseCasesSection />
       <SolanaPaymentSection />
+      <Separator className="my-8" />
       <ReviewsSection />
       <CTASection />
-      <LandingFooter />
+      <div id="resources">
+        <LandingFooter />
+      </div>
     </div>
   );
 };

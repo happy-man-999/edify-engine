@@ -29,7 +29,13 @@ const Footer = () => {
   }
 
   return (
-    <footer className="glass border-t border-gray-200 py-12">
+    <footer 
+      className="glass border-t py-12"
+      style={{
+        backgroundColor: 'oklch(0.12 0.02 280)',
+        borderColor: 'oklch(0.25 0.05 285 / 0.5)'
+      }}
+    >
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
@@ -37,42 +43,86 @@ const Footer = () => {
               <video autoPlay loop muted playsInline className="logo-video mr-2" width={32} height={32}>
                 <source src="https://labor-group.com/wp-content/uploads/2025/04/EE_Logo_Color_512x512_02-1.mp4" type="video/mp4" />
               </video>
-              <span className="text-xl font-bold text-gray-900">Edify Engine</span>
+              <span className="text-xl font-bold" style={{ color: 'oklch(0.98 0.01 280)' }}>Edify Engine</span>
             </div>
-            <p className="text-gray-600">
+            <p style={{ color: 'oklch(0.65 0.05 280)' }}>
               Building the future of virtual experiences, one world at a time.
             </p>
           </div>
           <div>
-            <h4 className="font-semibold mb-4 text-gray-900">Platform</h4>
-            <ul className="space-y-2 text-gray-600">
-              <li><a href="/home" className="hover:text-[#5E8EA9] transition-colors">Home</a></li>
-              <li><a href="/store" className="hover:text-[#5E8EA9] transition-colors">Store</a></li>
+            <h4 className="font-semibold mb-4" style={{ color: 'oklch(0.98 0.01 280)' }}>Platform</h4>
+            <ul className="space-y-2" style={{ color: 'oklch(0.65 0.05 280)' }}>
+              <li><a 
+                href="/home" 
+                className="transition-colors"
+                onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.50 0.18 260)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'inherit'}
+              >Home</a></li>
+              <li><a 
+                href="/store" 
+                className="transition-colors"
+                onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.50 0.18 260)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'inherit'}
+              >Store</a></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold mb-4 text-gray-900">Company</h4>
-            <ul className="space-y-2 text-gray-600">
-              <li><a href="/contribute" className="hover:text-[#5E8EA9] transition-colors">Contribute</a></li>
-              <li><Link to="/contact" className="hover:text-[#5E8EA9] transition-colors">Contact</Link></li>
+            <h4 className="font-semibold mb-4" style={{ color: 'oklch(0.98 0.01 280)' }}>Company</h4>
+            <ul className="space-y-2" style={{ color: 'oklch(0.65 0.05 280)' }}>
+              <li><a 
+                href="/contribute" 
+                className="transition-colors"
+                onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.50 0.18 260)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'inherit'}
+              >Contribute</a></li>
+              <li><Link 
+                to="/contact" 
+                className="transition-colors"
+                onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.50 0.18 260)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'inherit'}
+              >Contact</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold mb-4 text-gray-900">Connect</h4>
+            <h4 className="font-semibold mb-4" style={{ color: 'oklch(0.98 0.01 280)' }}>Connect</h4>
             <div className="flex space-x-4">
-              <a href="https://instagram.com/edifyengine" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#5E8EA9] transition-colors">
+              <a 
+                href="https://instagram.com/edifyengine" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="transition-colors"
+                style={{ color: 'oklch(0.65 0.05 280)' }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.50 0.18 260)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'oklch(0.65 0.05 280)'}
+              >
                 <i className="fab fa-instagram text-xl"></i>
               </a>
-              <a href="https://tiktok.com/@edifyengine" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#5E8EA9] transition-colors">
+              <a 
+                href="https://tiktok.com/@edifyengine" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="transition-colors"
+                style={{ color: 'oklch(0.65 0.05 280)' }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.50 0.18 260)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'oklch(0.65 0.05 280)'}
+              >
                 <i className="fab fa-tiktok text-xl"></i>
               </a>
-              <a href="https://x.com/edifyengine" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#5E8EA9] transition-colors">
+              <a 
+                href="https://x.com/edifyengine" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="transition-colors"
+                style={{ color: 'oklch(0.65 0.05 280)' }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.50 0.18 260)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'oklch(0.65 0.05 280)'}
+              >
                 <i className="fab fa-x-twitter text-xl"></i>
               </a>
             </div>
           </div>
         </div>
-        <div className="border-t border-gray-200 mt-8 pt-8 text-center text-gray-500">
+        <div className="border-t mt-8 pt-8 text-center" style={{ borderColor: 'oklch(0.25 0.05 285 / 0.5)', color: 'oklch(0.65 0.05 280)' }}>
           <p>&copy; 2025 Edify Engine. All rights reserved.</p>
         </div>
       </div>

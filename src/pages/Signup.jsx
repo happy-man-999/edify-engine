@@ -430,7 +430,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24">
+    <div className="min-h-screen pt-24" style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
       <GlobalStyles />
       
       {/* Page-specific Schema */}
@@ -445,16 +445,19 @@ const Signup = () => {
       </script>
 
       {/* Progress Bar */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="border-b" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)' }}>
         <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-gray-600">Step {getDisplayStep(currentStep)} of {totalSteps}</span>
-            <span className="text-sm text-gray-600">{Math.round((getDisplayStep(currentStep) / totalSteps) * 100)}%</span>
+            <span className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>Step {getDisplayStep(currentStep)} of {totalSteps}</span>
+            <span className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>{Math.round((getDisplayStep(currentStep) / totalSteps) * 100)}%</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full rounded-full h-2" style={{ backgroundColor: 'oklch(0.25 0.04 285)' }}>
             <div
-              className="bg-[#42677D] h-2 rounded-full transition-all duration-300"
-              style={{ width: `${(getDisplayStep(currentStep) / totalSteps) * 100}%` }}
+              className="h-2 rounded-full transition-all duration-300"
+              style={{ 
+                width: `${(getDisplayStep(currentStep) / totalSteps) * 100}%`,
+                backgroundColor: 'oklch(0.45 0.15 290)'
+              }}
             ></div>
           </div>
         </div>
@@ -462,7 +465,7 @@ const Signup = () => {
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-6 py-12">
-        <div className="bg-white rounded-xl shadow-sm p-8">
+        <div className="rounded-xl shadow-sm p-8" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}>
           {renderStep()}
 
           {/* Navigation Buttons */}
@@ -470,7 +473,17 @@ const Signup = () => {
             <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
               <button
                 onClick={handleBack}
-                className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                className="px-6 py-3 border rounded-md transition-colors font-medium"
+                style={{
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  color: 'oklch(0.98 0.01 280)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}
               >
                 <i className="fas fa-arrow-left mr-2"></i>
                 Back

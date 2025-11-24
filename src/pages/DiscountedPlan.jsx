@@ -205,53 +205,60 @@ const DiscountedPlan = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
       <GlobalStyles />
       <Navbar />
       
       <div className="max-w-4xl mx-auto px-6 py-12">
         {/* Header */}
         <div className="text-center mb-8 mt-12">
-          <div className="inline-block bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-2 rounded-lg mb-4">
+          <div 
+            className="inline-block border px-4 py-2 rounded-lg mb-4"
+            style={{
+              backgroundColor: 'oklch(0.85 0.18 130 / 0.2)',
+              borderColor: 'oklch(0.85 0.18 130 / 0.5)',
+              color: 'oklch(0.85 0.18 130)'
+            }}
+          >
             <span className="font-semibold">25% Off Starter Annual Plan</span>
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold mb-4" style={{ color: 'oklch(0.98 0.01 280)' }}>
             Special Discounted Offer
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl" style={{ color: 'oklch(0.65 0.05 280)' }}>
             Get started with our Starter Annual Plan at a special discounted price
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
           {/* Left Column - Plan Info */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Plan Details</h2>
+          <div className="rounded-xl shadow-lg p-8" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}>
+            <h2 className="text-2xl font-bold mb-6" style={{ color: 'oklch(0.98 0.01 280)' }}>Plan Details</h2>
             
             <div className="mb-6">
               <div className="flex items-baseline mb-2">
-                <span className="text-5xl font-bold text-[#42677D]">$189</span>
-                <span className="text-xl text-gray-600 ml-2">/year</span>
+                <span className="text-5xl font-bold" style={{ color: 'oklch(0.45 0.15 290)' }}>$189</span>
+                <span className="text-xl ml-2" style={{ color: 'oklch(0.65 0.05 280)' }}>/year</span>
               </div>
-              <div className="text-sm text-gray-500 mb-4">
-                <span className="line-through text-gray-400">$252/year</span>
+              <div className="text-sm mb-4" style={{ color: 'oklch(0.65 0.05 280)' }}>
+                <span className="line-through" style={{ color: 'oklch(0.50 0.05 280)' }}>$252/year</span>
                 <span className="ml-2 text-green-600 font-semibold">Save $63 (25% off)</span>
               </div>
-              <p className="text-gray-600">
+              <p style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Regular yearly: $252
               </p>
             </div>
 
             <div className="border-t pt-6">
-              <h3 className="font-semibold text-gray-900 mb-4">What's Included:</h3>
+              <h3 className="font-semibold mb-4" style={{ color: 'oklch(0.98 0.01 280)' }}>What's Included:</h3>
               <ul className="space-y-3">
                 <li className="flex items-start">
                   <i className="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
-                  <span className="text-gray-700">1 World included</span>
+                  <span style={{ color: 'oklch(0.98 0.01 280)' }}>1 World included</span>
                 </li>
                 <li className="flex items-start">
                   <i className="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
-                  <span className="text-gray-700">Full access to world engine</span>
+                  <span style={{ color: 'oklch(0.98 0.01 280)' }}>Full access to world engine</span>
                 </li>
                 <li className="flex items-start">
                   <i className="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
@@ -270,22 +277,33 @@ const DiscountedPlan = () => {
           </div>
 
           {/* Right Column - Signup Form */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Create Your Account</h2>
+          <div className="rounded-xl shadow-lg p-8" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}>
+            <h2 className="text-2xl font-bold mb-6" style={{ color: 'oklch(0.98 0.01 280)' }}>Create Your Account</h2>
             
             <form className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                     First Name
                   </label>
                   <input
                     type="text"
                     value={formData.firstName}
                     onChange={(e) => handleInputChange('firstName', e.target.value)}
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#42677D] ${
-                      errors.firstName ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2"
+                    style={{
+                      borderColor: errors.firstName ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                      backgroundColor: 'oklch(0.12 0.02 280)',
+                      color: 'oklch(0.98 0.01 280)'
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                      e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = errors.firstName ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
                     placeholder="First name"
                   />
                   {errors.firstName && (
@@ -293,16 +311,27 @@ const DiscountedPlan = () => {
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                     Last Name
                   </label>
                   <input
                     type="text"
                     value={formData.lastName}
                     onChange={(e) => handleInputChange('lastName', e.target.value)}
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#42677D] ${
-                      errors.lastName ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2"
+                    style={{
+                      borderColor: errors.lastName ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                      backgroundColor: 'oklch(0.12 0.02 280)',
+                      color: 'oklch(0.98 0.01 280)'
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                      e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = errors.lastName ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
                     placeholder="Last name"
                   />
                   {errors.lastName && (
@@ -312,16 +341,27 @@ const DiscountedPlan = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                   Email Address
                 </label>
                 <input
                   type="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#42677D] ${
-                    errors.email ? 'border-red-500' : 'border-gray-300'
-                  }`}
+                  className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2"
+                  style={{
+                    borderColor: errors.email ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                    backgroundColor: 'oklch(0.12 0.02 280)',
+                    color: 'oklch(0.98 0.01 280)'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                    e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = errors.email ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                   placeholder="your@email.com"
                 />
                 {errors.email && (
@@ -330,16 +370,27 @@ const DiscountedPlan = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                   Password
                 </label>
                 <input
                   type="password"
                   value={formData.password}
                   onChange={(e) => handleInputChange('password', e.target.value)}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#42677D] ${
-                    errors.password ? 'border-red-500' : 'border-gray-300'
-                  }`}
+                  className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2"
+                  style={{
+                    borderColor: errors.password ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                    backgroundColor: 'oklch(0.12 0.02 280)',
+                    color: 'oklch(0.98 0.01 280)'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                    e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = errors.password ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                   placeholder="At least 8 characters"
                 />
                 {errors.password && (
@@ -348,16 +399,27 @@ const DiscountedPlan = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                   Confirm Password
                 </label>
                 <input
                   type="password"
                   value={formData.passwordConfirmation}
                   onChange={(e) => handleInputChange('passwordConfirmation', e.target.value)}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#42677D] ${
-                    errors.passwordConfirmation ? 'border-red-500' : 'border-gray-300'
-                  }`}
+                  className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2"
+                  style={{
+                    borderColor: errors.passwordConfirmation ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                    backgroundColor: 'oklch(0.12 0.02 280)',
+                    color: 'oklch(0.98 0.01 280)'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                    e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = errors.passwordConfirmation ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                   placeholder="Confirm password"
                 />
                 {errors.passwordConfirmation && (
@@ -366,8 +428,8 @@ const DiscountedPlan = () => {
               </div>
 
               {signupError && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-red-600 text-sm">{signupError}</p>
+                <div className="p-3 border rounded-md" style={{ backgroundColor: 'oklch(0.55 0.22 25 / 0.1)', borderColor: 'oklch(0.55 0.22 25 / 0.3)' }}>
+                  <p className="text-sm" style={{ color: 'oklch(0.55 0.22 25)' }}>{signupError}</p>
                 </div>
               )}
 
@@ -376,11 +438,27 @@ const DiscountedPlan = () => {
                   type="button"
                   onClick={handleVerifyEmail}
                   disabled={isLoading}
-                  className={`flex-1 py-3 px-6 rounded-lg transition-colors font-medium ${
-                    isLoading
-                      ? 'bg-gray-400 cursor-not-allowed text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
+                  className="flex-1 py-3 px-6 rounded-md transition-colors font-medium"
+                  style={isLoading ? {
+                    backgroundColor: 'oklch(0.25 0.04 285)',
+                    color: 'oklch(0.65 0.05 280)',
+                    cursor: 'not-allowed'
+                  } : {
+                    backgroundColor: 'oklch(0.18 0.05 285)',
+                    color: 'oklch(0.98 0.01 280)',
+                    borderColor: 'oklch(0.25 0.05 285)',
+                    borderWidth: '1px'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isLoading) {
+                      e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isLoading) {
+                      e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                    }
+                  }}
                 >
                   {isLoading ? 'Sending...' : 'Verify Email'}
                 </button>
@@ -388,11 +466,28 @@ const DiscountedPlan = () => {
                   type="button"
                   onClick={handleSubscribe}
                   disabled={isLoading || !isEmailVerified}
-                  className={`flex-1 py-3 px-6 rounded-lg transition-colors font-medium ${
+                  className={`flex-1 py-3 px-6 rounded-md transition-colors font-medium ${
                     isLoading || !isEmailVerified
-                      ? 'bg-gray-400 cursor-not-allowed text-white'
-                      : 'bg-[#42677D] hover:bg-[#355263] text-white'
+                      ? 'cursor-not-allowed'
+                      : ''
                   }`}
+                  style={isLoading || !isEmailVerified ? {
+                    backgroundColor: 'oklch(0.25 0.04 285)',
+                    color: 'oklch(0.65 0.05 280)'
+                  } : {
+                    background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+                    color: 'white'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isLoading && isEmailVerified) {
+                      e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290 / 0.9), oklch(0.50 0.18 260 / 0.9))';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isLoading && isEmailVerified) {
+                      e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
+                    }
+                  }}
                   title={!isEmailVerified ? 'Please verify your email first' : ''}
                 >
                   Subscribe Now
