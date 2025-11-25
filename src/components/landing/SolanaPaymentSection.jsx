@@ -25,7 +25,7 @@ const SolanaPaymentSection = () => {
             <Coins className="w-4 h-4 mr-2" />
             Monetization & Commerce
           </Badge>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 gradient-text">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 gradient-text" style={{ lineHeight: '1.1', paddingBottom: '0.1em' }}>
             Flexible Payment Options
           </h2>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">

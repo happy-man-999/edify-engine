@@ -193,7 +193,7 @@ const FeaturesPage = () => {
                 <Sparkles className="w-4 h-4 mr-2" />
                 Complete Platform
               </Badge>
-              <h1 className="text-5xl md:text-7xl font-bold mb-6 gradient-text">
+              <h1 className="text-5xl md:text-7xl font-bold mb-6 gradient-text" style={{ lineHeight: '1.1', paddingBottom: '0.1em' }}>
                 Everything You Need
               </h1>
               <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto">
@@ -497,7 +497,7 @@ const FeaturesPage = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text" style={{ lineHeight: '1.1', paddingBottom: '0.1em' }}>
                 Ready to Start Building?
               </h2>
               <p className="text-xl text-gray-300 mb-8">
