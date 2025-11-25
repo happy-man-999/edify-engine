@@ -152,45 +152,57 @@ const EnterpriseContactStep = ({ formData, onContactScheduled, isProcessingConta
     return (
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-            <i className="fas fa-calendar-check text-white text-3xl"></i>
+          <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: 'linear-gradient(to bottom right, oklch(0.50 0.18 260), oklch(0.50 0.18 260))' }}>
+            <i className="fas fa-calendar-check text-3xl" style={{ color: 'oklch(0.98 0.01 280)' }}></i>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Consultation Scheduled!</h2>
-          <p className="text-xl text-gray-600 mb-4">Your enterprise consultation has been confirmed</p>
+          <h2 className="text-3xl font-bold mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Consultation Scheduled!</h2>
+          <p className="text-xl mb-4" style={{ color: 'oklch(0.65 0.05 280)' }}>Your enterprise consultation has been confirmed</p>
         </div>
 
-        <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-8 rounded-2xl border border-green-200 mb-8">
+        <div className="p-8 rounded-2xl mb-8" style={{ 
+          background: 'linear-gradient(to bottom right, oklch(0.50 0.18 260 / 0.1), oklch(0.50 0.18 260 / 0.1))',
+          borderColor: 'oklch(0.50 0.18 260 / 0.3)',
+          borderWidth: '1px',
+          borderStyle: 'solid'
+        }}>
           <div className="text-center mb-6">
-            <h3 className="text-2xl font-semibold text-gray-900 mb-4">Meeting Details</h3>
+            <h3 className="text-2xl font-semibold mb-4" style={{ color: 'oklch(0.98 0.01 280)' }}>Meeting Details</h3>
             <div className="space-y-4">
               <div className="flex items-center justify-center">
-                <i className="fas fa-calendar-alt text-green-600 mr-3"></i>
-                <span className="text-lg font-medium text-gray-900">
+                <i className="fas fa-calendar-alt mr-3" style={{ color: 'oklch(0.50 0.18 260)' }}></i>
+                <span className="text-lg font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
                   {scheduledData.startTime ? formatDateTime(scheduledData.startTime) : 'Meeting scheduled successfully'}
                 </span>
               </div>
               <div className="flex items-center justify-center">
-                <i className="fas fa-user text-green-600 mr-3"></i>
-                <span className="text-lg text-gray-700">{scheduledData.inviteeName}</span>
+                <i className="fas fa-user mr-3" style={{ color: 'oklch(0.50 0.18 260)' }}></i>
+                <span className="text-lg" style={{ color: 'oklch(0.98 0.01 280)' }}>{scheduledData.inviteeName}</span>
               </div>
               <div className="flex items-center justify-center">
-                <i className="fas fa-envelope text-green-600 mr-3"></i>
-                <span className="text-lg text-gray-700">{scheduledData.inviteeEmail}</span>
+                <i className="fas fa-envelope mr-3" style={{ color: 'oklch(0.50 0.18 260)' }}></i>
+                <span className="text-lg" style={{ color: 'oklch(0.98 0.01 280)' }}>{scheduledData.inviteeEmail}</span>
               </div>
               {scheduledData.eventName && (
                 <div className="flex items-center justify-center">
-                  <i className="fas fa-calendar-check text-green-600 mr-3"></i>
-                  <span className="text-lg text-gray-700">{scheduledData.eventName}</span>
+                  <i className="fas fa-calendar-check mr-3" style={{ color: 'oklch(0.50 0.18 260)' }}></i>
+                  <span className="text-lg" style={{ color: 'oklch(0.98 0.01 280)' }}>{scheduledData.eventName}</span>
                 </div>
               )}
               {scheduledData.location && scheduledData.location.join_url && (
                 <div className="flex items-center justify-center">
-                  <i className="fas fa-video text-green-600 mr-3"></i>
+                  <i className="fas fa-video mr-3" style={{ color: 'oklch(0.50 0.18 260)' }}></i>
                   <a 
                     href={scheduledData.location.join_url} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-lg text-blue-600 hover:text-blue-800 underline"
+                    className="text-lg underline"
+                    style={{ color: 'oklch(0.45 0.15 290)' }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = 'oklch(0.50 0.18 260)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = 'oklch(0.45 0.15 290)';
+                    }}
                   >
                     Join Meeting
                   </a>
@@ -199,33 +211,33 @@ const EnterpriseContactStep = ({ formData, onContactScheduled, isProcessingConta
             </div>
           </div>
 
-          <div className="bg-white rounded-lg p-6 mb-6">
-            <h4 className="text-lg font-semibold text-gray-900 mb-4">Meeting Information</h4>
+          <div className="rounded-lg p-6 mb-6" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}>
+            <h4 className="text-lg font-semibold mb-4" style={{ color: 'oklch(0.98 0.01 280)' }}>Meeting Information</h4>
             <div className="space-y-2 text-sm">
               {scheduledData.startTime && scheduledData.endTime && (
                 <div>
-                  <span className="font-medium text-gray-600">Duration:</span>
-                  <span className="ml-2 text-gray-900">
+                  <span className="font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Duration:</span>
+                  <span className="ml-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                     {Math.round((new Date(scheduledData.endTime) - new Date(scheduledData.startTime)) / (1000 * 60))} minutes
                   </span>
                 </div>
               )}
               {scheduledData.timezone && (
                 <div>
-                  <span className="font-medium text-gray-600">Timezone:</span>
-                  <span className="ml-2 text-gray-900">{scheduledData.timezone}</span>
+                  <span className="font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Timezone:</span>
+                  <span className="ml-2" style={{ color: 'oklch(0.98 0.01 280)' }}>{scheduledData.timezone}</span>
                 </div>
               )}
               {scheduledData.status && (
                 <div>
-                  <span className="font-medium text-gray-600">Status:</span>
-                  <span className="ml-2 text-gray-900 capitalize">{scheduledData.status}</span>
+                  <span className="font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Status:</span>
+                  <span className="ml-2 capitalize" style={{ color: 'oklch(0.98 0.01 280)' }}>{scheduledData.status}</span>
                 </div>
               )}
               {scheduledData.location && scheduledData.location.type && (
                 <div>
-                  <span className="font-medium text-gray-600">Meeting Type:</span>
-                  <span className="ml-2 text-gray-900 capitalize">
+                  <span className="font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Meeting Type:</span>
+                  <span className="ml-2 capitalize" style={{ color: 'oklch(0.98 0.01 280)' }}>
                     {scheduledData.location.type.replace('_', ' ')}
                   </span>
                 </div>
@@ -234,14 +246,27 @@ const EnterpriseContactStep = ({ formData, onContactScheduled, isProcessingConta
           </div>
 
           <div className="text-center space-y-4">
-            <p className="text-green-700 font-medium">
+            <p className="font-medium" style={{ color: 'oklch(0.50 0.18 260)' }}>
               You'll receive a calendar invite and confirmation email shortly with the exact meeting time.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={handleReschedule}
-                className="bg-white text-green-600 border border-green-600 px-6 py-3 rounded-lg hover:bg-green-50 transition-colors font-medium"
+                className="px-6 py-3 rounded-lg transition-colors font-medium"
+                style={{
+                  backgroundColor: 'oklch(0.18 0.05 285)',
+                  color: 'oklch(0.50 0.18 260)',
+                  borderColor: 'oklch(0.50 0.18 260)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260 / 0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                }}
               >
                 <i className="fas fa-calendar-alt mr-2"></i>
                 Reschedule Meeting
@@ -252,7 +277,17 @@ const EnterpriseContactStep = ({ formData, onContactScheduled, isProcessingConta
                   href={scheduledData.cancelUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors font-medium"
+                  className="px-6 py-3 rounded-lg transition-colors font-medium"
+                  style={{
+                    backgroundColor: 'oklch(0.55 0.22 25)',
+                    color: 'oklch(0.98 0.01 280)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.60 0.22 25)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.55 0.22 25)';
+                  }}
                 >
                   <i className="fas fa-times mr-2"></i>
                   Cancel Meeting
@@ -268,55 +303,55 @@ const EnterpriseContactStep = ({ formData, onContactScheduled, isProcessingConta
   return (
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-8">
-        <div className="w-20 h-20 bg-gradient-to-br from-[#223A4C] to-[#42677D] rounded-full flex items-center justify-center mx-auto mb-6">
-          <i className="fas fa-building text-white text-3xl"></i>
+        <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: 'linear-gradient(to bottom right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))' }}>
+          <i className="fas fa-building text-3xl" style={{ color: 'oklch(0.98 0.01 280)' }}></i>
         </div>
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">Enterprise Consultation</h2>
-        <p className="text-xl text-gray-600 mb-4">Let's discuss your enterprise needs</p>
-        <p className="text-gray-500 max-w-2xl mx-auto">
+        <h2 className="text-3xl font-bold mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Enterprise Consultation</h2>
+        <p className="text-xl mb-4" style={{ color: 'oklch(0.65 0.05 280)' }}>Let's discuss your enterprise needs</p>
+        <p className="max-w-2xl mx-auto" style={{ color: 'oklch(0.65 0.05 280)' }}>
           Our enterprise team will work with you to create a custom solution that meets your specific requirements. 
           Schedule a consultation to get started.
         </p>
       </div>
 
       {/* Enterprise Benefits */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">What to expect from your consultation</h3>
+      <div className="rounded-xl p-6 mb-8" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
+        <h3 className="text-lg font-semibold mb-4 text-center" style={{ color: 'oklch(0.98 0.01 280)' }}>What to expect from your consultation</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="flex items-start">
-            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-1">
-              <i className="fas fa-check text-green-600 text-sm"></i>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3 mt-1" style={{ backgroundColor: 'oklch(0.50 0.18 260 / 0.2)' }}>
+              <i className="fas fa-check text-sm" style={{ color: 'oklch(0.50 0.18 260)' }}></i>
             </div>
             <div>
-              <h4 className="font-medium text-gray-900">Custom Solution Design</h4>
-              <p className="text-sm text-gray-600">Tailored architecture for your specific needs</p>
+              <h4 className="font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>Custom Solution Design</h4>
+              <p className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>Tailored architecture for your specific needs</p>
             </div>
           </div>
           <div className="flex items-start">
-            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-1">
-              <i className="fas fa-check text-green-600 text-sm"></i>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3 mt-1" style={{ backgroundColor: 'oklch(0.50 0.18 260 / 0.2)' }}>
+              <i className="fas fa-check text-sm" style={{ color: 'oklch(0.50 0.18 260)' }}></i>
             </div>
             <div>
-              <h4 className="font-medium text-gray-900">Dedicated Support</h4>
-              <p className="text-sm text-gray-600">24/7 enterprise-grade support team</p>
+              <h4 className="font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>Dedicated Support</h4>
+              <p className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>24/7 enterprise-grade support team</p>
             </div>
           </div>
           <div className="flex items-start">
-            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-1">
-              <i className="fas fa-check text-green-600 text-sm"></i>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3 mt-1" style={{ backgroundColor: 'oklch(0.50 0.18 260 / 0.2)' }}>
+              <i className="fas fa-check text-sm" style={{ color: 'oklch(0.50 0.18 260)' }}></i>
             </div>
             <div>
-              <h4 className="font-medium text-gray-900">Scalable Infrastructure</h4>
-              <p className="text-sm text-gray-600">Unlimited worlds and custom domains</p>
+              <h4 className="font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>Scalable Infrastructure</h4>
+              <p className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>Unlimited worlds and custom domains</p>
             </div>
           </div>
           <div className="flex items-start">
-            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-1">
-              <i className="fas fa-check text-green-600 text-sm"></i>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3 mt-1" style={{ backgroundColor: 'oklch(0.50 0.18 260 / 0.2)' }}>
+              <i className="fas fa-check text-sm" style={{ color: 'oklch(0.50 0.18 260)' }}></i>
             </div>
             <div>
-              <h4 className="font-medium text-gray-900">Priority Implementation</h4>
-              <p className="text-sm text-gray-600">Fast-track deployment and onboarding</p>
+              <h4 className="font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>Priority Implementation</h4>
+              <p className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>Fast-track deployment and onboarding</p>
             </div>
           </div>
         </div>
@@ -324,22 +359,22 @@ const EnterpriseContactStep = ({ formData, onContactScheduled, isProcessingConta
 
       {/* Calendly Inline Widget */}
       <div className="text-center space-y-6">
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+        <div className="rounded-lg p-6" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.1)', borderColor: 'oklch(0.45 0.15 290 / 0.3)', borderWidth: '1px', borderStyle: 'solid' }}>
           <div className="flex items-center justify-center mb-4">
-            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-              <i className="fas fa-calendar-alt text-blue-600 text-xl"></i>
+            <div className="w-12 h-12 rounded-full flex items-center justify-center mr-3" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.2)' }}>
+              <i className="fas fa-calendar-alt text-xl" style={{ color: 'oklch(0.45 0.15 290)' }}></i>
             </div>
             <div className="text-left">
-              <h4 className="text-lg font-semibold text-blue-800">
+              <h4 className="text-lg font-semibold" style={{ color: 'oklch(0.45 0.15 290)' }}>
                 {showReschedule ? 'Reschedule Your Consultation' : 'Schedule Your Consultation'}
               </h4>
-              <p className="text-sm text-blue-700">
+              <p className="text-sm" style={{ color: 'oklch(0.45 0.15 290)' }}>
                 {showReschedule ? 'Choose a new time that works for you' : 'Choose a time that works for you'}
               </p>
             </div>
           </div>
           
-          <div className="flex items-center justify-center space-x-4 text-sm text-blue-700">
+          <div className="flex items-center justify-center space-x-4 text-sm" style={{ color: 'oklch(0.45 0.15 290)' }}>
             <div className="flex items-center">
               <i className="fas fa-clock mr-1"></i>
               <span>15 minutes</span>
@@ -356,7 +391,7 @@ const EnterpriseContactStep = ({ formData, onContactScheduled, isProcessingConta
         </div>
 
         {/* Calendly Inline Widget */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
+        <div className="rounded-xl p-4" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
           {calendlyLoaded ? (
             <div 
               className="calendly-inline-widget" 
@@ -369,8 +404,8 @@ const EnterpriseContactStep = ({ formData, onContactScheduled, isProcessingConta
           ) : (
             <div className="flex items-center justify-center h-96">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#42677D] mx-auto mb-4"></div>
-                <p className="text-gray-500">Loading scheduling widget...</p>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto mb-4" style={{ borderColor: 'oklch(0.45 0.15 290 / 0.3)', borderTopColor: 'oklch(0.45 0.15 290)' }}></div>
+                <p style={{ color: 'oklch(0.65 0.05 280)' }}>Loading scheduling widget...</p>
               </div>
             </div>
           )}

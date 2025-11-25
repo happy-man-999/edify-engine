@@ -40,7 +40,7 @@ const CTASection = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              to="/signin"
+              to="/signup"
               className="inline-flex items-center justify-center text-lg px-8 py-6 rounded-md font-semibold transition-all duration-300 transform hover:scale-105 group glow-accent"
               style={{
                 background: 'linear-gradient(to right, oklch(0.85 0.18 130), oklch(0.85 0.18 130 / 0.8))',
@@ -57,10 +57,10 @@ const CTASection = () => {
               }}
             >
               <Rocket className="w-5 h-5 mr-2 group-hover:translate-y-[-2px] transition-transform" />
-              Start for Free
+              Start Building Now
             </Link>
             <Link
-              to="/store"
+              to="/resources"
               className="inline-flex items-center justify-center text-lg px-8 py-6 border-2 text-white rounded-md font-semibold transition-all duration-300 transform hover:scale-105"
               style={{ borderColor: 'oklch(0.85 0.18 130 / 0.5)' }}
               onMouseEnter={(e) => {

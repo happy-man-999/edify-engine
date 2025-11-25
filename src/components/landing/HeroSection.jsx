@@ -121,7 +121,7 @@ const HeroSection = () => {
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
           <Link
-            to="/signin"
+            to="/signup"
             className="inline-flex items-center justify-center text-lg px-8 py-6 text-white rounded-md font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-2xl group"
             style={{ 
               background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
@@ -158,7 +158,7 @@ const HeroSection = () => {
           </a>
           
           <Link
-            to="/store"
+            to="/home"
             className="inline-flex items-center justify-center text-lg px-8 py-6 border-2 text-white rounded-md font-semibold transition-all duration-300 transform hover:scale-105 group"
             style={{ 
               borderColor: 'oklch(0.45 0.15 290 / 0.5)'
@@ -171,7 +171,7 @@ const HeroSection = () => {
             }}
           >
             <Box className="w-5 h-5 mr-2" />
-            Browse Store
+            Dashboard
           </Link>
         </motion.div>
       </motion.div>

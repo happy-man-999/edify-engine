@@ -400,14 +400,34 @@ const WorldsSection = () => {
           {hasReachedWorldLimit ? (
             <button
               onClick={user ? handleCreateWorld : () => navigate('/signin')}
-              className="px-6 py-3 rounded-lg transition-colors bg-[#42677D] text-white hover:bg-[#5E8EA9]"
+              className="px-6 py-3 rounded-lg transition-colors"
+              style={{
+                background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+                color: 'oklch(0.98 0.01 280)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.50 0.18 260), oklch(0.55 0.18 260))';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
+              }}
             >
               {user ? 'Upgrade Plan to Create More Worlds' : 'Sign in'}
             </button>
           ) : (
             <button
               onClick={user ? handleCreateWorld : () => navigate('/signin')}
-              className="px-6 py-3 rounded-lg transition-colors bg-[#42677D] text-white hover:bg-[#5E8EA9]"
+              className="px-6 py-3 rounded-lg transition-colors"
+              style={{
+                background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+                color: 'oklch(0.98 0.01 280)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.50 0.18 260), oklch(0.55 0.18 260))';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
+              }}
             >
               {user ? 'Create Your First World' : 'Sign In'}
             </button>

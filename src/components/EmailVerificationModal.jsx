@@ -183,18 +183,18 @@ const EmailVerificationModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full animate-modalFadeIn">
+    <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+      <div className="rounded-xl shadow-xl max-w-md w-full animate-modalFadeIn relative" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}>
         <div className="p-6">
           {/* Header */}
           <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-[#42677D] rounded-full flex items-center justify-center mx-auto mb-4">
-              <i className="fas fa-envelope text-white text-2xl"></i>
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))' }}>
+              <i className="fas fa-envelope text-2xl" style={{ color: 'oklch(0.98 0.01 280)' }}></i>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Verify Your Email</h2>
-            <p className="text-gray-600">
+            <h2 className="text-2xl font-bold mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Verify Your Email</h2>
+            <p style={{ color: 'oklch(0.65 0.05 280)' }}>
               We've sent a 4-digit code to<br />
-              <span className="font-semibold text-[#42677D]">{email}</span>
+              <span className="font-semibold" style={{ color: 'oklch(0.45 0.15 290)' }}>{email}</span>
             </p>
           </div>
 
@@ -212,9 +212,20 @@ const EmailVerificationModal = ({
                   onChange={(e) => handleInputChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   onPaste={handlePaste}
-                  className={`w-12 h-12 text-center text-2xl font-bold border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#42677D] transition-colors ${
-                    error ? 'border-red-500' : 'border-gray-300'
-                  }`}
+                  className="w-12 h-12 text-center text-2xl font-bold border-2 rounded-lg focus:outline-none transition-colors"
+                  style={{
+                    backgroundColor: 'oklch(0.12 0.02 280)',
+                    borderColor: error ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                    color: 'oklch(0.98 0.01 280)'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                    e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = error ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                   disabled={isLoading}
                 />
               ))}
@@ -223,9 +234,9 @@ const EmailVerificationModal = ({
             {/* Error Message */}
             {error && (
               <div className="text-center mb-4">
-                <p className="text-red-600 text-sm">{error}</p>
+                <p className="text-sm" style={{ color: 'oklch(0.55 0.22 25)' }}>{error}</p>
                 {remainingAttempts > 0 && remainingAttempts < 3 && (
-                  <p className="text-gray-500 text-xs mt-1">
+                  <p className="text-xs mt-1" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     {remainingAttempts} attempts remaining
                   </p>
                 )}
@@ -235,8 +246,8 @@ const EmailVerificationModal = ({
             {/* Timer */}
             {timeLeft > 0 && (
               <div className="text-center mb-4">
-                <p className="text-sm text-gray-500">
-                  Code expires in <span className="font-semibold text-[#42677D]">{formatTime(timeLeft)}</span>
+                <p className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>
+                  Code expires in <span className="font-semibold" style={{ color: 'oklch(0.45 0.15 290)' }}>{formatTime(timeLeft)}</span>
                 </p>
               </div>
             )}
@@ -245,18 +256,29 @@ const EmailVerificationModal = ({
             <button
               type="submit"
               disabled={isLoading || code.join('').length !== 4}
-              className={`w-full py-3 px-4 rounded-lg font-medium transition-colors ${
-                isLoading || code.join('').length !== 4
-                  ? 'bg-gray-400 cursor-not-allowed text-white'
-                  : 'bg-[#42677D] hover:bg-[#355263] text-white'
-              }`}
+              className="w-full py-3 px-4 rounded-lg font-medium transition-colors"
+              style={isLoading || code.join('').length !== 4 ? {
+                backgroundColor: 'oklch(0.25 0.05 285)',
+                color: 'oklch(0.65 0.05 280)',
+                cursor: 'not-allowed'
+              } : {
+                background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+                color: 'oklch(0.98 0.01 280)'
+              }}
+              onMouseEnter={(e) => {
+                if (!isLoading && code.join('').length === 4) {
+                  e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.50 0.18 260), oklch(0.55 0.18 260))';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isLoading && code.join('').length === 4) {
+                  e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
+                }
+              }}
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 mr-3" style={{ borderColor: 'oklch(0.65 0.05 280)' }}></div>
                   Verifying...
                 </div>
               ) : (
@@ -267,15 +289,27 @@ const EmailVerificationModal = ({
 
           {/* Resend Code */}
           <div className="text-center">
-            <p className="text-sm text-gray-600 mb-2">Didn't receive the code?</p>
+            <p className="text-sm mb-2" style={{ color: 'oklch(0.65 0.05 280)' }}>Didn't receive the code?</p>
             <button
               onClick={handleResendCode}
               disabled={isResending || timeLeft > 0}
-              className={`text-sm font-medium transition-colors ${
-                isResending || timeLeft > 0
-                  ? 'text-gray-400 cursor-not-allowed'
-                  : 'text-[#42677D] hover:text-[#355263]'
-              }`}
+              className="text-sm font-medium transition-colors"
+              style={isResending || timeLeft > 0 ? {
+                color: 'oklch(0.50 0.05 280)',
+                cursor: 'not-allowed'
+              } : {
+                color: 'oklch(0.45 0.15 290)'
+              }}
+              onMouseEnter={(e) => {
+                if (!isResending && timeLeft === 0) {
+                  e.currentTarget.style.color = 'oklch(0.50 0.18 260)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isResending && timeLeft === 0) {
+                  e.currentTarget.style.color = 'oklch(0.45 0.15 290)';
+                }
+              }}
             >
               {isResending ? 'Sending...' : 'Resend Code'}
             </button>
@@ -284,7 +318,14 @@ const EmailVerificationModal = ({
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            className="absolute top-4 right-4 transition-colors"
+            style={{ color: 'oklch(0.50 0.05 280)' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = 'oklch(0.65 0.05 280)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'oklch(0.50 0.05 280)';
+            }}
             aria-label="Close modal"
           >
             <i className="fas fa-times text-xl"></i>

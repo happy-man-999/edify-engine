@@ -167,8 +167,8 @@ const AccountStep = ({ formData, errors, onInputChange, onNext, setErrors, goToS
     <>
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Your Account</h2>
-          <p className="text-gray-600">Join the future of immersive experiences</p>
+          <h2 className="text-3xl font-bold mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Create Your Account</h2>
+          <p style={{ color: 'oklch(0.65 0.05 280)' }}>Join the future of immersive experiences</p>
         </div>
       
       {/* Google Sign In Button */}
@@ -176,7 +176,20 @@ const AccountStep = ({ formData, errors, onInputChange, onNext, setErrors, goToS
         <button
           type="button"
           onClick={handleGoogleSignIn}
-          className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+          className="w-full flex items-center justify-center gap-3 py-3 px-6 rounded-lg transition-colors font-medium"
+          style={{
+            backgroundColor: 'oklch(0.18 0.05 285)',
+            borderColor: 'oklch(0.25 0.05 285)',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            color: 'oklch(0.98 0.01 280)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+          }}
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -191,111 +204,192 @@ const AccountStep = ({ formData, errors, onInputChange, onNext, setErrors, goToS
       {/* Divider */}
       <div className="relative mb-8">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-300"></div>
+          <div className="w-full" style={{ borderTopColor: 'oklch(0.25 0.05 285)', borderTopWidth: '1px', borderTopStyle: 'solid' }}></div>
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="px-2 bg-white text-gray-500">Or continue with email</span>
+          <span className="px-2" style={{ backgroundColor: 'oklch(0.12 0.02 280)', color: 'oklch(0.65 0.05 280)' }}>Or continue with email</span>
         </div>
       </div>
       
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>First Name</label>
             <input
               type="text"
               value={formData.firstName}
               onChange={(e) => onInputChange('firstName', e.target.value)}
-              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#42677D] transition-colors ${
-                errors.firstName ? 'border-red-500' : 'border-gray-300'
-              }`}
+              className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-colors"
+              style={{
+                backgroundColor: 'oklch(0.12 0.02 280)',
+                borderColor: errors.firstName ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'oklch(0.98 0.01 280)',
+                '--tw-ring-color': 'oklch(0.45 0.15 290)'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = errors.firstName ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
               placeholder="Enter your first name"
             />
-            {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>}
+            {errors.firstName && <p className="text-sm mt-1" style={{ color: 'oklch(0.55 0.22 25)' }}>{errors.firstName}</p>}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Last Name</label>
             <input
               type="text"
               value={formData.lastName}
               onChange={(e) => onInputChange('lastName', e.target.value)}
-              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#42677D] transition-colors ${
-                errors.lastName ? 'border-red-500' : 'border-gray-300'
-              }`}
+              className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-colors"
+              style={{
+                backgroundColor: 'oklch(0.12 0.02 280)',
+                borderColor: errors.lastName ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'oklch(0.98 0.01 280)',
+                '--tw-ring-color': 'oklch(0.45 0.15 290)'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = errors.lastName ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
               placeholder="Enter your last name"
             />
-            {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>}
+            {errors.lastName && <p className="text-sm mt-1" style={{ color: 'oklch(0.55 0.22 25)' }}>{errors.lastName}</p>}
           </div>
         </div>
         
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+          <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Email Address</label>
           <input
             type="email"
             value={formData.email}
             onChange={(e) => onInputChange('email', e.target.value)}
-            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#42677D] transition-colors ${
-              errors.email ? 'border-red-500' : 'border-gray-300'
-            }`}
+            className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-colors"
+            style={{
+              backgroundColor: 'oklch(0.12 0.02 280)',
+              borderColor: errors.email ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              color: 'oklch(0.98 0.01 280)',
+              '--tw-ring-color': 'oklch(0.45 0.15 290)'
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+              e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = errors.email ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
             placeholder="Enter your email address"
           />
-          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+          {errors.email && <p className="text-sm mt-1" style={{ color: 'oklch(0.55 0.22 25)' }}>{errors.email}</p>}
         </div>
         
         {/* Only show password fields if not using Google auth */}
         {formData.password !== 'google-auth' && (
           <>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+              <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Password</label>
               <input
                 type="password"
                 value={formData.password}
                 onChange={(e) => onInputChange('password', e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#42677D] transition-colors ${
-                  errors.password ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-colors"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: errors.password ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = errors.password ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
                 placeholder="Create a strong password"
               />
-              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+              {errors.password && <p className="text-sm mt-1" style={{ color: 'oklch(0.55 0.22 25)' }}>{errors.password}</p>}
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+              <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Confirm Password</label>
               <input
                 type="password"
                 value={formData.passwordConfirmation}
                 onChange={(e) => onInputChange('passwordConfirmation', e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#42677D] transition-colors ${
-                  errors.passwordConfirmation ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-colors"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: errors.passwordConfirmation ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = errors.passwordConfirmation ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
                 placeholder="Confirm your password"
               />
-              {errors.passwordConfirmation && <p className="text-red-500 text-sm mt-1">{errors.passwordConfirmation}</p>}
+              {errors.passwordConfirmation && <p className="text-sm mt-1" style={{ color: 'oklch(0.55 0.22 25)' }}>{errors.passwordConfirmation}</p>}
             </div>
           </>
         )}
         
         <div className="pt-4">
           {signupError && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-600 text-sm">{signupError}</p>
+            <div className="mb-4 p-3 rounded-lg" style={{ backgroundColor: 'oklch(0.55 0.22 25 / 0.1)', borderColor: 'oklch(0.55 0.22 25 / 0.3)', borderWidth: '1px', borderStyle: 'solid' }}>
+              <p className="text-sm" style={{ color: 'oklch(0.55 0.22 25)' }}>{signupError}</p>
             </div>
           )}
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full py-3 px-6 rounded-lg transition-colors font-medium ${
-              isLoading 
-                ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-[#42677D] hover:bg-[#355263] text-white'
-            }`}
+            className="w-full py-3 px-6 rounded-lg transition-colors font-medium"
+            style={isLoading ? {
+              backgroundColor: 'oklch(0.25 0.05 285)',
+              color: 'oklch(0.65 0.05 280)',
+              cursor: 'not-allowed'
+            } : {
+              background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.50 0.18 260), oklch(0.55 0.18 260))';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
+              }
+            }}
           >
             {isLoading ? (
               <div className="flex items-center justify-center">
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 mr-3" style={{ borderColor: 'oklch(0.65 0.05 280)' }}></div>
                 Creating Account...
               </div>
             ) : (
