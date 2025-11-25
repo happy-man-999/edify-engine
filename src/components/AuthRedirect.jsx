@@ -21,6 +21,7 @@ const AuthRedirect = () => {
                        location.pathname === '/features' ||
                        location.pathname === '/resources' ||
                        location.pathname === '/about' ||
+                       location.pathname === '/contact' ||
                        location.pathname === '/terms-of-service' ||
                        location.pathname === '/terms' ||
                        location.pathname === '/privacy-policy' ||
