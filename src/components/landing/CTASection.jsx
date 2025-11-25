@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Rocket, BookOpen } from 'lucide-react';
+import { Rocket, BookOpen, Play } from 'lucide-react';
 import Badge from './Badge';
 
 const CTASection = () => {
@@ -36,7 +36,7 @@ const CTASection = () => {
             Ready to Build Your World?
           </h2>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Join thousands of creators building immersive 3D experiences. No credit card required.
+            Join thousands of creators building immersive 3D experiences.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
@@ -60,7 +60,9 @@ const CTASection = () => {
               Start Building Now
             </Link>
             <Link
-              to="/resources"
+              to="https://demo.edifyengine.com"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center justify-center text-lg px-8 py-6 border-2 text-white rounded-md font-semibold transition-all duration-300 transform hover:scale-105"
               style={{ borderColor: 'oklch(0.85 0.18 130 / 0.5)' }}
               onMouseEnter={(e) => {
@@ -70,8 +72,8 @@ const CTASection = () => {
                 e.currentTarget.style.backgroundColor = 'transparent';
               }}
             >
-              <BookOpen className="w-5 h-5 mr-2" />
-              View Documentation
+              <Play className="w-5 h-5 mr-2" />
+              Launch Demo World
             </Link>
           </div>
         </motion.div>

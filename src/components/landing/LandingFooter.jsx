@@ -202,16 +202,18 @@ const LandingFooter = () => {
             © 2025 Edify Engine. Building the future of immersive experiences.
           </p>
           <div className="flex gap-6 text-sm text-gray-400">
-            <button 
+            <Link 
+              to="/privacy-policy"
               className="transition-colors"
               onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.85 0.18 130)'}
               onMouseLeave={(e) => e.currentTarget.style.color = 'rgb(156, 163, 175)'}
-            >Privacy Policy</button>
-            <button 
+            >Privacy Policy</Link>
+            <Link 
+              to="/terms-of-service"
               className="transition-colors"
               onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.85 0.18 130)'}
               onMouseLeave={(e) => e.currentTarget.style.color = 'rgb(156, 163, 175)'}
-            >Terms of Service</button>
+            >Terms of Service</Link>
             <button 
               className="transition-colors"
               onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.85 0.18 130)'}

@@ -18,7 +18,6 @@ const LandingPage = () => {
       <LandingNavbar />
       <HeroSection />
       <StatsSection />
-      <Separator className="my-8" />
       <div id="features">
         <FeaturesSection />
       </div>
