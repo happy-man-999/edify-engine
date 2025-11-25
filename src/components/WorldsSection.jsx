@@ -335,10 +335,20 @@ const WorldsSection = () => {
       {/* Error state */}
       {error && !loading && (
         <div className="text-center py-8">
-          <p className="text-red-600 mb-4">Failed to load your worlds: {error}</p>
+          <p className="mb-4" style={{ color: 'oklch(0.55 0.22 25)' }}>Failed to load your worlds: {error}</p>
           <button
             onClick={refreshUserDroplets}
-            className="bg-[#42677D] text-white px-4 py-2 rounded-md hover:bg-[#5E8EA9] transition-colors"
+            className="px-4 py-2 rounded-md transition-colors font-medium"
+            style={{
+              background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.50 0.18 260), oklch(0.55 0.18 260))';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
+            }}
           >
             Try Again
           </button>
@@ -363,16 +373,27 @@ const WorldsSection = () => {
             // Upgrade Plan Button
             <div 
               onClick={handleUpgradePlan}
-              className="professional-card border-2 border-dashed border-[#42677D] bg-gradient-to-br from-[#42677D]/5 to-[#5E8EA9]/5 transition-all duration-300 flex flex-col items-center justify-center p-8 relative overflow-hidden cursor-pointer hover:shadow-lg hover:from-[#42677D]/10 hover:to-[#5E8EA9]/10"
+              className="professional-card border-2 border-dashed transition-all duration-300 flex flex-col items-center justify-center p-8 relative overflow-hidden cursor-pointer"
+              style={{ 
+                borderColor: 'oklch(0.50 0.18 260)',
+                backgroundColor: 'oklch(0.18 0.05 285)'
+              }}
+              onMouseEnter={(e) => { 
+                e.currentTarget.style.borderColor = 'oklch(0.50 0.18 260)';
+                e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260 / 0.1)';
+              }}
+              onMouseLeave={(e) => { 
+                e.currentTarget.style.borderColor = 'oklch(0.50 0.18 260)';
+                e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+              }}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-[#42677D]/5 to-[#5E8EA9]/5 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 relative z-10 bg-[#42677D]/10">
-                <i className="fas fa-arrow-up text-[#42677D] text-xl"></i>
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 relative z-10" style={{ backgroundColor: 'oklch(0.50 0.18 260 / 0.2)' }}>
+                <i className="fas fa-arrow-up text-xl" style={{ color: 'oklch(0.50 0.18 260)' }}></i>
               </div>
-              <h3 className="font-semibold mb-1 relative z-10 text-[#42677D]">
+              <h3 className="font-semibold mb-1 relative z-10" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 {user ? 'Upgrade Plan' : 'Choose Plan'}
               </h3>
-              <p className="text-sm text-center relative z-10 text-[#42677D]">
+              <p className="text-sm text-center relative z-10" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 {user 
                   ? 'Unlock more worlds and expand your universe'
                   : 'Select a plan to start building your virtual worlds'
@@ -385,12 +406,17 @@ const WorldsSection = () => {
               onClick={user ? handleCreateWorld : () => navigate('/auth')} 
               className="professional-card border-2 border-dashed transition-all duration-300 flex flex-col items-center justify-center p-8 relative overflow-hidden cursor-pointer"
               style={{ borderColor: 'oklch(0.25 0.05 285)' }}
-              onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)'; }}
+              onMouseEnter={(e) => { 
+                e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290 / 0.05)';
+              }}
+              onMouseLeave={(e) => { 
+                e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
             >
-              <div className="absolute inset-0 bg-[#42677D]/5 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 relative z-10 bg-[#42677D]/10">
-                <i className={`fas ${user ? 'fa-plus' : 'fa-sign-in-alt'} text-[#42677D]`}></i>
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 relative z-10" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.2)' }}>
+                <i className={`fas ${user ? 'fa-plus' : 'fa-sign-in-alt'}`} style={{ color: 'oklch(0.45 0.15 290)' }}></i>
               </div>
               <h3 className="font-semibold mb-1 relative z-10" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 {user ? 'Create New World' : 'Sign In'}
