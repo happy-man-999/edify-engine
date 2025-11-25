@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useYesNoModal } from '../../hooks/useYesNoModal';
+import { showNotification } from '../../store/uiSlice';
 
 const DemoEmailsManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -21,8 +23,11 @@ const DemoEmailsManagement = () => {
     pages: 0
   });
   const [pageSize, setPageSize] = useState(10);
+  const [clearing, setClearing] = useState(false);
 
   const { token } = useSelector(state => state.auth);
+  const dispatch = useDispatch();
+  const { showModal } = useYesNoModal();
 
   // Fetch demo emails statistics
   const fetchStats = async () => {
@@ -149,6 +154,45 @@ const DemoEmailsManagement = () => {
     window.URL.revokeObjectURL(url);
   };
 
+  const handleClear = async () => {
+    try {
+      const confirmed = await showModal('Are you sure you want to clear all demo emails? This action cannot be undone.');
+      
+      if (!confirmed) {
+        return;
+      }
+
+      setClearing(true);
+      setError(null);
+
+      const response = await fetch('/api/admin/demo-emails', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to clear demo emails');
+      }
+
+      const data = await response.json();
+      
+      // Refresh stats and emails list
+      await fetchStats();
+      await fetchDemoEmails(1, pageSize);
+      
+      dispatch(showNotification(`Successfully cleared ${data.deletedCount} demo email(s)`));
+    } catch (error) {
+      console.error('Error clearing demo emails:', error);
+      setError('Failed to clear demo emails');
+      dispatch(showNotification('Failed to clear demo emails'));
+    } finally {
+      setClearing(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Statistics Cards */}
@@ -194,23 +238,56 @@ const DemoEmailsManagement = () => {
             <option value="other">Other</option>
           </select>
         </div>
-        <button
-          onClick={handleExport}
-          className="px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
-          style={{
-            backgroundColor: 'oklch(0.45 0.15 290)',
-            color: 'oklch(0.98 0.01 280)'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
-          }}
-        >
-          <i className="fas fa-download"></i>
-          Export CSV
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleClear}
+            disabled={clearing || loading}
+            className="px-4 py-2 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              backgroundColor: 'oklch(0.70 0.15 150)',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              if (!e.currentTarget.disabled) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.75 0.15 150)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!e.currentTarget.disabled) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.70 0.15 150)';
+              }
+            }}
+          >
+            {clearing ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                Clearing...
+              </>
+            ) : (
+              <>
+                <i className="fas fa-trash"></i>
+                Clear All
+              </>
+            )}
+          </button>
+          <button
+            onClick={handleExport}
+            className="px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+            style={{
+              backgroundColor: 'oklch(0.45 0.15 290)',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
+            }}
+          >
+            <i className="fas fa-download"></i>
+            Export CSV
+          </button>
+        </div>
       </div>
 
       {/* Demo Emails Table */}
