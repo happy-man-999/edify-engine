@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 
 const LandingNavbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   const navItems = [
     { label: 'Features', href: '/features' },
@@ -70,6 +72,51 @@ const LandingNavbar = () => {
                 </Link>
               )
             ))}
+            {isAuthenticated ? (
+              <Link
+                to="/home"
+                className="inline-flex items-center justify-center px-6 py-2 rounded-md font-semibold transition-all duration-300 transform hover:scale-105"
+                style={{
+                  border: '2px solid oklch(0.50 0.18 260)',
+                  color: 'oklch(0.50 0.18 260)',
+                  boxShadow: '0 0 20px oklch(0.45 0.15 290 / 0.2)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290 / 0.1)';
+                  e.currentTarget.style.borderColor = 'oklch(0.50 0.18 260)';
+                  e.currentTarget.style.boxShadow = '0 0 20px oklch(0.45 0.15 290 / 0.3)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.borderColor = 'oklch(0.50 0.18 260)';
+                  e.currentTarget.style.boxShadow = '0 0 20px oklch(0.45 0.15 290 / 0.2)';
+                }}
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <Link
+                to="/signin"
+                className="inline-flex items-center justify-center px-6 py-2 rounded-md font-semibold transition-all duration-300 transform hover:scale-105"
+                style={{
+                  border: '2px solid oklch(0.50 0.18 260)',
+                  color: 'oklch(0.50 0.18 260)',
+                  boxShadow: '0 0 20px oklch(0.45 0.15 290 / 0.2)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290 / 0.1)';
+                  e.currentTarget.style.borderColor = 'oklch(0.50 0.18 260)';
+                  e.currentTarget.style.boxShadow = '0 0 20px oklch(0.45 0.15 290 / 0.3)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.borderColor = 'oklch(0.50 0.18 260)';
+                  e.currentTarget.style.boxShadow = '0 0 20px oklch(0.45 0.15 290 / 0.2)';
+                }}
+              >
+                Sign in
+              </Link>
+            )}
             <Link
               to="/signup"
               className="inline-flex items-center justify-center px-6 py-2 text-white rounded-md font-semibold transition-all duration-300 transform hover:scale-105 glow-effect"
@@ -134,6 +181,47 @@ const LandingNavbar = () => {
                 </Link>
               )
             ))}
+            {isAuthenticated ? (
+              <Link
+                to="/home"
+                className="inline-flex items-center justify-center px-6 py-3 rounded-md font-semibold transition-all duration-300 w-full"
+                style={{
+                  border: '2px solid oklch(0.50 0.18 260)',
+                  color: 'oklch(0.50 0.18 260)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290 / 0.1)';
+                  e.currentTarget.style.borderColor = 'oklch(0.50 0.18 260)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.borderColor = 'oklch(0.50 0.18 260)';
+                }}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <Link
+                to="/signin"
+                className="inline-flex items-center justify-center px-6 py-3 rounded-md font-semibold transition-all duration-300 w-full"
+                style={{
+                  border: '2px solid oklch(0.50 0.18 260)',
+                  color: 'oklch(0.50 0.18 260)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290 / 0.1)';
+                  e.currentTarget.style.borderColor = 'oklch(0.50 0.18 260)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.borderColor = 'oklch(0.50 0.18 260)';
+                }}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Sign in
+              </Link>
+            )}
             <Link
               to="/signup"
               className="inline-flex items-center justify-center px-6 py-3 text-white rounded-md font-semibold transition-all duration-300 w-full"

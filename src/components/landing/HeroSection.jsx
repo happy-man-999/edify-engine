@@ -156,23 +156,6 @@ const HeroSection = () => {
             <Play className="w-5 h-5 mr-2" />
             Launch Demo World
           </a>
-          
-          <Link
-            to="/home"
-            className="inline-flex items-center justify-center text-lg px-8 py-6 border-2 text-white rounded-md font-semibold transition-all duration-300 transform hover:scale-105 group"
-            style={{ 
-              borderColor: 'oklch(0.45 0.15 290 / 0.5)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290 / 0.1)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent';
-            }}
-          >
-            <Box className="w-5 h-5 mr-2" />
-            Dashboard
-          </Link>
         </motion.div>
       </motion.div>
 

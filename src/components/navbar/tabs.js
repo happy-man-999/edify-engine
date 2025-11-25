@@ -1,5 +1,5 @@
 export const tabs = [
-  { title: "Home", href: "/home" },
+  { title: "Dashboard", href: "/home" },
   { title: "Store", href: "/store" },
   { title: "Demo", href: "https://demo.edifyengine.com", external: true },
   { title: "Sign In", href: "/signin" },
