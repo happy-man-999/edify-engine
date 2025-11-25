@@ -34,7 +34,7 @@ const StoreFooter = () => {
           <ul className="space-y-2">
             <li><Link to="/terms-of-service" className="transition-colors duration-300 text-sm" style={{ color: 'oklch(0.65 0.05 280)' }} onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.50 0.18 260)'} onMouseLeave={(e) => e.currentTarget.style.color = 'oklch(0.65 0.05 280)'}>Terms of Service</Link></li>
             <li><Link to="/privacy-policy" className="transition-colors duration-300 text-sm" style={{ color: 'oklch(0.65 0.05 280)' }} onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.50 0.18 260)'} onMouseLeave={(e) => e.currentTarget.style.color = 'oklch(0.65 0.05 280)'}>Privacy Policy</Link></li>
-            <li><a href="#" className="transition-colors duration-300 text-sm" style={{ color: 'oklch(0.65 0.05 280)' }} onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.50 0.18 260)'} onMouseLeave={(e) => e.currentTarget.style.color = 'oklch(0.65 0.05 280)'}>Cookie Policy</a></li>
+            <li><Link to="/cookie-policy" className="transition-colors duration-300 text-sm" style={{ color: 'oklch(0.65 0.05 280)' }} onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.50 0.18 260)'} onMouseLeave={(e) => e.currentTarget.style.color = 'oklch(0.65 0.05 280)'}>Cookie Policy</Link></li>
             <li><a href="#" className="transition-colors duration-300 text-sm" style={{ color: 'oklch(0.65 0.05 280)' }} onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.50 0.18 260)'} onMouseLeave={(e) => e.currentTarget.style.color = 'oklch(0.65 0.05 280)'}>Licenses</a></li>
           </ul>
         </div>

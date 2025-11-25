@@ -214,11 +214,12 @@ const LandingFooter = () => {
               onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.85 0.18 130)'}
               onMouseLeave={(e) => e.currentTarget.style.color = 'rgb(156, 163, 175)'}
             >Terms of Service</Link>
-            <button 
+            <Link 
+              to="/cookie-policy"
               className="transition-colors"
               onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.85 0.18 130)'}
               onMouseLeave={(e) => e.currentTarget.style.color = 'rgb(156, 163, 175)'}
-            >Cookie Policy</button>
+            >Cookie Policy</Link>
           </div>
         </div>
       </div>

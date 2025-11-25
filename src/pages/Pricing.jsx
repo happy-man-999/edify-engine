@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { CheckCircle2, Sparkles, Zap, Rocket, Crown } from 'lucide-react';
+import { CheckCircle2, Sparkles, Zap, Rocket, Crown, Play } from 'lucide-react';
 import Badge from '../components/landing/Badge';
 import LandingNavbar from '../components/landing/LandingNavbar';
 import LandingFooter from '../components/landing/LandingFooter';
@@ -605,29 +605,32 @@ const Pricing = () => {
                 Start with our free tier and upgrade when you're ready. No credit card required.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button
-                  onClick={() => navigate('/signup')}
-                  className="inline-flex items-center justify-center text-lg px-8 py-6 rounded-md font-semibold transition-all duration-300 transform hover:scale-105 glow-accent"
-                  style={{
-                    background: 'linear-gradient(to right, oklch(0.85 0.18 130), oklch(0.85 0.18 130 / 0.8))',
-                    color: 'oklch(0.12 0.02 280)',
-                    boxShadow: '0 0 30px oklch(0.85 0.18 130 / 0.4)'
+                <Link
+                  to="/signup"
+                  className="inline-flex items-center justify-center text-lg px-8 py-6 text-white rounded-md font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-2xl group"
+                  style={{ 
+                    background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+                    boxShadow: '0 0 20px oklch(0.45 0.15 290 / 0.3)'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.85 0.18 130 / 0.9), oklch(0.85 0.18 130 / 0.7))';
-                    e.currentTarget.style.boxShadow = '0 0 40px oklch(0.85 0.18 130 / 0.5)';
+                    e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290 / 0.9), oklch(0.50 0.18 260 / 0.9))';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.85 0.18 130), oklch(0.85 0.18 130 / 0.8))';
-                    e.currentTarget.style.boxShadow = '0 0 30px oklch(0.85 0.18 130 / 0.4)';
+                    e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
                   }}
                 >
-                  Start Free
-                </button>
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center justify-center text-lg px-8 py-6 border-2 text-white rounded-md font-semibold transition-all duration-300 transform hover:scale-105"
-                  style={{ borderColor: 'oklch(0.85 0.18 130 / 0.5)' }}
+                  <Rocket className="w-5 h-5 mr-2 group-hover:translate-y-[-2px] transition-transform" />
+                  Start Building Now
+                </Link>
+                
+                <a
+                  href="https://demo.edifyengine.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center text-lg px-8 py-6 border-2 text-white rounded-md font-semibold transition-all duration-300 transform hover:scale-105 group"
+                  style={{ 
+                    borderColor: 'oklch(0.85 0.18 130 / 0.5)'
+                  }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = 'oklch(0.85 0.18 130 / 0.1)';
                   }}
@@ -635,8 +638,9 @@ const Pricing = () => {
                     e.currentTarget.style.backgroundColor = 'transparent';
                   }}
                 >
-                  Contact Sales
-                </Link>
+                  <Play className="w-5 h-5 mr-2" />
+                  Launch Demo World
+                </a>
               </div>
             </motion.div>
           </div>
