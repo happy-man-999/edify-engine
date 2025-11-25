@@ -71,7 +71,7 @@ const LandingNavbar = () => {
               )
             ))}
             <Link
-              to="/signin"
+              to="/signup"
               className="inline-flex items-center justify-center px-6 py-2 text-white rounded-md font-semibold transition-all duration-300 transform hover:scale-105 glow-effect"
               style={{
                 background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
@@ -135,7 +135,7 @@ const LandingNavbar = () => {
               )
             ))}
             <Link
-              to="/signin"
+              to="/signup"
               className="inline-flex items-center justify-center px-6 py-3 text-white rounded-md font-semibold transition-all duration-300 w-full"
               style={{
                 background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))'

@@ -153,7 +153,7 @@ const Pricing = () => {
     const isUpgrade = planLevel > currentLevel;
     const isDowngrade = planLevel < currentLevel && !plan.priceCustom;
     
-    let cta = 'Start 14-Day Trial';
+    let cta = 'Subscribe';
     if (plan.priceCustom) {
       cta = 'Contact Sales';
     } else if (user && isCurrentPlan) {
