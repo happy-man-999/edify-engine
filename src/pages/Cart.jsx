@@ -168,7 +168,14 @@ const Cart = () => {
                   <h2 className="text-lg font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>Cart Items</h2>
                   <button
                     onClick={handleClearCart}
-                    className="text-red-600 hover:text-red-800 text-sm font-medium"
+                    className="text-sm font-medium transition-colors"
+                    style={{ color: 'oklch(0.55 0.22 25)' }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = 'oklch(0.60 0.22 25)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = 'oklch(0.55 0.22 25)';
+                    }}
                   >
                     Clear Cart
                   </button>
@@ -250,7 +257,16 @@ const Cart = () => {
                         
                         <button
                           onClick={() => handleRemoveItem(item.id)}
-                          className="text-red-600 hover:text-red-800 p-2 rounded-full hover:bg-red-50/50 transition-colors"
+                          className="p-2 rounded-full transition-colors"
+                          style={{ color: 'oklch(0.55 0.22 25)' }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.color = 'oklch(0.60 0.22 25)';
+                            e.currentTarget.style.backgroundColor = 'oklch(0.55 0.22 25 / 0.1)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.color = 'oklch(0.55 0.22 25)';
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                          }}
                           title="Remove item"
                         >
                           <i className="fas fa-trash text-sm"></i>
@@ -285,7 +301,7 @@ const Cart = () => {
                   </span>
                 </div>
                 
-                <div className="flex justify-between text-sm text-gray-600">
+                <div className="flex justify-between text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>
                   <span>Tax</span>
                   <span>Calculated at checkout</span>
                 </div>
@@ -329,12 +345,12 @@ const Cart = () => {
                 Continue Shopping
               </button>
               
-              <div className="mt-6 p-4 bg-blue-50/80 rounded-lg backdrop-blur-sm">
+              <div className="mt-6 p-4 rounded-lg backdrop-blur-sm" style={{ backgroundColor: 'oklch(0.50 0.18 260 / 0.1)', borderColor: 'oklch(0.50 0.18 260 / 0.3)', borderWidth: '1px', borderStyle: 'solid' }}>
                 <div className="flex items-start">
-                  <i className="fas fa-shield-alt text-blue-600 mt-1 mr-3"></i>
-                  <div className="text-sm text-blue-800">
-                    <p className="font-medium">Secure Checkout</p>
-                    <p className="text-blue-700 mt-1">
+                  <i className="fas fa-shield-alt mt-1 mr-3" style={{ color: 'oklch(0.50 0.18 260)' }}></i>
+                  <div className="text-sm">
+                    <p className="font-medium" style={{ color: 'oklch(0.50 0.18 260)' }}>Secure Checkout</p>
+                    <p className="mt-1" style={{ color: 'oklch(0.65 0.05 280)' }}>
                       Your payment information is protected with bank-level security.
                     </p>
                   </div>
