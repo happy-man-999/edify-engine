@@ -464,7 +464,7 @@ const Signup = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-6 py-12">
+      <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="rounded-xl shadow-sm p-8" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}>
           {renderStep()}
 
