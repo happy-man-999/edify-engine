@@ -31,15 +31,15 @@ const DropletDetailsModal = ({ open, droplet, onClose, onEdit }) => {
   const getStatusBadgeColor = (status) => {
     switch (status) {
       case 'active':
-        return 'bg-green-100 text-green-800';
+        return { backgroundColor: 'oklch(0.70 0.15 150 / 0.2)', color: 'oklch(0.70 0.15 150)' };
       case 'new':
-        return 'bg-yellow-100 text-yellow-800';
+        return { backgroundColor: 'oklch(0.85 0.18 130 / 0.2)', color: 'oklch(0.85 0.18 130)' };
       case 'off':
-        return 'bg-gray-100 text-gray-800';
+        return { backgroundColor: 'oklch(0.50 0.05 280 / 0.2)', color: 'oklch(0.50 0.05 280)' };
       case 'archive':
-        return 'bg-red-100 text-red-800';
+        return { backgroundColor: 'oklch(0.55 0.22 25 / 0.2)', color: 'oklch(0.55 0.22 25)' };
       default:
-        return 'bg-gray-100 text-gray-800';
+        return { backgroundColor: 'oklch(0.50 0.05 280 / 0.2)', color: 'oklch(0.50 0.05 280)' };
     }
   };
 
@@ -55,9 +55,23 @@ const DropletDetailsModal = ({ open, droplet, onClose, onEdit }) => {
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[2000]">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 overflow-hidden animate-modalFadeIn">
+      <div 
+        className="rounded-2xl shadow-2xl max-w-2xl w-full mx-4 overflow-hidden animate-modalFadeIn"
+        style={{
+          backgroundColor: 'oklch(0.18 0.05 285)',
+          borderColor: 'oklch(0.25 0.05 285)',
+          borderWidth: '1px',
+          borderStyle: 'solid'
+        }}
+      >
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#42677D] to-[#5E8EA9] p-6 text-white">
+        <div 
+          className="p-6"
+          style={{
+            background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+            color: 'oklch(0.98 0.01 280)'
+          }}
+        >
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">Droplet Details</h2>
             <button
@@ -74,20 +88,23 @@ const DropletDetailsModal = ({ open, droplet, onClose, onEdit }) => {
           {/* Droplet Basic Info */}
           <div className="flex items-center mb-6">
             <div className="flex-shrink-0 h-16 w-16">
-              <div className="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center">
-                <i className="fas fa-server text-blue-600 text-2xl"></i>
+              <div className="h-16 w-16 rounded-full flex items-center justify-center" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.2)' }}>
+                <i className="fas fa-server text-2xl" style={{ color: 'oklch(0.45 0.15 290)' }}></i>
               </div>
             </div>
             <div className="ml-4">
               <button
                 onClick={() => handleDropletClick(droplet.name)}
-                className="text-lg font-semibold text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200 flex items-center group"
+                className="text-lg font-semibold hover:underline transition-colors duration-200 flex items-center group"
+                style={{ color: 'oklch(0.45 0.15 290)' }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.50 0.18 260)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'oklch(0.45 0.15 290)'}
                 title="Open droplet website"
               >
                 {droplet.name}
                 <i className="fas fa-external-link-alt ml-2 text-sm opacity-60 group-hover:opacity-100 transition-opacity duration-200"></i>
               </button>
-              <p className="text-gray-600">Droplet ID: {droplet.id}</p>
+              <p style={{ color: 'oklch(0.65 0.05 280)' }}>Droplet ID: {droplet.id}</p>
             </div>
           </div>
 
@@ -95,16 +112,19 @@ const DropletDetailsModal = ({ open, droplet, onClose, onEdit }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Basic Information */}
             <div className="space-y-4">
-              <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+              <h4 className="text-sm font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Basic Information
               </h4>
               
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-500">Droplet Name</label>
+                  <label className="block text-xs font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Droplet Name</label>
                   <button
                     onClick={() => handleDropletClick(droplet.name)}
-                    className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200 flex items-center group font-mono"
+                    className="text-sm hover:underline transition-colors duration-200 flex items-center group font-mono"
+                    style={{ color: 'oklch(0.45 0.15 290)' }}
+                    onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.50 0.18 260)'}
+                    onMouseLeave={(e) => e.currentTarget.style.color = 'oklch(0.45 0.15 290)'}
                     title="Open droplet website"
                   >
                     {droplet.name}
@@ -113,20 +133,20 @@ const DropletDetailsModal = ({ open, droplet, onClose, onEdit }) => {
                 </div>
                 
                 <div>
-                  <label className="block text-xs font-medium text-gray-500">Droplet ID</label>
-                  <p className="text-sm text-gray-900 font-mono">{droplet.id}</p>
+                  <label className="block text-xs font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Droplet ID</label>
+                  <p className="text-sm font-mono" style={{ color: 'oklch(0.98 0.01 280)' }}>{droplet.id}</p>
                 </div>
                 
                 <div>
-                  <label className="block text-xs font-medium text-gray-500">Status</label>
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusBadgeColor(droplet.status)}`}>
+                  <label className="block text-xs font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Status</label>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" style={getStatusBadgeColor(droplet.status)}>
                     {droplet.status}
                   </span>
                 </div>
                 
                 <div>
-                  <label className="block text-xs font-medium text-gray-500">IP Address</label>
-                  <p className="text-sm text-gray-900 font-mono">
+                  <label className="block text-xs font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>IP Address</label>
+                  <p className="text-sm font-mono" style={{ color: 'oklch(0.98 0.01 280)' }}>
                     {droplet.ipAddress || 'Not assigned'}
                   </p>
                 </div>
@@ -135,66 +155,66 @@ const DropletDetailsModal = ({ open, droplet, onClose, onEdit }) => {
 
             {/* Specifications */}
             <div className="space-y-4">
-              <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+              <h4 className="text-sm font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Specifications
               </h4>
               
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-500">Size</label>
-                  <p className="text-sm text-gray-900">{droplet.sizeSlug}</p>
+                  <label className="block text-xs font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Size</label>
+                  <p className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>{droplet.sizeSlug}</p>
                 </div>
                 
                 <div>
-                  <label className="block text-xs font-medium text-gray-500">Region</label>
-                  <p className="text-sm text-gray-900">{droplet.regionSlug}</p>
+                  <label className="block text-xs font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Region</label>
+                  <p className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>{droplet.regionSlug}</p>
                 </div>
                 
                 <div>
-                  <label className="block text-xs font-medium text-gray-500">vCPUs</label>
-                  <p className="text-sm text-gray-900">{droplet.vcpus || 'N/A'}</p>
+                  <label className="block text-xs font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>vCPUs</label>
+                  <p className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>{droplet.vcpus || 'N/A'}</p>
                 </div>
                 
                 <div>
-                  <label className="block text-xs font-medium text-gray-500">Memory</label>
-                  <p className="text-sm text-gray-900">{formatMemory(droplet.memory)}</p>
+                  <label className="block text-xs font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Memory</label>
+                  <p className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>{formatMemory(droplet.memory)}</p>
                 </div>
                 
                 <div>
-                  <label className="block text-xs font-medium text-gray-500">Disk</label>
-                  <p className="text-sm text-gray-900">{formatDisk(droplet.disk)}</p>
+                  <label className="block text-xs font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Disk</label>
+                  <p className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>{formatDisk(droplet.disk)}</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Additional Information */}
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3">
+          <div className="mt-6 pt-6" style={{ borderTopColor: 'oklch(0.25 0.05 285)', borderTopWidth: '1px', borderTopStyle: 'solid' }}>
+            <h4 className="text-sm font-medium uppercase tracking-wider mb-3" style={{ color: 'oklch(0.65 0.05 280)' }}>
               Additional Information
             </h4>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-500">Created At</label>
-                <p className="text-sm text-gray-900">{formatDate(droplet.createdAt)}</p>
+                <label className="block text-xs font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Created At</label>
+                <p className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>{formatDate(droplet.createdAt)}</p>
               </div>
               
               <div>
-                <label className="block text-xs font-medium text-gray-500">Monthly Cost</label>
-                <p className="text-sm text-gray-900">
+                <label className="block text-xs font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Monthly Cost</label>
+                <p className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
                   ${droplet.priceMonthly ? droplet.priceMonthly.toFixed(2) : '0.00'}
                 </p>
               </div>
               
               <div>
-                <label className="block text-xs font-medium text-gray-500">Linked User</label>
-                <p className="text-sm text-gray-900 font-mono">{droplet.user}</p>
+                <label className="block text-xs font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Linked User</label>
+                <p className="text-sm font-mono" style={{ color: 'oklch(0.98 0.01 280)' }}>{droplet.user}</p>
               </div>
               
               <div>
-                <label className="block text-xs font-medium text-gray-500">Transaction</label>
-                <p className="text-sm text-gray-900 font-mono">
+                <label className="block text-xs font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Transaction</label>
+                <p className="text-sm font-mono" style={{ color: 'oklch(0.98 0.01 280)' }}>
                   {droplet.transaction ? shortAddress(droplet.transaction) : 'N/A'}
                 </p>
               </div>
@@ -203,15 +223,16 @@ const DropletDetailsModal = ({ open, droplet, onClose, onEdit }) => {
 
           {/* Tags */}
           {droplet.tags && droplet.tags.length > 0 && (
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3">
+            <div className="mt-6 pt-6" style={{ borderTopColor: 'oklch(0.25 0.05 285)', borderTopWidth: '1px', borderTopStyle: 'solid' }}>
+              <h4 className="text-sm font-medium uppercase tracking-wider mb-3" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Tags
               </h4>
               <div className="flex flex-wrap gap-2">
                 {droplet.tags.map((tag, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                    style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.2)', color: 'oklch(0.45 0.15 290)' }}
                   >
                     {tag}
                   </span>
@@ -221,17 +242,37 @@ const DropletDetailsModal = ({ open, droplet, onClose, onEdit }) => {
           )}
 
           {/* Action Buttons */}
-          <div className="mt-6 pt-6 border-t border-gray-200 flex justify-end space-x-3">
+          <div className="mt-6 pt-6 flex justify-end space-x-3" style={{ borderTopColor: 'oklch(0.25 0.05 285)', borderTopWidth: '1px', borderTopStyle: 'solid' }}>
             <button
               onClick={onClose}
-              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+              className="px-6 py-2 rounded-lg transition-colors"
+              style={{
+                backgroundColor: 'oklch(0.25 0.05 285)',
+                color: 'oklch(0.98 0.01 280)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'oklch(0.25 0.05 285 / 0.8)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'oklch(0.25 0.05 285)';
+              }}
             >
               Close
             </button>
             {onEdit && (
               <button
                 onClick={() => onEdit(droplet)}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="px-6 py-2 rounded-lg transition-colors"
+                style={{
+                  backgroundColor: 'oklch(0.45 0.15 290)',
+                  color: 'oklch(0.98 0.01 280)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
+                }}
               >
                 <i className="fas fa-edit mr-2"></i>
                 Edit Droplet

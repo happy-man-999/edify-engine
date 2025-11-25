@@ -311,7 +311,13 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[2000] p-4">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden animate-modalFadeIn">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#42677D] to-[#5E8EA9] p-6 text-white">
+        <div 
+          className="p-6"
+          style={{
+            background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+            color: 'oklch(0.98 0.01 280)'
+          }}
+        >
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">Upload New Item</h2>
             <button
@@ -686,10 +692,10 @@ const ItemUploadForm = ({ onClose, onSuccess }) => {
                       <div className="w-full h-64 bg-gray-100 rounded-lg border border-gray-200 shadow-sm overflow-hidden relative">
                         {/* Loading Overlay */}
                         {isModelLoading && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
+                          <div className="absolute inset-0 flex items-center justify-center z-10" style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
                             <div className="text-center">
-                              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-                              <p className="text-sm text-gray-600">Loading...</p>
+                              <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto mb-2" style={{ borderColor: 'oklch(0.45 0.15 290)' }}></div>
+                              <p className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>Loading...</p>
                             </div>
                           </div>
                         )}

@@ -17,8 +17,8 @@ const LogDetailsModal = ({ open, log, onClose }) => {
 
   const renderKV = (label, value) => (
     <div>
-      <label className="block text-xs font-medium text-gray-500">{label}</label>
-      <p className="text-sm text-gray-900 break-all">
+      <label className="block text-xs font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>{label}</label>
+      <p className="text-sm break-all" style={{ color: 'oklch(0.98 0.01 280)' }}>
         {label.toLowerCase() === 'signature' ? shortAddress(String(value)) : String(value)}
       </p>
     </div>
@@ -26,9 +26,23 @@ const LogDetailsModal = ({ open, log, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[2000]">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full mx-4 overflow-hidden animate-modalFadeIn">
+      <div 
+        className="rounded-2xl shadow-2xl max-w-3xl w-full mx-4 overflow-hidden animate-modalFadeIn"
+        style={{
+          backgroundColor: 'oklch(0.18 0.05 285)',
+          borderColor: 'oklch(0.25 0.05 285)',
+          borderWidth: '1px',
+          borderStyle: 'solid'
+        }}
+      >
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#42677D] to-[#5E8EA9] p-6 text-white">
+        <div 
+          className="p-6"
+          style={{
+            background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+            color: 'oklch(0.98 0.01 280)'
+          }}
+        >
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">Log Details</h2>
             <button onClick={onClose} className="text-white/80 hover:text-white transition-colors text-2xl">×</button>
@@ -52,14 +66,14 @@ const LogDetailsModal = ({ open, log, onClose }) => {
 
           {/* Details */}
           {log.details && Object.keys(log.details).length > 0 && (
-            <div className="pt-6 border-t border-gray-200">
-              <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3">Details</h4>
-              <div className="text-sm text-gray-900">
+            <div className="pt-6" style={{ borderTopColor: 'oklch(0.25 0.05 285)', borderTopWidth: '1px', borderTopStyle: 'solid' }}>
+              <h4 className="text-sm font-medium uppercase tracking-wider mb-3" style={{ color: 'oklch(0.65 0.05 280)' }}>Details</h4>
+              <div className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 {Object.entries(log.details).map(([key, value]) => (
                   <div key={key} className="mb-2">
-                    <span className="font-medium text-gray-600 mr-2">{key}:</span>
+                    <span className="font-medium mr-2" style={{ color: 'oklch(0.65 0.05 280)' }}>{key}:</span>
                     {typeof value === 'object' ? (
-                      <pre className="mt-1 text-xs bg-gray-50 border border-gray-200 rounded p-3 overflow-x-auto">{JSON.stringify(value, null, 2)}</pre>
+                      <pre className="mt-1 text-xs rounded p-3 overflow-x-auto" style={{ backgroundColor: 'oklch(0.12 0.02 280)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid', color: 'oklch(0.98 0.01 280)' }}>{JSON.stringify(value, null, 2)}</pre>
                     ) : (
                       <span>{key === 'signature' ? shortAddress(String(value)) : String(value)}</span>
                     )}
@@ -71,22 +85,37 @@ const LogDetailsModal = ({ open, log, onClose }) => {
 
           {/* Metadata */}
           {log.metadata && Object.keys(log.metadata).length > 0 && (
-            <div className="pt-6 border-t border-gray-200">
-              <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3">Metadata</h4>
-              <pre className="text-xs bg-gray-50 border border-gray-200 rounded p-3 overflow-x-auto">{JSON.stringify(log.metadata, null, 2)}</pre>
+            <div className="pt-6" style={{ borderTopColor: 'oklch(0.25 0.05 285)', borderTopWidth: '1px', borderTopStyle: 'solid' }}>
+              <h4 className="text-sm font-medium uppercase tracking-wider mb-3" style={{ color: 'oklch(0.65 0.05 280)' }}>Metadata</h4>
+              <pre className="text-xs rounded p-3 overflow-x-auto" style={{ backgroundColor: 'oklch(0.12 0.02 280)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid', color: 'oklch(0.98 0.01 280)' }}>{JSON.stringify(log.metadata, null, 2)}</pre>
             </div>
           )}
 
           {/* Error */}
           {log.error && (
-            <div className="pt-6 border-t border-gray-200">
-              <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3">Error</h4>
-              <pre className="text-xs bg-red-50 border border-red-200 text-red-800 rounded p-3 overflow-x-auto">{log.error}</pre>
+            <div className="pt-6" style={{ borderTopColor: 'oklch(0.25 0.05 285)', borderTopWidth: '1px', borderTopStyle: 'solid' }}>
+              <h4 className="text-sm font-medium uppercase tracking-wider mb-3" style={{ color: 'oklch(0.65 0.05 280)' }}>Error</h4>
+              <pre className="text-xs rounded p-3 overflow-x-auto" style={{ backgroundColor: 'oklch(0.55 0.22 25 / 0.1)', borderColor: 'oklch(0.55 0.22 25 / 0.3)', borderWidth: '1px', borderStyle: 'solid', color: 'oklch(0.55 0.22 25)' }}>{log.error}</pre>
             </div>
           )}
 
-          <div className="pt-6 border-t border-gray-200 flex justify-end">
-            <button onClick={onClose} className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">Close</button>
+          <div className="pt-6 flex justify-end" style={{ borderTopColor: 'oklch(0.25 0.05 285)', borderTopWidth: '1px', borderTopStyle: 'solid' }}>
+            <button 
+              onClick={onClose} 
+              className="px-6 py-2 rounded-lg transition-colors"
+              style={{
+                backgroundColor: 'oklch(0.25 0.05 285)',
+                color: 'oklch(0.98 0.01 280)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'oklch(0.25 0.05 285 / 0.8)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'oklch(0.25 0.05 285)';
+              }}
+            >
+              Close
+            </button>
           </div>
         </div>
       </div>

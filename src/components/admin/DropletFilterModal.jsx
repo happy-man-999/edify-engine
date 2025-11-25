@@ -101,9 +101,23 @@ const DropletFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => 
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[2000]">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 overflow-hidden animate-modalFadeIn">
+      <div 
+        className="rounded-2xl shadow-2xl max-w-2xl w-full mx-4 overflow-hidden animate-modalFadeIn"
+        style={{
+          backgroundColor: 'oklch(0.18 0.05 285)',
+          borderColor: 'oklch(0.25 0.05 285)',
+          borderWidth: '1px',
+          borderStyle: 'solid'
+        }}
+      >
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#42677D] to-[#5E8EA9] p-6 text-white">
+        <div 
+          className="p-6"
+          style={{
+            background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+            color: 'oklch(0.98 0.01 280)'
+          }}
+        >
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">Filter Droplets</h2>
             <button
@@ -120,13 +134,29 @@ const DropletFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Size Slug Filter */}
             <div className="space-y-4">
-              <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+              <h4 className="text-sm font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Droplet Size
               </h4>
               <select
                 value={filters.sizeSlug}
                 onChange={(e) => handleInputChange('sizeSlug', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               >
                 <option value="">All Sizes</option>
                 {sizeSlugs.map((size) => (
@@ -139,13 +169,29 @@ const DropletFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => 
 
             {/* Region Slug Filter */}
             <div className="space-y-4">
-              <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+              <h4 className="text-sm font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Region
               </h4>
               <select
                 value={filters.regionSlug}
                 onChange={(e) => handleInputChange('regionSlug', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               >
                 <option value="">All Regions</option>
                 {regionSlugs.map((region) => (
@@ -158,13 +204,29 @@ const DropletFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => 
 
             {/* User Filter */}
             <div className="space-y-4">
-              <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+              <h4 className="text-sm font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 User
               </h4>
               <select
                 value={filters.userId}
                 onChange={(e) => handleInputChange('userId', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
                 disabled={loadingUsers}
               >
                 <option value="">All Users</option>
@@ -175,19 +237,35 @@ const DropletFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => 
                 ))}
               </select>
               {loadingUsers && (
-                <div className="text-xs text-gray-500">Loading users...</div>
+                <div className="text-xs" style={{ color: 'oklch(0.65 0.05 280)' }}>Loading users...</div>
               )}
             </div>
 
             {/* Status Filter */}
             <div className="space-y-4">
-              <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+              <h4 className="text-sm font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Status
               </h4>
               <select
                 value={filters.status}
                 onChange={(e) => handleInputChange('status', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               >
                 <option value="all">All Status</option>
                 <option value="active">Active</option>
@@ -199,47 +277,99 @@ const DropletFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => 
           </div>
 
           {/* Date Range Filter */}
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">
+          <div className="mt-6 pt-6" style={{ borderTopColor: 'oklch(0.25 0.05 285)', borderTopWidth: '1px', borderTopStyle: 'solid' }}>
+            <h4 className="text-sm font-medium uppercase tracking-wider mb-4" style={{ color: 'oklch(0.65 0.05 280)' }}>
               Created Date Range
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-2">
+                <label className="block text-xs font-medium mb-2" style={{ color: 'oklch(0.65 0.05 280)' }}>
                   From Date
                 </label>
                 <input
                   type="date"
                   value={filters.createdAtFrom}
                   onChange={(e) => handleInputChange('createdAtFrom', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                  style={{
+                    backgroundColor: 'oklch(0.12 0.02 280)',
+                    borderColor: 'oklch(0.25 0.05 285)',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    color: 'oklch(0.98 0.01 280)',
+                    '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                    e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-2">
+                <label className="block text-xs font-medium mb-2" style={{ color: 'oklch(0.65 0.05 280)' }}>
                   To Date
                 </label>
                 <input
                   type="date"
                   value={filters.createdAtTo}
                   onChange={(e) => handleInputChange('createdAtTo', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                  style={{
+                    backgroundColor: 'oklch(0.12 0.02 280)',
+                    borderColor: 'oklch(0.25 0.05 285)',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    color: 'oklch(0.98 0.01 280)',
+                    '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                    e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                 />
               </div>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="mt-6 pt-6 border-t border-gray-200 flex justify-end space-x-3">
+          <div className="mt-6 pt-6 flex justify-end space-x-3" style={{ borderTopColor: 'oklch(0.25 0.05 285)', borderTopWidth: '1px', borderTopStyle: 'solid' }}>
             <button
               onClick={handleClear}
-              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+              className="px-4 py-2 rounded-lg transition-colors"
+              style={{
+                backgroundColor: 'oklch(0.25 0.05 285)',
+                color: 'oklch(0.98 0.01 280)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'oklch(0.25 0.05 285 / 0.8)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'oklch(0.25 0.05 285)';
+              }}
             >
               Clear All
             </button>
             <button
               onClick={handleApply}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-6 py-2 rounded-lg transition-colors"
+              style={{
+                backgroundColor: 'oklch(0.45 0.15 290)',
+                color: 'oklch(0.98 0.01 280)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
+              }}
             >
               Apply Filters
             </button>

@@ -1,7 +1,6 @@
 export const tabs = [
   { title: "Home", href: "/home" },
   { title: "Store", href: "/store" },
-  { title: "Pricing", href: "/pricing" },
   { title: "Demo", href: "https://demo.edifyengine.com", external: true },
   { title: "Sign In", href: "/signin" },
 ]

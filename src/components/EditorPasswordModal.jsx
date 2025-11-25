@@ -34,7 +34,13 @@ const EditorPasswordModal = () => {
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[2000]">
       <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden animate-modalFadeIn">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#42677D] to-[#5E8EA9] p-6 text-white">
+        <div 
+          className="p-6"
+          style={{
+            background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+            color: 'oklch(0.98 0.01 280)'
+          }}
+        >
           <div className="flex items-center justify-center">
             <h2 className="text-xl font-bold">Editor Access</h2>
           </div>

@@ -87,16 +87,27 @@ const CreateDropletModal = ({ open, onClose, onCreateDroplet }) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden">
+      <div 
+        className="rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden"
+        style={{
+          backgroundColor: 'oklch(0.18 0.05 285)',
+          borderColor: 'oklch(0.25 0.05 285)',
+          borderWidth: '1px',
+          borderStyle: 'solid'
+        }}
+      >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className="px-6 py-4" style={{ borderBottomColor: 'oklch(0.25 0.05 285)', borderBottomWidth: '1px', borderBottomStyle: 'solid' }}>
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>
               Create New Droplet
             </h3>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="transition-colors"
+              style={{ color: 'oklch(0.65 0.05 280)' }}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.98 0.01 280)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'oklch(0.65 0.05 280)'}
             >
               <i className="fas fa-times text-xl"></i>
             </button>
@@ -108,7 +119,7 @@ const CreateDropletModal = ({ open, onClose, onCreateDroplet }) => {
           <div className="space-y-6">
             {/* User Search */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Search Users
               </label>
               <div className="relative">
@@ -117,22 +128,38 @@ const CreateDropletModal = ({ open, onClose, onCreateDroplet }) => {
                   placeholder="Search by name or email..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 pr-10 rounded-md focus:outline-none focus:ring-2"
+                  style={{
+                    backgroundColor: 'oklch(0.12 0.02 280)',
+                    borderColor: 'oklch(0.25 0.05 285)',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    color: 'oklch(0.98 0.01 280)',
+                    '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                    e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                 />
-                <i className="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+                <i className="fas fa-search absolute right-3 top-3" style={{ color: 'oklch(0.65 0.05 280)' }}></i>
               </div>
             </div>
 
             {/* Selected User Display */}
             {selectedUserData && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="rounded-lg p-4" style={{ backgroundColor: 'oklch(0.70 0.15 150 / 0.1)', borderColor: 'oklch(0.70 0.15 150 / 0.3)', borderWidth: '1px', borderStyle: 'solid' }}>
                 <div className="flex items-center">
-                  <i className="fas fa-check-circle text-green-600 mr-3"></i>
+                  <i className="fas fa-check-circle mr-3" style={{ color: 'oklch(0.70 0.15 150)' }}></i>
                   <div>
-                    <h4 className="text-sm font-medium text-green-900">
+                    <h4 className="text-sm font-medium" style={{ color: 'oklch(0.70 0.15 150)' }}>
                       Selected User
                     </h4>
-                    <p className="text-sm text-green-700">
+                    <p className="text-sm" style={{ color: 'oklch(0.70 0.15 150)' }}>
                       {selectedUserData.firstName} {selectedUserData.lastName} ({selectedUserData.email})
                     </p>
                   </div>
@@ -142,58 +169,78 @@ const CreateDropletModal = ({ open, onClose, onCreateDroplet }) => {
 
             {/* Users List */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Select User ({filteredUsers.length} users)
               </label>
               
               {loadingUsers ? (
-                <div className="border border-gray-300 rounded-md p-4 text-center">
+                <div className="rounded-md p-4 text-center" style={{ borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
                   <div className="inline-flex items-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                    <span className="ml-2 text-gray-600">Loading users...</span>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2" style={{ borderColor: 'oklch(0.45 0.15 290)' }}></div>
+                    <span className="ml-2" style={{ color: 'oklch(0.65 0.05 280)' }}>Loading users...</span>
                   </div>
                 </div>
               ) : filteredUsers.length === 0 ? (
-                <div className="border border-gray-300 rounded-md p-4 text-center text-gray-500">
+                <div className="rounded-md p-4 text-center" style={{ borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid', color: 'oklch(0.65 0.05 280)' }}>
                   No users found
                 </div>
               ) : (
-                <div className="border border-gray-300 rounded-md max-h-64 overflow-y-auto">
+                <div className="rounded-md max-h-64 overflow-y-auto" style={{ borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
                   {filteredUsers.map((user) => (
                     <button
                       key={user._id}
                       onClick={() => handleUserSelect(user._id)}
-                      className={`w-full px-4 py-3 text-left border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors ${
-                        selectedUser === user._id ? 'bg-blue-50 border-blue-200' : ''
-                      }`}
+                      className="w-full px-4 py-3 text-left transition-colors last:border-b-0"
+                      style={{
+                        borderBottomColor: 'oklch(0.25 0.05 285)',
+                        borderBottomWidth: filteredUsers.indexOf(user) < filteredUsers.length - 1 ? '1px' : '0',
+                        borderBottomStyle: 'solid',
+                        backgroundColor: selectedUser === user._id ? 'oklch(0.45 0.15 290 / 0.1)' : 'transparent'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (selectedUser !== user._id) {
+                          e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.5)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (selectedUser !== user._id) {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }
+                      }}
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm font-medium text-gray-900">
+                          <p className="text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
                             {user.firstName} {user.lastName}
                           </p>
-                          <p className="text-sm text-gray-500">{user.email}</p>
+                          <p className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>{user.email}</p>
                           <div className="flex items-center mt-1">
-                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                              user.role === 'admin' 
-                                ? 'bg-red-100 text-red-800' 
-                                : user.role === 'contributor'
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-green-100 text-green-800'
-                            }`}>
+                            <span 
+                              className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                              style={
+                                user.role === 'admin' 
+                                  ? { backgroundColor: 'oklch(0.55 0.22 25 / 0.2)', color: 'oklch(0.55 0.22 25)' }
+                                  : user.role === 'contributor'
+                                  ? { backgroundColor: 'oklch(0.85 0.18 130 / 0.2)', color: 'oklch(0.85 0.18 130)' }
+                                  : { backgroundColor: 'oklch(0.70 0.15 150 / 0.2)', color: 'oklch(0.70 0.15 150)' }
+                              }
+                            >
                               {user.role}
                             </span>
-                            <span className={`ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                              user.isEmailVerified 
-                                ? 'bg-green-100 text-green-800' 
-                                : 'bg-gray-100 text-gray-800'
-                            }`}>
+                            <span 
+                              className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                              style={
+                                user.isEmailVerified 
+                                  ? { backgroundColor: 'oklch(0.70 0.15 150 / 0.2)', color: 'oklch(0.70 0.15 150)' }
+                                  : { backgroundColor: 'oklch(0.50 0.05 280 / 0.2)', color: 'oklch(0.50 0.05 280)' }
+                              }
+                            >
                               {user.isEmailVerified ? 'Verified' : 'Unverified'}
                             </span>
                           </div>
                         </div>
                         {selectedUser === user._id && (
-                          <i className="fas fa-check-circle text-blue-600"></i>
+                          <i className="fas fa-check-circle" style={{ color: 'oklch(0.45 0.15 290)' }}></i>
                         )}
                       </div>
                     </button>
@@ -205,22 +252,50 @@ const CreateDropletModal = ({ open, onClose, onCreateDroplet }) => {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
+        <div className="px-6 py-4 flex justify-end space-x-3" style={{ borderTopColor: 'oklch(0.25 0.05 285)', borderTopWidth: '1px', borderTopStyle: 'solid' }}>
           <button
             onClick={onClose}
             disabled={isCreating}
-            className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50"
+            className="px-4 py-2 rounded-md transition-colors disabled:opacity-50"
+            style={{
+              backgroundColor: 'oklch(0.25 0.05 285)',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              if (!e.currentTarget.disabled) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.25 0.05 285 / 0.8)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!e.currentTarget.disabled) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.25 0.05 285)';
+              }
+            }}
           >
             Cancel
           </button>
           <button
             onClick={handleCreateDroplet}
             disabled={!selectedUser || isCreating}
-            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+            className="px-4 py-2 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+            style={{
+              backgroundColor: 'oklch(0.70 0.15 150)',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              if (!e.currentTarget.disabled && selectedUser) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.75 0.15 150)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!e.currentTarget.disabled) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.70 0.15 150)';
+              }
+            }}
           >
             {isCreating ? (
               <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 mr-2" style={{ borderColor: 'oklch(0.98 0.01 280)' }}></div>
                 Creating...
               </>
             ) : (

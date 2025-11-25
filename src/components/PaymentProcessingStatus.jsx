@@ -66,19 +66,37 @@ const PaymentProcessingStatus = ({ userId, paymentIdentifier, paymentMethod, ite
   if (processingStatus === 'completed' && domain) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-8 max-w-md mx-4 text-center">
-          <div className="text-green-500 text-6xl mb-4">✅</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">New World Created!</h2>
-          <p className="text-gray-600 mb-6">Your new world has been successfully created and is ready to use.</p>
+        <div 
+          className="rounded-lg p-8 max-w-md mx-4 text-center"
+          style={{
+            backgroundColor: 'oklch(0.18 0.05 285)',
+            borderColor: 'oklch(0.25 0.05 285)',
+            borderWidth: '1px',
+            borderStyle: 'solid'
+          }}
+        >
+          <div className="text-6xl mb-4" style={{ color: 'oklch(0.70 0.15 150)' }}>✅</div>
+          <h2 className="text-2xl font-bold mb-4" style={{ color: 'oklch(0.98 0.01 280)' }}>New World Created!</h2>
+          <p className="mb-6" style={{ color: 'oklch(0.65 0.05 280)' }}>Your new world has been successfully created and is ready to use.</p>
           
-          <div className="bg-gray-100 rounded-lg p-4 mb-6">
-            <p className="text-sm text-gray-600 mb-2">Your assigned domain:</p>
-            <p className="text-lg font-mono font-bold text-blue-600 break-all">{domain}</p>
+          <div className="rounded-lg p-4 mb-6" style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
+            <p className="text-sm mb-2" style={{ color: 'oklch(0.65 0.05 280)' }}>Your assigned domain:</p>
+            <p className="text-lg font-mono font-bold break-all" style={{ color: 'oklch(0.45 0.15 290)' }}>{domain}</p>
           </div>
           
           <button
             onClick={() => setShowDomain(false)}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-6 py-2 rounded-lg transition-colors"
+            style={{
+              background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.50 0.18 260), oklch(0.55 0.18 260))';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
+            }}
           >
             Got it!
           </button>
@@ -90,19 +108,37 @@ const PaymentProcessingStatus = ({ userId, paymentIdentifier, paymentMethod, ite
   if (processingStatus === 'failed' && error) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-8 max-w-md mx-4 text-center">
-          <div className="text-red-500 text-6xl mb-4">❌</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Creation Failed</h2>
-          <p className="text-gray-600 mb-6">There was an error creating your new world.</p>
+        <div 
+          className="rounded-lg p-8 max-w-md mx-4 text-center"
+          style={{
+            backgroundColor: 'oklch(0.18 0.05 285)',
+            borderColor: 'oklch(0.25 0.05 285)',
+            borderWidth: '1px',
+            borderStyle: 'solid'
+          }}
+        >
+          <div className="text-6xl mb-4" style={{ color: 'oklch(0.55 0.22 25)' }}>❌</div>
+          <h2 className="text-2xl font-bold mb-4" style={{ color: 'oklch(0.98 0.01 280)' }}>Creation Failed</h2>
+          <p className="mb-6" style={{ color: 'oklch(0.65 0.05 280)' }}>There was an error creating your new world.</p>
           
-          <div className="bg-red-100 rounded-lg p-4 mb-6">
-            <p className="text-sm text-red-600 mb-2">Error details:</p>
-            <p className="text-sm text-red-700">{error}</p>
+          <div className="rounded-lg p-4 mb-6" style={{ backgroundColor: 'oklch(0.55 0.22 25 / 0.1)', borderColor: 'oklch(0.55 0.22 25 / 0.3)', borderWidth: '1px', borderStyle: 'solid' }}>
+            <p className="text-sm mb-2" style={{ color: 'oklch(0.55 0.22 25)' }}>Error details:</p>
+            <p className="text-sm" style={{ color: 'oklch(0.55 0.22 25)' }}>{error}</p>
           </div>
           
           <button
             onClick={() => setShowDomain(false)}
-            className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors"
+            className="px-6 py-2 rounded-lg transition-colors"
+            style={{
+              backgroundColor: 'oklch(0.55 0.22 25)',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'oklch(0.60 0.22 25)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'oklch(0.55 0.22 25)';
+            }}
           >
             Close
           </button>
@@ -114,27 +150,35 @@ const PaymentProcessingStatus = ({ userId, paymentIdentifier, paymentMethod, ite
   if (processingStatus === 'processing') {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-8 max-w-md mx-4 text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Creating Your New World</h2>
-          <p className="text-gray-600 mb-6">Please wait while we set up your new world. This may take a few minutes.</p>
+        <div 
+          className="rounded-lg p-8 max-w-md mx-4 text-center"
+          style={{
+            backgroundColor: 'oklch(0.18 0.05 285)',
+            borderColor: 'oklch(0.25 0.05 285)',
+            borderWidth: '1px',
+            borderStyle: 'solid'
+          }}
+        >
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 mx-auto mb-4" style={{ borderColor: 'oklch(0.45 0.15 290)' }}></div>
+          <h2 className="text-2xl font-bold mb-4" style={{ color: 'oklch(0.98 0.01 280)' }}>Creating Your New World</h2>
+          <p className="mb-6" style={{ color: 'oklch(0.65 0.05 280)' }}>Please wait while we set up your new world. This may take a few minutes.</p>
           
-          <div className="space-y-3 text-sm text-gray-500">
+          <div className="space-y-3 text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>
             <div className="flex items-center justify-center">
-              <div className="w-2 h-2 bg-blue-600 rounded-full mr-2"></div>
+              <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: 'oklch(0.45 0.15 290)' }}></div>
               <span>Creating droplet...</span>
             </div>
             <div className="flex items-center justify-center">
-              <div className="w-2 h-2 bg-gray-300 rounded-full mr-2"></div>
+              <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: 'oklch(0.50 0.05 280)' }}></div>
               <span>Assigning domain...</span>
             </div>
             <div className="flex items-center justify-center">
-              <div className="w-2 h-2 bg-gray-300 rounded-full mr-2"></div>
+              <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: 'oklch(0.50 0.05 280)' }}></div>
               <span>Starting services...</span>
             </div>
           </div>
           
-          <p className="text-xs text-gray-400 mt-6">
+          <p className="text-xs mt-6" style={{ color: 'oklch(0.50 0.05 280)' }}>
             You'll be notified automatically when it's ready!
           </p>
         </div>

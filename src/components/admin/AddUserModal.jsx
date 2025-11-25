@@ -92,9 +92,23 @@ const AddUserModal = ({ open, onClose, onSave }) => {
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[2000]">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden animate-modalFadeIn">
+      <div 
+        className="rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden animate-modalFadeIn"
+        style={{
+          backgroundColor: 'oklch(0.18 0.05 285)',
+          borderColor: 'oklch(0.25 0.05 285)',
+          borderWidth: '1px',
+          borderStyle: 'solid'
+        }}
+      >
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#42677D] to-[#5E8EA9] p-6 text-white">
+        <div 
+          className="p-6"
+          style={{
+            background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+            color: 'oklch(0.98 0.01 280)'
+          }}
+        >
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">Add New User</h2>
             <button
@@ -111,7 +125,7 @@ const AddUserModal = ({ open, onClose, onSave }) => {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* First Name */}
             <div>
-              <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="firstName" className="block text-sm font-medium mb-1" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 First Name *
               </label>
               <input
@@ -120,19 +134,33 @@ const AddUserModal = ({ open, onClose, onSave }) => {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.firstName ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: errors.firstName ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = errors.firstName ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
                 placeholder="Enter first name"
               />
               {errors.firstName && (
-                <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
+                <p className="mt-1 text-sm" style={{ color: 'oklch(0.55 0.22 25)' }}>{errors.firstName}</p>
               )}
             </div>
 
             {/* Last Name */}
             <div>
-              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="lastName" className="block text-sm font-medium mb-1" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Last Name *
               </label>
               <input
@@ -141,19 +169,33 @@ const AddUserModal = ({ open, onClose, onSave }) => {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.lastName ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: errors.lastName ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = errors.lastName ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
                 placeholder="Enter last name"
               />
               {errors.lastName && (
-                <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
+                <p className="mt-1 text-sm" style={{ color: 'oklch(0.55 0.22 25)' }}>{errors.lastName}</p>
               )}
             </div>
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="email" className="block text-sm font-medium mb-1" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Email Address *
               </label>
               <input
@@ -162,19 +204,33 @@ const AddUserModal = ({ open, onClose, onSave }) => {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.email ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: errors.email ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = errors.email ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
                 placeholder="Enter email address"
               />
               {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                <p className="mt-1 text-sm" style={{ color: 'oklch(0.55 0.22 25)' }}>{errors.email}</p>
               )}
             </div>
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="password" className="block text-sm font-medium mb-1" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Password *
               </label>
               <input
@@ -183,19 +239,33 @@ const AddUserModal = ({ open, onClose, onSave }) => {
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.password ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: errors.password ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = errors.password ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
                 placeholder="Enter password (min 8 characters)"
               />
               {errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                <p className="mt-1 text-sm" style={{ color: 'oklch(0.55 0.22 25)' }}>{errors.password}</p>
               )}
             </div>
 
             {/* Role */}
             <div>
-              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="role" className="block text-sm font-medium mb-1" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Role *
               </label>
               <select
@@ -203,7 +273,23 @@ const AddUserModal = ({ open, onClose, onSave }) => {
                 name="role"
                 value={formData.role}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               >
                 <option value="lead">Lead</option>
                 <option value="user">User</option>
@@ -220,9 +306,10 @@ const AddUserModal = ({ open, onClose, onSave }) => {
                 name="isEmailVerified"
                 checked={formData.isEmailVerified}
                 onChange={handleInputChange}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 rounded"
+                style={{ accentColor: 'oklch(0.45 0.15 290)' }}
               />
-              <label htmlFor="isEmailVerified" className="ml-2 block text-sm text-gray-700">
+              <label htmlFor="isEmailVerified" className="ml-2 block text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Email Verified
               </label>
             </div>
@@ -232,14 +319,38 @@ const AddUserModal = ({ open, onClose, onSave }) => {
               <button
                 type="button"
                 onClick={handleCancel}
-                className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                className="px-6 py-2 rounded-lg transition-colors"
+                style={{
+                  backgroundColor: 'oklch(0.25 0.05 285)',
+                  color: 'oklch(0.98 0.01 280)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.25 0.05 285 / 0.8)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.25 0.05 285)';
+                }}
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor: 'oklch(0.45 0.15 290)',
+                  color: 'oklch(0.98 0.01 280)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
+                  }
+                }}
               >
                 {loading ? (
                   <>

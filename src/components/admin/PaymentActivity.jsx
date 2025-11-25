@@ -792,9 +792,23 @@ const PaymentActivity = () => {
       {/* Filter Modal */}
       {isFilterModalOpen && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[2000]">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden animate-modalFadeIn">
+          <div 
+            className="rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden animate-modalFadeIn"
+            style={{
+              backgroundColor: 'oklch(0.18 0.05 285)',
+              borderColor: 'oklch(0.25 0.05 285)',
+              borderWidth: '1px',
+              borderStyle: 'solid'
+            }}
+          >
             {/* Header */}
-            <div className="bg-gradient-to-r from-[#42677D] to-[#5E8EA9] p-6 text-white">
+            <div 
+              className="p-6"
+              style={{
+                background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+                color: 'oklch(0.98 0.01 280)'
+              }}
+            >
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold">Advanced Filters</h2>
                 <button
@@ -811,13 +825,29 @@ const PaymentActivity = () => {
               <div className="space-y-6">
                 {/* Amount Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                     Amount Filter
                   </label>
                   <select
                     value={advancedFilters.amountOperator}
                     onChange={(e) => handleFilterChange('amountOperator', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                    style={{
+                      backgroundColor: 'oklch(0.12 0.02 280)',
+                      borderColor: 'oklch(0.25 0.05 285)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      color: 'oklch(0.98 0.01 280)',
+                      '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                      e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
                   >
                     <option value="all">All amounts</option>
                     <option value="greater">Greater than</option>
@@ -828,7 +858,7 @@ const PaymentActivity = () => {
 
                 {advancedFilters.amountOperator === 'greater' && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                       Minimum Amount
                     </label>
                     <input
@@ -837,14 +867,30 @@ const PaymentActivity = () => {
                       placeholder="Enter amount"
                       value={advancedFilters.amountMin}
                       onChange={(e) => handleFilterChange('amountMin', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                      style={{
+                        backgroundColor: 'oklch(0.12 0.02 280)',
+                        borderColor: 'oklch(0.25 0.05 285)',
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                        color: 'oklch(0.98 0.01 280)',
+                        '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                        e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
                     />
                   </div>
                 )}
 
                 {advancedFilters.amountOperator === 'less' && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                       Maximum Amount
                     </label>
                     <input
@@ -853,7 +899,23 @@ const PaymentActivity = () => {
                       placeholder="Enter amount"
                       value={advancedFilters.amountMax}
                       onChange={(e) => handleFilterChange('amountMax', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                      style={{
+                        backgroundColor: 'oklch(0.12 0.02 280)',
+                        borderColor: 'oklch(0.25 0.05 285)',
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                        color: 'oklch(0.98 0.01 280)',
+                        '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                        e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
                     />
                   </div>
                 )}
@@ -861,7 +923,7 @@ const PaymentActivity = () => {
                 {advancedFilters.amountOperator === 'between' && (
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                         Min Amount
                       </label>
                       <input
@@ -870,11 +932,27 @@ const PaymentActivity = () => {
                         placeholder="Min"
                         value={advancedFilters.amountMin}
                         onChange={(e) => handleFilterChange('amountMin', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                        style={{
+                          backgroundColor: 'oklch(0.12 0.02 280)',
+                          borderColor: 'oklch(0.25 0.05 285)',
+                          borderWidth: '1px',
+                          borderStyle: 'solid',
+                          color: 'oklch(0.98 0.01 280)',
+                          '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                          e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                          e.currentTarget.style.boxShadow = 'none';
+                        }}
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                         Max Amount
                       </label>
                       <input
@@ -883,7 +961,23 @@ const PaymentActivity = () => {
                         placeholder="Max"
                         value={advancedFilters.amountMax}
                         onChange={(e) => handleFilterChange('amountMax', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                        style={{
+                          backgroundColor: 'oklch(0.12 0.02 280)',
+                          borderColor: 'oklch(0.25 0.05 285)',
+                          borderWidth: '1px',
+                          borderStyle: 'solid',
+                          color: 'oklch(0.98 0.01 280)',
+                          '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                          e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                          e.currentTarget.style.boxShadow = 'none';
+                        }}
                       />
                     </div>
                   </div>
@@ -891,13 +985,29 @@ const PaymentActivity = () => {
 
                 {/* Currency Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                     Currency
                   </label>
                   <select
                     value={advancedFilters.currency}
                     onChange={(e) => handleFilterChange('currency', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                    style={{
+                      backgroundColor: 'oklch(0.12 0.02 280)',
+                      borderColor: 'oklch(0.25 0.05 285)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      color: 'oklch(0.98 0.01 280)',
+                      '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                      e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
                   >
                     <option value="all">All currencies</option>
                     <option value="USD">USD</option>
@@ -907,26 +1017,58 @@ const PaymentActivity = () => {
 
                 {/* Date Range Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                     Date Range
                   </label>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-medium text-gray-500 mb-1">From</label>
+                      <label className="block text-xs font-medium mb-1" style={{ color: 'oklch(0.65 0.05 280)' }}>From</label>
                       <input
                         type="date"
                         value={advancedFilters.dateFrom}
                         onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                        style={{
+                          backgroundColor: 'oklch(0.12 0.02 280)',
+                          borderColor: 'oklch(0.25 0.05 285)',
+                          borderWidth: '1px',
+                          borderStyle: 'solid',
+                          color: 'oklch(0.98 0.01 280)',
+                          '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                          e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                          e.currentTarget.style.boxShadow = 'none';
+                        }}
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-500 mb-1">To</label>
+                      <label className="block text-xs font-medium mb-1" style={{ color: 'oklch(0.65 0.05 280)' }}>To</label>
                       <input
                         type="date"
                         value={advancedFilters.dateTo}
                         onChange={(e) => handleFilterChange('dateTo', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                        style={{
+                          backgroundColor: 'oklch(0.12 0.02 280)',
+                          borderColor: 'oklch(0.25 0.05 285)',
+                          borderWidth: '1px',
+                          borderStyle: 'solid',
+                          color: 'oklch(0.98 0.01 280)',
+                          '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                          e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                          e.currentTarget.style.boxShadow = 'none';
+                        }}
                       />
                     </div>
                   </div>
@@ -937,13 +1079,33 @@ const PaymentActivity = () => {
               <div className="flex space-x-3 mt-8">
                 <button
                   onClick={applyFilters}
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-[#42677D] to-[#5E8EA9] text-white rounded-lg hover:from-[#3A5F73] hover:to-[#4F7A8F] transition-all duration-200 font-medium"
+                  className="flex-1 px-4 py-3 rounded-lg transition-all duration-200 font-medium"
+                  style={{
+                    background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+                    color: 'oklch(0.98 0.01 280)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.50 0.18 260), oklch(0.55 0.18 260))';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
+                  }}
                 >
                   Apply Filters
                 </button>
                 <button
                   onClick={clearFilters}
-                  className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-200 font-medium"
+                  className="flex-1 px-4 py-3 rounded-lg transition-all duration-200 font-medium"
+                  style={{
+                    backgroundColor: 'oklch(0.25 0.05 285)',
+                    color: 'oklch(0.98 0.01 280)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.25 0.05 285 / 0.8)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.25 0.05 285)';
+                  }}
                 >
                   Clear All
                 </button>

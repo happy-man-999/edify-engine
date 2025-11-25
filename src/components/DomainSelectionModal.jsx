@@ -237,9 +237,23 @@ const DomainSelectionModal = ({ open, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[2000]">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden animate-modalFadeIn">
+      <div 
+        className="rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden animate-modalFadeIn"
+        style={{
+          backgroundColor: 'oklch(0.18 0.05 285)',
+          borderColor: 'oklch(0.25 0.05 285)',
+          borderWidth: '1px',
+          borderStyle: 'solid'
+        }}
+      >
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#42677D] to-[#5E8EA9] p-6 text-white flex-shrink-0">
+        <div 
+          className="p-6 flex-shrink-0"
+          style={{
+            background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+            color: 'oklch(0.98 0.01 280)'
+          }}
+        >
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">Custom Domain</h2>
             <button
@@ -258,14 +272,28 @@ const DomainSelectionModal = ({ open, onClose }) => {
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
           <div className="space-y-4 mb-6">
             {/* Domain Purchase Section */}
-            <div className="mb-6 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-lg">
-              <p className="text-sm text-gray-700 mb-3">
+            <div className="mb-6 p-4 rounded-lg" style={{ background: 'linear-gradient(to right, oklch(0.50 0.18 260 / 0.1), oklch(0.45 0.15 290 / 0.1))', borderColor: 'oklch(0.50 0.18 260 / 0.3)', borderWidth: '1px', borderStyle: 'solid' }}>
+              <p className="text-sm mb-3" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Don't have a custom domain yet? You can purchase one directly here and we'll automatically configure it for your world.
               </p>
               <button
                 onClick={handlePurchaseDomain}
                 disabled={isPurchasingDomain}
-                className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center font-medium"
+                className="w-full px-4 py-2 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center font-medium"
+                style={{
+                  background: 'linear-gradient(to right, oklch(0.50 0.18 260), oklch(0.45 0.15 290))',
+                  color: 'oklch(0.98 0.01 280)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.55 0.18 260), oklch(0.50 0.18 260))';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.50 0.18 260), oklch(0.45 0.15 290))';
+                  }
+                }}
               >
                 {isPurchasingDomain ? (
                   <>
@@ -283,14 +311,14 @@ const DomainSelectionModal = ({ open, onClose }) => {
 
             {/* Divider */}
             <div className="mb-6 flex items-center">
-              <div className="flex-1 border-t border-gray-300"></div>
-              <span className="px-3 text-sm text-gray-500">OR</span>
-              <div className="flex-1 border-t border-gray-300"></div>
+              <div className="flex-1" style={{ borderTopColor: 'oklch(0.25 0.05 285)', borderTopWidth: '1px', borderTopStyle: 'solid' }}></div>
+              <span className="px-3 text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>OR</span>
+              <div className="flex-1" style={{ borderTopColor: 'oklch(0.25 0.05 285)', borderTopWidth: '1px', borderTopStyle: 'solid' }}></div>
             </div>
 
             {/* Custom Domain Input */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Your Domain
               </label>
               <div className="flex space-x-2">
@@ -299,13 +327,43 @@ const DomainSelectionModal = ({ open, onClose }) => {
                   value={customDomain}
                   onChange={(e) => setCustomDomain(e.target.value)}
                   placeholder="myworld.com"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#42677D] focus:border-transparent"
+                  className="flex-1 px-3 py-2 rounded-lg focus:ring-2 focus:outline-none"
+                  style={{
+                    backgroundColor: 'oklch(0.12 0.02 280)',
+                    borderColor: 'oklch(0.25 0.05 285)',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    color: 'oklch(0.98 0.01 280)',
+                    '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                    e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                   onKeyPress={(e) => e.key === 'Enter' && checkDomainAvailability()}
                 />
                 <button
                   onClick={checkDomainAvailability}
                   disabled={isCheckingDomain || !customDomain.trim()}
-                  className="px-4 py-2 bg-[#42677D] text-white rounded-lg hover:bg-[#355263] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{
+                    backgroundColor: 'oklch(0.45 0.15 290)',
+                    color: 'oklch(0.98 0.01 280)'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!e.currentTarget.disabled) {
+                      e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!e.currentTarget.disabled) {
+                      e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
+                    }
+                  }}
                 >
                   {isCheckingDomain ? (
                     <i className="fas fa-spinner fa-spin"></i>
@@ -317,9 +375,7 @@ const DomainSelectionModal = ({ open, onClose }) => {
                 
               {/* Domain Availability Status */}
               {domainAvailable !== null && (
-                <div className={`mt-2 text-sm ${
-                  domainAvailable ? 'text-green-600' : 'text-red-600'
-                }`}>
+                <div className="mt-2 text-sm" style={{ color: domainAvailable ? 'oklch(0.70 0.15 150)' : 'oklch(0.55 0.22 25)' }}>
                   <i className={`fas fa-${domainAvailable ? 'check-circle' : 'times-circle'} mr-1`}></i>
                   {domainAvailable 
                     ? `Domain "${customDomain}" is available!`
@@ -330,15 +386,29 @@ const DomainSelectionModal = ({ open, onClose }) => {
 
               {/* Entri Integration Button */}
               {domainAvailable === false && (
-                <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-sm text-blue-800 mb-3">
+                <div className="mt-4 p-4 rounded-lg" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.1)', borderColor: 'oklch(0.45 0.15 290 / 0.3)', borderWidth: '1px', borderStyle: 'solid' }}>
+                  <p className="text-sm mb-3" style={{ color: 'oklch(0.45 0.15 290)' }}>
                     We need to finish configuring your domain. You can click button to automatically set up your DNS records. If you've already updated your domain settings, please give it some time - changes may take a little while to show up.
                   </p>
                   
                   <button
                     onClick={handleEntriSetup}
                     disabled={isLoadingEntri}
-                    className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    className="w-full px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    style={{
+                      backgroundColor: 'oklch(0.45 0.15 290)',
+                      color: 'oklch(0.98 0.01 280)'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!e.currentTarget.disabled) {
+                        e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!e.currentTarget.disabled) {
+                        e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
+                      }
+                    }}
                   >
                     <i className="fas fa-cog mr-2"></i>
                     Connect Domain
@@ -346,7 +416,7 @@ const DomainSelectionModal = ({ open, onClose }) => {
                 </div>
               )}
                 
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs mt-2" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Your world will be accessible at: {customDomain.trim() || 'myworld.com'}
               </p>
             </div>
@@ -355,14 +425,38 @@ const DomainSelectionModal = ({ open, onClose }) => {
             <div className="flex space-x-3">
               <button
                 onClick={handleClose}
-                className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                className="flex-1 px-4 py-3 rounded-lg transition-colors"
+                style={{
+                  backgroundColor: 'oklch(0.25 0.05 285)',
+                  color: 'oklch(0.98 0.01 280)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.25 0.05 285 / 0.8)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.25 0.05 285)';
+                }}
               >
                 Cancel
               </button>
               <button
                 onClick={handleContinue}
                 disabled={!domainAvailable}
-                className="flex-1 px-4 py-3 bg-[#42677D] text-white rounded-lg hover:bg-[#355263] transition-colors disabled:opacity-50"
+                className="flex-1 px-4 py-3 rounded-lg transition-colors disabled:opacity-50"
+                style={{
+                  backgroundColor: 'oklch(0.45 0.15 290)',
+                  color: 'oklch(0.98 0.01 280)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
+                  }
+                }}
               >
                 Continue
               </button>

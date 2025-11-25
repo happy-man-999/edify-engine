@@ -347,9 +347,23 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[2000] p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden animate-modalFadeIn">
+      <div 
+        className="rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden animate-modalFadeIn"
+        style={{
+          backgroundColor: 'oklch(0.18 0.05 285)',
+          borderColor: 'oklch(0.25 0.05 285)',
+          borderWidth: '1px',
+          borderStyle: 'solid'
+        }}
+      >
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#42677D] to-[#5E8EA9] p-6 text-white">
+        <div 
+          className="p-6"
+          style={{
+            background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+            color: 'oklch(0.98 0.01 280)'
+          }}
+        >
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">Edit Item</h2>
             <button
@@ -367,29 +381,59 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
             {/* Basic Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                   Title *
                 </label>
                 <input
                   type="text"
                   value={formData.title}
                   onChange={(e) => handleInputChange('title', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    errors.title ? 'border-red-500' : 'border-gray-300'
-                  }`}
+                  className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                  style={{
+                    backgroundColor: 'oklch(0.12 0.02 280)',
+                    borderColor: errors.title ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    color: 'oklch(0.98 0.01 280)',
+                    '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                    e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = errors.title ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                   placeholder="Enter item title"
                 />
-                {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
+                {errors.title && <p className="text-sm mt-1" style={{ color: 'oklch(0.55 0.22 25)' }}>{errors.title}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                   Type *
                 </label>
                 <select
                   value={formData.type}
                   onChange={(e) => handleInputChange('type', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                  style={{
+                    backgroundColor: 'oklch(0.12 0.02 280)',
+                    borderColor: 'oklch(0.25 0.05 285)',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    color: 'oklch(0.98 0.01 280)',
+                    '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                    e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                 >
                   {itemTypes.map(type => (
                     <option key={type.value} value={type.value}>{type.label}</option>
@@ -399,43 +443,71 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Description *
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => handleInputChange('description', e.target.value)}
                 rows={4}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.description ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: errors.description ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = errors.description ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
                 placeholder="Describe your item..."
               />
-              {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
+              {errors.description && <p className="text-sm mt-1" style={{ color: 'oklch(0.55 0.22 25)' }}>{errors.description}</p>}
             </div>
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Category *
               </label>
               <select
                 value={formData.category}
                 onChange={(e) => handleInputChange('category', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.category ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: errors.category ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = errors.category ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               >
                 {categories.map(category => (
                   <option key={category.value} value={category.value}>{category.label}</option>
                 ))}
               </select>
-              {errors.category && <p className="text-red-500 text-sm mt-1">{errors.category}</p>}
+              {errors.category && <p className="text-sm mt-1" style={{ color: 'oklch(0.55 0.22 25)' }}>{errors.category}</p>}
             </div>
 
             {/* Pricing */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Price (USD) *
               </label>
               <input
@@ -444,17 +516,31 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
                 min="0"
                 value={formData.priceUSD}
                 onChange={(e) => handleInputChange('priceUSD', parseFloat(e.target.value) || 0)}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.priceUSD ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: errors.priceUSD ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = errors.priceUSD ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
                 placeholder="0.00"
               />
-              {errors.priceUSD && <p className="text-red-500 text-sm mt-1">{errors.priceUSD}</p>}
+              {errors.priceUSD && <p className="text-sm mt-1" style={{ color: 'oklch(0.55 0.22 25)' }}>{errors.priceUSD}</p>}
             </div>
 
             {/* Platforms */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Platforms *
               </label>
               <div className="space-y-2">
@@ -464,34 +550,49 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
                       type="checkbox"
                       checked={formData.platforms.includes(platform.value)}
                       onChange={() => handlePlatformToggle(platform.value)}
-                      className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      className="mr-2 h-4 w-4 rounded"
+                      style={{ accentColor: 'oklch(0.45 0.15 290)' }}
                     />
-                    <span className="text-sm text-gray-700">{platform.label}</span>
+                    <span className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>{platform.label}</span>
                   </label>
                 ))}
               </div>
-              {errors.platforms && <p className="text-red-500 text-sm mt-1">{errors.platforms}</p>}
+              {errors.platforms && <p className="text-sm mt-1" style={{ color: 'oklch(0.55 0.22 25)' }}>{errors.platforms}</p>}
             </div>
 
             {/* Cover Image Upload */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Cover Image {!item?.image && '*'}
               </label>
               <input
                 type="file"
                 accept="image/*"
                 onChange={handleFileChange}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.coverImage ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: errors.coverImage ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = errors.coverImage ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               />
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm mt-1" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 {item?.image ? 'Leave empty to keep current image, or select a new one' : 'Cover image is required'}
               </p>
-              {errors.coverImage && <p className="text-red-500 text-sm mt-1">{errors.coverImage}</p>}
+              {errors.coverImage && <p className="text-sm mt-1" style={{ color: 'oklch(0.55 0.22 25)' }}>{errors.coverImage}</p>}
               {formData.coverImage && (
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm mt-1" style={{ color: 'oklch(0.65 0.05 280)' }}>
                   New file selected: {formData.coverImage.name}
                 </p>
               )}
@@ -499,12 +600,13 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
               {/* Image Preview */}
               {imagePreview && (
                 <div className="mt-4">
-                  <p className="text-sm font-medium text-gray-700 mb-2">Preview:</p>
+                  <p className="text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Preview:</p>
                   <div className="relative inline-block">
                     <img
                       src={imagePreview}
                       alt="Cover image preview"
-                      className="max-w-full h-48 object-cover rounded-lg border border-gray-200 shadow-sm"
+                      className="max-w-full h-48 object-cover rounded-lg shadow-sm"
+                      style={{ borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}
                     />
                     <button
                       type="button"
@@ -516,7 +618,14 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
                         const fileInput = document.querySelector('input[type="file"]');
                         if (fileInput) fileInput.value = '';
                       }}
-                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transition-colors"
+                      className="absolute top-2 right-2 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm transition-colors"
+                      style={{ backgroundColor: 'oklch(0.55 0.22 25)' }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'oklch(0.60 0.22 25)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'oklch(0.55 0.22 25)';
+                      }}
                       title="Remove new image"
                     >
                       ×
@@ -528,7 +637,7 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
 
             {/* Features */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Features (up to 5)
               </label>
               <div className="space-y-2">
@@ -536,7 +645,23 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
                   <input
                     type="text"
                     placeholder="Add a feature..."
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="flex-1 px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                    style={{
+                      backgroundColor: 'oklch(0.12 0.02 280)',
+                      borderColor: 'oklch(0.25 0.05 285)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      color: 'oklch(0.98 0.01 280)',
+                      '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                      e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
                     onKeyPress={(e) => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
@@ -552,7 +677,17 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
                       handleFeatureAdd(input.value);
                       input.value = '';
                     }}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                    className="px-4 py-2 rounded-md transition-colors"
+                    style={{
+                      backgroundColor: 'oklch(0.45 0.15 290)',
+                      color: 'oklch(0.98 0.01 280)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
+                    }}
                   >
                     Add
                   </button>
@@ -561,29 +696,33 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
                   {formData.features.map((feature, index) => (
                     <span
                       key={index}
-                      className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800"
+                      className="inline-flex items-center px-3 py-1 rounded-full text-sm"
+                      style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.2)', color: 'oklch(0.45 0.15 290)' }}
                     >
                       {feature}
                       <button
                         type="button"
                         onClick={() => handleFeatureRemove(index)}
-                        className="ml-2 text-blue-600 hover:text-blue-800"
+                        className="ml-2 transition-colors"
+                        style={{ color: 'oklch(0.45 0.15 290)' }}
+                        onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.50 0.18 260)'}
+                        onMouseLeave={(e) => e.currentTarget.style.color = 'oklch(0.45 0.15 290)'}
                       >
                         ×
                       </button>
                     </span>
                   ))}
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs" style={{ color: 'oklch(0.65 0.05 280)' }}>
                   {formData.features.length}/5 features added
                 </p>
               </div>
-              {errors.features && <p className="text-red-500 text-sm mt-1">{errors.features}</p>}
+              {errors.features && <p className="text-sm mt-1" style={{ color: 'oklch(0.55 0.22 25)' }}>{errors.features}</p>}
             </div>
 
             {/* Tags */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Tags
               </label>
               <div className="space-y-2">
@@ -591,7 +730,23 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
                   <input
                     type="text"
                     placeholder="Add a tag..."
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="flex-1 px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                    style={{
+                      backgroundColor: 'oklch(0.12 0.02 280)',
+                      borderColor: 'oklch(0.25 0.05 285)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      color: 'oklch(0.98 0.01 280)',
+                      '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                      e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
                     onKeyPress={(e) => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
@@ -607,7 +762,17 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
                       handleTagAdd(input.value);
                       input.value = '';
                     }}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                    className="px-4 py-2 rounded-md transition-colors"
+                    style={{
+                      backgroundColor: 'oklch(0.45 0.15 290)',
+                      color: 'oklch(0.98 0.01 280)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
+                    }}
                   >
                     Add
                   </button>
@@ -616,13 +781,17 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
                   {formData.tags.map((tag, index) => (
                     <span
                       key={index}
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-sm`}
+                      className="inline-flex items-center px-3 py-1 rounded-full text-sm"
+                      style={{ backgroundColor: 'oklch(0.50 0.05 280 / 0.2)', color: 'oklch(0.98 0.01 280)' }}
                     >
                       {tag}
                       <button
                         type="button"
                         onClick={() => handleTagRemove(index)}
-                        className="ml-2 hover:opacity-75"
+                        className="ml-2 transition-opacity"
+                        style={{ color: 'oklch(0.98 0.01 280)' }}
+                        onMouseEnter={(e) => e.currentTarget.style.opacity = '0.75'}
+                        onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
                       >
                         ×
                       </button>
@@ -634,19 +803,35 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
 
             {/* Visibility */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Visibility *
               </label>
               <select
                 value={formData.visibility}
                 onChange={(e) => handleInputChange('visibility', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               >
                 {visibilityOptions.map(option => (
                   <option key={option.value} value={option.value}>{option.label}</option>
                 ))}
               </select>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs mt-1" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Private/Unlisted allows testing before going live
               </p>
             </div>
@@ -656,7 +841,7 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
               <div className="space-y-6">
                 {/* GLB File Upload for Preview */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                     {formData.type === '3d-object' 
                       ? '3D Scene Assets (.glb format)' 
                       : formData.type === 'app'
@@ -667,11 +852,25 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
                     type="file"
                     accept=".glb"
                     onChange={handleSceneFileChange}
-                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      errors.sceneAssets ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                    style={{
+                      backgroundColor: 'oklch(0.12 0.02 280)',
+                      borderColor: errors.sceneAssets ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      color: 'oklch(0.98 0.01 280)',
+                      '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                      e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = errors.sceneAssets ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
                   />
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm mt-1" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     {item?.sceneAssets 
                       ? 'Leave empty to keep current assets, or select a new GLB file'
                       : formData.type === '3d-object' 
@@ -681,9 +880,9 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
                         : 'Upload world template preview assets for display (GLB format)'
                     }
                   </p>
-                  {errors.sceneAssets && <p className="text-red-500 text-sm mt-1">{errors.sceneAssets}</p>}
+                  {errors.sceneAssets && <p className="text-sm mt-1" style={{ color: 'oklch(0.55 0.22 25)' }}>{errors.sceneAssets}</p>}
                   {formData.sceneAssets && (
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="text-sm mt-1" style={{ color: 'oklch(0.65 0.05 280)' }}>
                       New file selected: {formData.sceneAssets.name}
                     </p>
                   )}
@@ -691,28 +890,42 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
 
                 {/* HYP File Upload for Download */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                     Download Assets (.hyp format) {!item?.downloadAssets && '*'}
                   </label>
                   <input
                     type="file"
                     accept=".hyp"
                     onChange={handleDownloadFileChange}
-                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      errors.downloadAssets ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                    style={{
+                      backgroundColor: 'oklch(0.12 0.02 280)',
+                      borderColor: errors.downloadAssets ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      color: 'oklch(0.98 0.01 280)',
+                      '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                      e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = errors.downloadAssets ? 'oklch(0.55 0.22 25)' : 'oklch(0.25 0.05 285)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
                   />
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm mt-1" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     {item?.downloadAssets 
                       ? 'Leave empty to keep current assets, or select a new HYP file'
                       : 'Upload downloadable assets for users (HYP format)'
                     }
                   </p>
-                  {errors.downloadAssets && <p className="text-red-500 text-sm mt-1">{errors.downloadAssets}</p>}
+                  {errors.downloadAssets && <p className="text-sm mt-1" style={{ color: 'oklch(0.55 0.22 25)' }}>{errors.downloadAssets}</p>}
                   {formData.downloadAssets && (
-                    <div className="text-sm text-gray-600 mt-1">
+                    <div className="text-sm mt-1" style={{ color: 'oklch(0.65 0.05 280)' }}>
                       <p>New file selected: {formData.downloadAssets.name}</p>
-                      <p className="font-medium text-blue-600">
+                      <p className="font-medium" style={{ color: 'oklch(0.45 0.15 290)' }}>
                         Size: {(formData.downloadAssets.size / (1024 * 1024)).toFixed(2)} MB
                       </p>
                     </div>
@@ -722,7 +935,7 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
                 {/* Scene Preview */}
                 {scenePreview && (
                   <div className="mt-4">
-                    <p className="text-sm font-medium text-gray-700 mb-2">
+                    <p className="text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                       {formData.type === '3d-object' 
                         ? '3D Scene Preview:' 
                         : formData.type === 'app'
@@ -730,13 +943,13 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
                         : 'World Template Preview:'}
                     </p>
                     <div className="relative inline-block w-full">
-                      <div className="w-full h-64 bg-gray-100 rounded-lg border border-gray-200 shadow-sm overflow-hidden relative">
+                      <div className="w-full h-64 rounded-lg shadow-sm overflow-hidden relative" style={{ backgroundColor: 'oklch(0.12 0.02 280)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
                         {/* Loading Overlay */}
                         {isModelLoading && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
+                          <div className="absolute inset-0 flex items-center justify-center z-10" style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
                             <div className="text-center">
-                              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-                              <p className="text-sm text-gray-600">Loading...</p>
+                              <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto mb-2" style={{ borderColor: 'oklch(0.45 0.15 290)' }}></div>
+                              <p className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>Loading...</p>
                             </div>
                           </div>
                         )}
@@ -766,14 +979,21 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
                             const sceneInput = document.querySelector('input[accept=".glb"]');
                             if (sceneInput) sceneInput.value = '';
                           }}
-                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transition-colors"
+                          className="absolute top-2 right-2 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm transition-colors"
+                          style={{ backgroundColor: 'oklch(0.55 0.22 25)' }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = 'oklch(0.60 0.22 25)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'oklch(0.55 0.22 25)';
+                          }}
                           title="Remove new 3D scene"
                         >
                           ×
                         </button>
                       )}
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs mt-1" style={{ color: 'oklch(0.65 0.05 280)' }}>
                       {sceneChanged ? formData.sceneAssets?.name : 'Current scene'} - Drag to rotate, scroll to zoom
                     </p>
                   </div>
@@ -783,34 +1003,74 @@ const ItemEditModal = ({ item, onClose, onSuccess }) => {
 
             {/* Installation Instructions */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Installation Instructions (Optional)
               </label>
               <textarea
                 value={formData.installationInstructions}
                 onChange={(e) => handleInputChange('installationInstructions', e.target.value)}
                 rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
                 placeholder="Enter installation instructions..."
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs mt-1" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Provide step-by-step instructions for users to install and use your item
               </p>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+            <div className="flex justify-end space-x-3 pt-6" style={{ borderTopColor: 'oklch(0.25 0.05 285)', borderTopWidth: '1px', borderTopStyle: 'solid' }}>
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                className="px-6 py-2 rounded-lg transition-colors"
+                style={{
+                  backgroundColor: 'oklch(0.25 0.05 285)',
+                  color: 'oklch(0.98 0.01 280)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.25 0.05 285 / 0.8)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.25 0.05 285)';
+                }}
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor: 'oklch(0.45 0.15 290)',
+                  color: 'oklch(0.98 0.01 280)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
+                  }
+                }}
               >
                 {isSubmitting ? (
                   <>

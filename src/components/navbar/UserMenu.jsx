@@ -383,7 +383,10 @@ function ProfileContent({
             </div>
             <button
               onClick={onWalletDisconnect}
-              className="text-xs text-red-600 hover:text-red-800"
+              className="text-xs transition-colors"
+              style={{ color: 'oklch(0.55 0.22 25)' }}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.60 0.22 25)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'oklch(0.55 0.22 25)'}
             >
               Disconnect
             </button>
@@ -571,11 +574,11 @@ function WithdrawalsHistory({ onWithdrawClick, balance, onBalanceUpdate, minWith
 
   const getStatusBadge = (status) => {
     const badges = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      approved: 'bg-green-100 text-green-800',
-      rejected: 'bg-red-100 text-red-800'
+      pending: { backgroundColor: 'oklch(0.85 0.18 130 / 0.2)', color: 'oklch(0.85 0.18 130)' },
+      approved: { backgroundColor: 'oklch(0.70 0.15 150 / 0.2)', color: 'oklch(0.70 0.15 150)' },
+      rejected: { backgroundColor: 'oklch(0.55 0.22 25 / 0.2)', color: 'oklch(0.55 0.22 25)' }
     };
-    return badges[status] || { backgroundColor: 'oklch(0.18 0.05 285)', color: 'oklch(0.98 0.01 280)' };
+    return badges[status] || { backgroundColor: 'oklch(0.50 0.05 280 / 0.2)', color: 'oklch(0.50 0.05 280)' };
   };
 
   const formatDate = (dateString) => {
@@ -592,27 +595,41 @@ function WithdrawalsHistory({ onWithdrawClick, balance, onBalanceUpdate, minWith
   return (
     <div>
       {/* Balance and Withdraw Button */}
-      <div className="mb-4 pb-4 border-b border-gray-200">
+      <div className="mb-4 pb-4 border-b" style={{ borderColor: 'oklch(0.25 0.05 285)' }}>
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-medium text-gray-700">Earnings Balance</h3>
+          <h3 className="text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>Earnings Balance</h3>
         </div>
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-2xl font-bold text-gray-900">
+            <div className="text-2xl font-bold" style={{ color: 'oklch(0.98 0.01 280)' }}>
               {balance.toFixed(6)} SOL
             </div>
-            <div className="text-xs text-gray-500">
+            <div className="text-xs" style={{ color: 'oklch(0.65 0.05 280)' }}>
               {balance >= minWithdrawAmount ? 'Available to withdraw' : `Minimum ${minWithdrawAmount} SOL required to withdraw`}
             </div>
           </div>
           <button
             onClick={onWithdrawClick}
             disabled={balance < minWithdrawAmount}
-            className={`px-4 py-2 rounded text-sm font-medium transition ${
-              balance >= minWithdrawAmount
-                ? 'bg-[#42677D] text-white hover:bg-[#355263]'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
+            className="px-4 py-2 rounded text-sm font-medium transition"
+            style={balance >= minWithdrawAmount ? {
+              background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+              color: 'oklch(0.98 0.01 280)'
+            } : {
+              backgroundColor: 'oklch(0.25 0.05 285)',
+              color: 'oklch(0.65 0.05 280)',
+              cursor: 'not-allowed'
+            }}
+            onMouseEnter={(e) => {
+              if (balance >= minWithdrawAmount) {
+                e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.50 0.18 260), oklch(0.55 0.18 260))';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (balance >= minWithdrawAmount) {
+                e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
+              }
+            }}
           >
             Withdraw
           </button>
@@ -667,32 +684,35 @@ function WithdrawalsHistory({ onWithdrawClick, balance, onBalanceUpdate, minWith
       ) : (
         <div className="space-y-3 max-h-96 overflow-y-auto">
           {filteredWithdrawals.map((withdrawal) => (
-            <div key={withdrawal._id} className="p-3 border border-gray-200 rounded-lg">
+            <div key={withdrawal._id} className="p-3 border rounded-lg" style={{ borderColor: 'oklch(0.25 0.05 285)' }}>
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1">
                   <div className="flex items-center space-x-2 mb-1">
-                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(withdrawal.status)}`}>
+                    <span 
+                      className="px-2 py-1 text-xs font-semibold rounded-full"
+                      style={getStatusBadge(withdrawal.status)}
+                    >
                       {withdrawal.status}
                     </span>
-                    <span className="text-sm font-semibold text-gray-900">
+                    <span className="text-sm font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>
                       ${withdrawal.amount.toFixed(2)}
                     </span>
                   </div>
-                  <div className="text-xs text-gray-500 mb-1">
+                  <div className="text-xs mb-1" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     Requested: {formatDate(withdrawal.requestedAt)}
                   </div>
                   {withdrawal.processedAt && (
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs" style={{ color: 'oklch(0.65 0.05 280)' }}>
                       {withdrawal.status === 'approved' ? 'Approved' : 'Rejected'}: {formatDate(withdrawal.processedAt)}
                     </div>
                   )}
                   {withdrawal.paymentSignature && (
-                    <div className="text-xs text-green-600 mt-1 font-mono">
+                    <div className="text-xs mt-1 font-mono" style={{ color: 'oklch(0.70 0.15 150)' }}>
                       TX: {withdrawal.paymentSignature.substring(0, 8)}...
                     </div>
                   )}
                   {withdrawal.rejectionReason && (
-                    <div className="text-xs text-red-600 mt-1">
+                    <div className="text-xs mt-1" style={{ color: 'oklch(0.55 0.22 25)' }}>
                       Reason: {withdrawal.rejectionReason}
                     </div>
                   )}

@@ -133,9 +133,9 @@ const GlobalStyles = () => (
     .spinner { 
       width: 24px; 
       height: 24px; 
-      border: 3px solid rgba(255,255,255,.3); 
+      border: 3px solid oklch(0.45 0.15 290 / 0.3); 
       border-radius: 50%; 
-      border-top-color: white; 
+      border-top-color: oklch(0.45 0.15 290); 
       animation: spin 1s ease-in-out infinite; 
     }
 
