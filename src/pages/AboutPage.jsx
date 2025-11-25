@@ -137,7 +137,7 @@ const AboutPage = () => {
                 </div>
                 <div>
                   <p className="text-lg text-gray-300 leading-relaxed">
-                    Founded in 2021 by a team of game industry veterans, we've helped thousands of creators bring their virtual worlds to life. 
+                    We've helped thousands of creators bring their virtual worlds to life. 
                     From artists and educators to entrepreneurs and storytellers, our platform enables creativity without barriers.
                   </p>
                 </div>
@@ -196,7 +196,7 @@ const AboutPage = () => {
                 ))}
               </div>
             </motion.div>
-
+          {/*
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -292,6 +292,7 @@ const AboutPage = () => {
                 ))}
               </div>
             </motion.div>
+          */}
           </div>
         </section>
 
