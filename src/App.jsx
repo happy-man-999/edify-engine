@@ -31,6 +31,8 @@ import Pricing from './pages/Pricing';
 import FeaturesPage from './pages/FeaturesPage';
 import ResourcesPage from './pages/ResourcesPage';
 import AboutPage from './pages/AboutPage';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -164,6 +166,10 @@ function App() {
                   <Route path="/features" element={<FeaturesPage />} />
                   <Route path="/resources" element={<ResourcesPage />} />
                   <Route path="/about" element={<AboutPage />} />
+                  <Route path="/terms-of-service" element={<TermsOfService />} />
+                  <Route path="/terms" element={<TermsOfService />} />
+                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                  <Route path="/privacy" element={<PrivacyPolicy />} />
                 </Routes>
 
                 <Routes>

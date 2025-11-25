@@ -191,12 +191,8 @@ const Pricing = () => {
       answer: 'Yes! You can change your plan at any time. Upgrades take effect immediately, and downgrades take effect at the end of your current billing period.',
     },
     {
-      question: 'What happens if I exceed my visitor limit?',
-      answer: 'We\'ll notify you when you reach 80% of your limit. If you exceed it, your worlds will continue to work, and you\'ll be charged a small overage fee or prompted to upgrade.',
-    },
-    {
       question: 'Do you offer refunds?',
-      answer: 'We offer a 14-day free trial for paid plans. If you\'re not satisfied within the first 30 days of a paid subscription, contact us for a full refund.',
+      answer: 'Edify Engine fees are non-refundable. All payments are final, including monthly and annual plans, world provisioning costs, store purchase and charges related to AI generation or hosting.\nDeleting a world does not entitle you to a refund.\nCanceling your plan will stop future billing, but it does not issue a refund for previous charges.\nIf your subscription includes a free trial or promotional period, you must cancel before the renewal date to avoid being billed.',
     },
     {
       question: 'Can I pay annually?',
@@ -204,11 +200,7 @@ const Pricing = () => {
     },
     {
       question: 'What payment methods do you accept?',
-      answer: 'We accept all major credit cards, PayPal, and for Enterprise plans, we can arrange invoicing and wire transfers.',
-    },
-    {
-      question: 'Is there a student or educational discount?',
-      answer: 'Yes! We offer 50% off Creator and Professional plans for students and educators. Contact us with proof of enrollment or employment.',
+      answer: 'Edify Engine accepts both traditional and Web3 payment methods. Credit & Debit Cards (via Stripe) including Digital Wallets such as Apple Pay, Google Pay, Link by Stripe and Crypto / Web3 Payments in Solana (SOL)',
     },
   ];
 

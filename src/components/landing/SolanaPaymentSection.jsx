@@ -26,10 +26,10 @@ const SolanaPaymentSection = () => {
             Monetization & Commerce
           </Badge>
           <h2 className="text-4xl md:text-5xl font-bold mb-4 gradient-text" style={{ lineHeight: '1.1', paddingBottom: '0.1em' }}>
-            Flexible Payment Options
+            Creator Commerce Powered by Solana
           </h2>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Accept payments your way with support for traditional and crypto options including Solana
+            Accept Solana payments for all store purchases, giving your users fast, secure, low-fee on-chain checkout
           </p>
         </motion.div>
 
@@ -51,9 +51,9 @@ const SolanaPaymentSection = () => {
                 <Wallet className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h3 className="text-xl font-bold mb-2 text-white">Multiple Payment Methods</h3>
+                <h3 className="text-xl font-bold mb-2 text-white">Sell Your Creations</h3>
                 <p className="text-gray-300">
-                  Accept credit cards, PayPal, and cryptocurrency including Solana. Give your users flexible payment options.
+                  List your apps, scripts, templates, worlds, and 3D objects in the Edify Store and earn directly in SOL on Solana.
                 </p>
               </div>
             </div>
@@ -121,15 +121,11 @@ const SolanaPaymentSection = () => {
                   <ul className="space-y-2 text-gray-300">
                     <li className="flex items-start gap-2">
                       <ArrowRight className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: 'oklch(0.85 0.18 130)' }} />
-                      <span><strong className="text-white">Subscription Access:</strong> Create recurring revenue with membership tiers</span>
+                      <span><strong className="text-white">One-Time Purchases:</strong> Offer premium downloads, tools, templates, or assets with simple one-time Solana payments</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <ArrowRight className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: 'oklch(0.85 0.18 130)' }} />
-                      <span><strong className="text-white">One-Time Purchases:</strong> Sell premium content, items, and experiences</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <ArrowRight className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: 'oklch(0.85 0.18 130)' }} />
-                      <span><strong className="text-white">Crypto Support:</strong> Optional Solana payments for low-fee transactions</span>
+                      <span><strong className="text-white">Crypto Support:</strong> Store transactions run entirely on Solana — ultra-low fees, instant settlement, and secure on-chain processing</span>
                     </li>
                   </ul>
                 </div>

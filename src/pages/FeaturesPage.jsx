@@ -15,7 +15,9 @@ import {
   Headphones,
   ArrowRight,
   CheckCircle2,
-  Sparkles
+  Sparkles,
+  Rocket,
+  Play
 } from 'lucide-react';
 import Badge from '../components/landing/Badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/Tabs';
@@ -38,12 +40,12 @@ const FeaturesPage = () => {
     {
       icon: Layers,
       title: 'Asset Library',
-      description: 'Thousands of high-quality 3D models and textures',
+      description: 'High-quality 3D models and textures',
       details: [
-        '10,000+ pre-built 3D assets',
+        'Optimized pre-built 3D assets',
         'PBR materials and textures',
         'Animated character library',
-        'Import custom assets (FBX, GLTF)'
+        'Import custom assets'
       ]
     },
     {
@@ -64,7 +66,7 @@ const FeaturesPage = () => {
       details: [
         'Built-in voice chat',
         'Avatar customization',
-        'Up to 100 concurrent users',
+        'Persistent experience with concurrent users',
         'Synchronized object interactions'
       ]
     },
@@ -163,11 +165,10 @@ const FeaturesPage = () => {
     { feature: 'No Coding Required', edify: true, unity: false, unreal: false },
     { feature: 'Built-in Hosting', edify: true, unity: false, unreal: false },
     { feature: 'One-Click Deploy', edify: true, unity: false, unreal: false },
-    { feature: 'Asset Library (10k+)', edify: true, unity: 'partial', unreal: 'partial' },
+    { feature: 'Asset Library', edify: true, unity: 'partial', unreal: 'partial' },
     { feature: 'Multiplayer Built-in', edify: true, unity: 'addon', unreal: 'addon' },
     { feature: 'Cross-Platform', edify: true, unity: true, unreal: true },
     { feature: 'Visual Scripting', edify: true, unity: 'addon', unreal: true },
-    { feature: 'Free Tier', edify: true, unity: 'limited', unreal: 'limited' },
   ];
 
   return (
@@ -500,29 +501,44 @@ const FeaturesPage = () => {
               <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text" style={{ lineHeight: '1.1', paddingBottom: '0.1em' }}>
                 Ready to Start Building?
               </h2>
-              <p className="text-xl text-gray-300 mb-8">
-                Experience all features with our free tier. No credit card required.
-              </p>
-              <Link
-                to="/signin"
-                className="inline-flex items-center justify-center text-lg px-8 py-6 rounded-md font-semibold transition-all duration-300 transform hover:scale-105 glow-accent"
-                style={{
-                  background: 'linear-gradient(to right, oklch(0.85 0.18 130), oklch(0.50 0.18 260))',
-                  color: 'oklch(0.12 0.02 280)',
-                  boxShadow: '0 0 30px oklch(0.85 0.18 130 / 0.4)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.85 0.18 130 / 0.9), oklch(0.50 0.18 260 / 0.9))';
-                  e.currentTarget.style.boxShadow = '0 0 40px oklch(0.85 0.18 130 / 0.5)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.85 0.18 130), oklch(0.50 0.18 260))';
-                  e.currentTarget.style.boxShadow = '0 0 30px oklch(0.85 0.18 130 / 0.4)';
-                }}
-              >
-                Start Creating Free
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Link>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  to="/signup"
+                  className="inline-flex items-center justify-center text-lg px-8 py-6 text-white rounded-md font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-2xl group"
+                  style={{ 
+                    background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+                    boxShadow: '0 0 20px oklch(0.45 0.15 290 / 0.3)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290 / 0.9), oklch(0.50 0.18 260 / 0.9))';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
+                  }}
+                >
+                  <Rocket className="w-5 h-5 mr-2 group-hover:translate-y-[-2px] transition-transform" />
+                  Start Building Now
+                </Link>
+                
+                <a
+                  href="https://demo.edifyengine.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center text-lg px-8 py-6 border-2 text-white rounded-md font-semibold transition-all duration-300 transform hover:scale-105 group"
+                  style={{ 
+                    borderColor: 'oklch(0.85 0.18 130 / 0.5)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.85 0.18 130 / 0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
+                >
+                  <Play className="w-5 h-5 mr-2" />
+                  Launch Demo World
+                </a>
+              </div>
             </motion.div>
           </div>
         </section>
