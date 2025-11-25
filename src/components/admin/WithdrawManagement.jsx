@@ -217,11 +217,11 @@ export default function WithdrawManagement() {
 
   const getStatusBadge = (status) => {
     const badges = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      approved: 'bg-green-100 text-green-800',
-      rejected: 'bg-red-100 text-red-800'
+      pending: { backgroundColor: 'oklch(0.85 0.18 130 / 0.2)', color: 'oklch(0.85 0.18 130)' },
+      approved: { backgroundColor: 'oklch(0.70 0.15 150 / 0.2)', color: 'oklch(0.70 0.15 150)' },
+      rejected: { backgroundColor: 'oklch(0.55 0.22 25 / 0.2)', color: 'oklch(0.55 0.22 25)' }
     };
-    return badges[status] || 'bg-gray-100 text-gray-800';
+    return badges[status] || { backgroundColor: 'oklch(0.50 0.05 280 / 0.2)', color: 'oklch(0.50 0.05 280)' };
   };
 
   const formatDate = (dateString) => {
@@ -240,7 +240,7 @@ export default function WithdrawManagement() {
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Withdrawal Management</h2>
+        <h2 className="text-2xl font-bold mb-4" style={{ color: 'oklch(0.98 0.01 280)' }}>Withdrawal Management</h2>
         
         {/* Filter Tabs */}
         <div className="flex space-x-2 mb-6">
@@ -251,11 +251,31 @@ export default function WithdrawManagement() {
                 setFilter(status);
                 setPage(1);
               }}
-              className={`px-4 py-2 rounded-lg font-medium transition ${
+              className="px-4 py-2 rounded-lg font-medium transition"
+              style={
                 filter === status
-                  ? 'bg-[#42677D] text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+                  ? {
+                      backgroundColor: 'oklch(0.45 0.15 290)',
+                      color: 'oklch(0.98 0.01 280)'
+                    }
+                  : {
+                      backgroundColor: 'oklch(0.18 0.05 285)',
+                      borderColor: 'oklch(0.25 0.05 285)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      color: 'oklch(0.98 0.01 280)'
+                    }
+              }
+              onMouseEnter={(e) => {
+                if (filter !== status) {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (filter !== status) {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                }
+              }}
             >
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </button>
@@ -265,98 +285,114 @@ export default function WithdrawManagement() {
 
       {/* Withdrawals Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        <table 
+          className="min-w-full rounded-lg"
+          style={{
+            backgroundColor: 'oklch(0.18 0.05 285)',
+            borderColor: 'oklch(0.25 0.05 285)',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderCollapse: 'separate',
+            borderSpacing: 0
+          }}
+        >
+          <thead style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
+            <tr style={{ borderBottom: '1px solid oklch(0.25 0.05 285)' }}>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 User
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Solana Address
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Amount
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Total Earned
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Total Withdrawn
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Requested
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Processed
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody>
             {withdrawals.length === 0 ? (
               <tr>
-                <td colSpan="9" className="px-6 py-8 text-center text-gray-500">
+                <td colSpan="9" className="px-6 py-8 text-center" style={{ color: 'oklch(0.65 0.05 280)' }}>
                   No withdrawal requests found
                 </td>
               </tr>
             ) : (
               withdrawals.map((withdrawal) => (
                 <tr 
-                  key={withdrawal._id} 
-                  className="hover:bg-gray-50 cursor-pointer"
+                  key={withdrawal._id}
+                  style={{
+                    backgroundColor: 'oklch(0.18 0.05 285)',
+                    borderBottom: '1px solid oklch(0.25 0.05 285)'
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)'; }}
+                  className="cursor-pointer"
                   onClick={() => handleViewDetails(withdrawal)}
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div>
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
                         {withdrawal.user?.firstName} {withdrawal.user?.lastName}
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>
                         {withdrawal.user?.email}
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm font-mono text-gray-700">
+                    <div className="text-sm font-mono" style={{ color: 'oklch(0.98 0.01 280)' }}>
                       {withdrawal.solanaAddress || withdrawal.user?.solanaAddress 
                         ? shortAddress(withdrawal.solanaAddress || withdrawal.user?.solanaAddress)
                         : 'Not provided'}
                     </div>
                     {withdrawal.paymentSignature && (
-                      <div className="text-xs text-green-600 mt-1">
+                      <div className="text-xs mt-1" style={{ color: 'oklch(0.70 0.15 150)' }}>
                         Paid: {shortAddress(withdrawal.paymentSignature)}
                       </div>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-semibold text-gray-900">
+                    <div className="text-sm font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>
                       {withdrawal.amount.toFixed(6)} SOL
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
                       {(withdrawal.totalEarned || 0).toFixed(6)} SOL
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
                       {(withdrawal.totalWithdrawn || 0).toFixed(6)} SOL
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadge(withdrawal.status)}`}>
+                    <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full" style={getStatusBadge(withdrawal.status)}>
                       {withdrawal.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     {formatDate(withdrawal.requestedAt)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     {withdrawal.processedAt ? formatDate(withdrawal.processedAt) : '-'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium" onClick={(e) => e.stopPropagation()}>
@@ -367,7 +403,10 @@ export default function WithdrawManagement() {
                             e.stopPropagation();
                             handleApprove(withdrawal);
                           }}
-                          className="text-green-600 hover:text-green-900"
+                          className="disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{ color: 'oklch(0.70 0.15 150)' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.75 0.15 150)'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.70 0.15 150)'; }}
                         >
                           Approve
                         </button>
@@ -376,14 +415,17 @@ export default function WithdrawManagement() {
                             e.stopPropagation();
                             handleReject(withdrawal);
                           }}
-                          className="text-red-600 hover:text-red-900"
+                          className="disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{ color: 'oklch(0.55 0.22 25)' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.60 0.22 25)'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.55 0.22 25)'; }}
                         >
                           Reject
                         </button>
                       </div>
                     )}
                     {withdrawal.status !== 'pending' && (
-                      <div className="text-gray-400">
+                      <div style={{ color: 'oklch(0.50 0.05 280)' }}>
                         {withdrawal.processedBy?.firstName} {withdrawal.processedBy?.lastName}
                       </div>
                     )}
@@ -401,17 +443,47 @@ export default function WithdrawManagement() {
           <button
             onClick={() => setPage(Math.max(1, page - 1))}
             disabled={page === 1}
-            className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+            className="px-4 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              backgroundColor: 'oklch(0.18 0.05 285)',
+              borderColor: 'oklch(0.25 0.05 285)',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              if (!e.currentTarget.disabled) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!e.currentTarget.disabled) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+              }
+            }}
           >
             Previous
           </button>
-          <span className="px-4 py-2 text-gray-700">
+          <span className="px-4 py-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
             Page {page} of {totalPages}
           </span>
           <button
             onClick={() => setPage(Math.min(totalPages, page + 1))}
             disabled={page === totalPages}
-            className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+            className="px-4 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              backgroundColor: 'oklch(0.18 0.05 285)',
+              borderColor: 'oklch(0.25 0.05 285)',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              if (!e.currentTarget.disabled) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!e.currentTarget.disabled) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+              }
+            }}
           >
             Next
           </button>
@@ -597,7 +669,7 @@ export default function WithdrawManagement() {
                   </div>
                   <div>
                     <div className="text-xs text-gray-500 mb-1">Status</div>
-                    <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadge(detailWithdrawal.status)}`}>
+                    <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full" style={getStatusBadge(detailWithdrawal.status)}>
                       {detailWithdrawal.status}
                     </span>
                   </div>

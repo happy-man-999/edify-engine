@@ -182,13 +182,14 @@ const BundlesSection = ({ currency, onAddToCart, onItemSelect }) => {
         {bundles.map((item, i) => (
           <div 
             key={i} 
-            className="bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl relative"
+            className="rounded-xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl relative"
+            style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}
             onClick={() => onItemSelect(item)}
           >
             <div className="absolute top-3 left-3 bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded-full">
               <i className="fas fa-boxes mr-1"></i> Bundle
             </div>
-            <div className="h-48 bg-gray-100 flex items-center justify-center [perspective:1000px] [transform-style:preserve-3d]">
+            <div className="h-48 flex items-center justify-center [perspective:1000px] [transform-style:preserve-3d]" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}>
               <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
             </div>
             <div className="p-4">
@@ -201,12 +202,12 @@ const BundlesSection = ({ currency, onAddToCart, onItemSelect }) => {
                   {showPrice(item.priceUSD) ? `${showPrice(item.priceUSD).toFixed(4)} SOL` : '...'}
                 </div>
               </div>
-              <p className="text-gray-500 text-sm mb-3">{item.description}</p>
+              <p className="text-sm mb-3" style={{ color: 'oklch(0.65 0.05 280)' }}>{item.description}</p>
               <div className="flex justify-between items-center">
                 <div className="flex items-center text-yellow-400 text-sm">
                   {Array.from({length: Math.floor(item.rating)}, (_, i) => <i key={i} className="fas fa-star"></i>)}
                   {item.rating % 1 !== 0 && <i className="fas fa-star-half-alt"></i>}
-                  <span className="text-gray-500 ml-1">{item.reviewCount ? `(${item.reviewCount})` : null}</span>
+                  <span className="ml-1" style={{ color: 'oklch(0.65 0.05 280)' }}>{item.reviewCount ? `(${item.reviewCount})` : null}</span>
                 </div>
                 <button 
                   className="text-[#42677D] hover:text-[#355263] text-sm font-medium" 

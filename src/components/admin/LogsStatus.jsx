@@ -151,35 +151,35 @@ const LogsStatus = () => {
 
   const getLevelColor = (level) => {
     switch (level) {
-      case 'success': return 'bg-green-100 text-green-800';
-      case 'error': return 'bg-red-100 text-red-800';
-      case 'warning': return 'bg-yellow-100 text-yellow-800';
-      case 'info': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'success': return { backgroundColor: 'oklch(0.70 0.15 150 / 0.2)', color: 'oklch(0.70 0.15 150)' };
+      case 'error': return { backgroundColor: 'oklch(0.55 0.22 25 / 0.2)', color: 'oklch(0.55 0.22 25)' };
+      case 'warning': return { backgroundColor: 'oklch(0.85 0.18 130 / 0.2)', color: 'oklch(0.85 0.18 130)' };
+      case 'info': return { backgroundColor: 'oklch(0.45 0.15 290 / 0.2)', color: 'oklch(0.45 0.15 290)' };
+      default: return { backgroundColor: 'oklch(0.50 0.05 280 / 0.2)', color: 'oklch(0.50 0.05 280)' };
     }
   };
 
   const getTypeColor = (type) => {
     switch (type) {
-      case 'user_signup': return 'bg-blue-100 text-blue-800';
-      case 'user_created': return 'bg-green-100 text-green-800';
-      case 'user_updated': return 'bg-blue-100 text-blue-800';
-      case 'user_deleted': return 'bg-red-100 text-red-800';
-      case 'user_role_changed': return 'bg-purple-100 text-purple-800';
-      case 'purchase': return 'bg-green-100 text-green-800';
-      case 'transaction_created': return 'bg-emerald-100 text-emerald-800';
-      case 'droplet_created': return 'bg-purple-100 text-purple-800';
-      case 'droplet_restarted': return 'bg-yellow-100 text-yellow-800';
-      case 'droplet_terminated': return 'bg-orange-100 text-orange-800';
-      case 'droplet_reprovisioned': return 'bg-cyan-100 text-cyan-800';
-      case 'droplet_deleted': return 'bg-red-100 text-red-800';
-      case 'subdomain_assigned': return 'bg-orange-100 text-orange-800';
-      case 'webhook': return 'bg-indigo-100 text-indigo-800';
-      case 'provisioning': return 'bg-teal-100 text-teal-800';
-      case 'error': return 'bg-red-100 text-red-800';
-      case 'item_status_changed': return 'bg-amber-100 text-amber-800';
-      case 'item_files_deleted': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'user_signup': return { backgroundColor: 'oklch(0.45 0.15 290 / 0.2)', color: 'oklch(0.45 0.15 290)' };
+      case 'user_created': return { backgroundColor: 'oklch(0.70 0.15 150 / 0.2)', color: 'oklch(0.70 0.15 150)' };
+      case 'user_updated': return { backgroundColor: 'oklch(0.45 0.15 290 / 0.2)', color: 'oklch(0.45 0.15 290)' };
+      case 'user_deleted': return { backgroundColor: 'oklch(0.55 0.22 25 / 0.2)', color: 'oklch(0.55 0.22 25)' };
+      case 'user_role_changed': return { backgroundColor: 'oklch(0.50 0.18 260 / 0.2)', color: 'oklch(0.50 0.18 260)' };
+      case 'purchase': return { backgroundColor: 'oklch(0.70 0.15 150 / 0.2)', color: 'oklch(0.70 0.15 150)' };
+      case 'transaction_created': return { backgroundColor: 'oklch(0.70 0.15 150 / 0.2)', color: 'oklch(0.70 0.15 150)' };
+      case 'droplet_created': return { backgroundColor: 'oklch(0.50 0.18 260 / 0.2)', color: 'oklch(0.50 0.18 260)' };
+      case 'droplet_restarted': return { backgroundColor: 'oklch(0.85 0.18 130 / 0.2)', color: 'oklch(0.85 0.18 130)' };
+      case 'droplet_terminated': return { backgroundColor: 'oklch(0.85 0.18 130 / 0.2)', color: 'oklch(0.85 0.18 130)' };
+      case 'droplet_reprovisioned': return { backgroundColor: 'oklch(0.45 0.15 290 / 0.2)', color: 'oklch(0.45 0.15 290)' };
+      case 'droplet_deleted': return { backgroundColor: 'oklch(0.55 0.22 25 / 0.2)', color: 'oklch(0.55 0.22 25)' };
+      case 'subdomain_assigned': return { backgroundColor: 'oklch(0.85 0.18 130 / 0.2)', color: 'oklch(0.85 0.18 130)' };
+      case 'webhook': return { backgroundColor: 'oklch(0.50 0.18 260 / 0.2)', color: 'oklch(0.50 0.18 260)' };
+      case 'provisioning': return { backgroundColor: 'oklch(0.45 0.15 290 / 0.2)', color: 'oklch(0.45 0.15 290)' };
+      case 'error': return { backgroundColor: 'oklch(0.55 0.22 25 / 0.2)', color: 'oklch(0.55 0.22 25)' };
+      case 'item_status_changed': return { backgroundColor: 'oklch(0.85 0.18 130 / 0.2)', color: 'oklch(0.85 0.18 130)' };
+      case 'item_files_deleted': return { backgroundColor: 'oklch(0.55 0.22 25 / 0.2)', color: 'oklch(0.55 0.22 25)' };
+      default: return { backgroundColor: 'oklch(0.50 0.05 280 / 0.2)', color: 'oklch(0.50 0.05 280)' };
     }
   };
 
@@ -301,20 +301,40 @@ const LogsStatus = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900">Logs & Status</h2>
-          <p className="text-sm text-gray-600">Monitor API logs, webhooks, and system status</p>
+          <h2 className="text-xl font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>Logs & Status</h2>
+          <p className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>Monitor API logs, webhooks, and system status</p>
         </div>
         <div className="flex space-x-3">
           <button 
             onClick={handleExport}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 rounded-lg transition-colors"
+            style={{
+              backgroundColor: 'oklch(0.45 0.15 290)',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
+            }}
           >
             <i className="fas fa-download mr-2"></i>
             Export Logs
           </button>
           <button 
             onClick={handleRefresh}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            className="px-4 py-2 rounded-lg transition-colors"
+            style={{
+              backgroundColor: 'oklch(0.70 0.15 150)',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'oklch(0.75 0.15 150)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'oklch(0.70 0.15 150)';
+            }}
           >
             <i className="fas fa-sync mr-2"></i>
             Refresh
@@ -324,90 +344,130 @@ const LogsStatus = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="rounded-lg shadow p-6" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <i className="fas fa-list text-blue-600"></i>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.2)' }}>
+                <i className="fas fa-list" style={{ color: 'oklch(0.45 0.15 290)' }}></i>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Total Logs</p>
-              <p className="text-2xl font-semibold text-gray-900">{stats.totalLogs}</p>
+              <p className="text-sm font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Total Logs</p>
+              <p className="text-2xl font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>{stats.totalLogs}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="rounded-lg shadow p-6" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                <i className="fas fa-check text-green-600"></i>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'oklch(0.70 0.15 150 / 0.2)' }}>
+                <i className="fas fa-check" style={{ color: 'oklch(0.70 0.15 150)' }}></i>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Success</p>
-              <p className="text-2xl font-semibold text-gray-900">{stats.successCount}</p>
+              <p className="text-sm font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Success</p>
+              <p className="text-2xl font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>{stats.successCount}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="rounded-lg shadow p-6" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                <i className="fas fa-exclamation-triangle text-red-600"></i>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'oklch(0.55 0.22 25 / 0.2)' }}>
+                <i className="fas fa-exclamation-triangle" style={{ color: 'oklch(0.55 0.22 25)' }}></i>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Errors</p>
-              <p className="text-2xl font-semibold text-gray-900">{stats.errorCount}</p>
+              <p className="text-sm font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Errors</p>
+              <p className="text-2xl font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>{stats.errorCount}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="rounded-lg shadow p-6" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
-                <i className="fas fa-info text-yellow-600"></i>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'oklch(0.85 0.18 130 / 0.2)' }}>
+                <i className="fas fa-info" style={{ color: 'oklch(0.85 0.18 130)' }}></i>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Info</p>
-              <p className="text-2xl font-semibold text-gray-900">{stats.infoCount}</p>
+              <p className="text-sm font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Info</p>
+              <p className="text-2xl font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>{stats.infoCount}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div 
+        className="rounded-lg shadow p-6"
+        style={{
+          backgroundColor: 'oklch(0.18 0.05 285)',
+          borderColor: 'oklch(0.25 0.05 285)',
+          borderWidth: '1px',
+          borderStyle: 'solid'
+        }}
+      >
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Search Logs</label>
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Search Logs</label>
             <div className="relative">
               <input
                 type="text"
                 placeholder="Search log messages..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 pr-10 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               />
               {searchTerm !== debouncedSearchTerm && (
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2" style={{ borderColor: 'oklch(0.45 0.15 290)' }}></div>
                 </div>
               )}
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Log Type</label>
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Log Type</label>
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+              style={{
+                backgroundColor: 'oklch(0.12 0.02 280)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'oklch(0.98 0.01 280)',
+                '--tw-ring-color': 'oklch(0.45 0.15 290)'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
               <option value="all">All Types</option>
               <option value="user_signup">User Signup</option>
@@ -432,11 +492,27 @@ const LogsStatus = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Log Level</label>
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Log Level</label>
             <select
               value={filterLevel}
               onChange={(e) => setFilterLevel(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+              style={{
+                backgroundColor: 'oklch(0.12 0.02 280)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'oklch(0.98 0.01 280)',
+                '--tw-ring-color': 'oklch(0.45 0.15 290)'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
               <option value="all">All Levels</option>
               <option value="success">Success</option>
@@ -446,74 +522,119 @@ const LogsStatus = () => {
             </select>
           </div>
 
-
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Start Date</label>
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+              style={{
+                backgroundColor: 'oklch(0.12 0.02 280)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'oklch(0.98 0.01 280)',
+                '--tw-ring-color': 'oklch(0.45 0.15 290)'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>End Date</label>
             <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+              style={{
+                backgroundColor: 'oklch(0.12 0.02 280)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'oklch(0.98 0.01 280)',
+                '--tw-ring-color': 'oklch(0.45 0.15 290)'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             />
           </div>
         </div>
-        
-        
       </div>
 
       {/* Logs Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-medium text-gray-900">
+      <div 
+        className="rounded-lg shadow overflow-hidden"
+        style={{
+          backgroundColor: 'oklch(0.18 0.05 285)',
+          borderColor: 'oklch(0.25 0.05 285)',
+          borderWidth: '1px',
+          borderStyle: 'solid'
+        }}
+      >
+        <div className="px-6 py-4 border-b" style={{ borderColor: 'oklch(0.25 0.05 285)' }}>
+          <h3 className="text-lg font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
             API Logs ({logs.length})
           </h3>
         </div>
         
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Level</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Message</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          <table className="min-w-full" style={{ borderCollapse: 'separate', borderSpacing: 0 }}>
+            <thead style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
+              <tr style={{ borderBottom: '1px solid oklch(0.25 0.05 285)' }}>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>Timestamp</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>Level</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>Type</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>Message</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>User</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody>
               {logs.map((log) => (
-                <tr key={log._id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <tr 
+                  key={log._id}
+                  style={{
+                    backgroundColor: 'oklch(0.18 0.05 285)',
+                    borderBottom: '1px solid oklch(0.25 0.05 285)'
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)'; }}
+                >
+                  <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
                     {formatDate(log.timestamp)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getLevelColor(log.level)}`}>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" style={getLevelColor(log.level)}>
                       {log.level}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getTypeColor(log.type)}`}>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" style={getTypeColor(log.type)}>
                       {log.type}
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900">{getDisplayMessage(log)}</div>
+                    <div className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>{getDisplayMessage(log)}</div>
                     {log.details && Object.keys(log.details).length > 0 && (
                       <>
                         {log.type === 'webhook' ? (
                           <div className="mt-1">
-                            <div className="text-xs text-gray-500 space-x-3">
+                            <div className="text-xs space-x-3" style={{ color: 'oklch(0.65 0.05 280)' }}>
                               {log.details.webhookType && (
                                 <span>webhookType: {String(log.details.webhookType)}</span>
                               )}
@@ -526,12 +647,15 @@ const LogsStatus = () => {
                                 <button
                                   type="button"
                                   onClick={() => toggleWebhookPayload(log._id)}
-                                  className="text-xs text-blue-600 hover:underline"
+                                  className="text-xs hover:underline"
+                                  style={{ color: 'oklch(0.45 0.15 290)' }}
+                                  onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.50 0.18 260)'; }}
+                                  onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.45 0.15 290)'; }}
                                 >
                                   {expandedWebhookPayloadIds.has(log._id) ? 'Hide payload' : 'Show payload'}
                                 </button>
                                 {expandedWebhookPayloadIds.has(log._id) && (
-                                  <pre className="mt-2 text-xs bg-gray-50 border border-gray-200 rounded p-3 overflow-x-auto">
+                                  <pre className="mt-2 text-xs rounded p-3 overflow-x-auto" style={{ backgroundColor: 'oklch(0.12 0.02 280)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid', color: 'oklch(0.98 0.01 280)' }}>
                                     {JSON.stringify(log.details.payload, null, 2)}
                                   </pre>
                                 )}
@@ -539,7 +663,7 @@ const LogsStatus = () => {
                             )}
                           </div>
                         ) : (
-                          <div className="text-xs text-gray-500 mt-1">
+                          <div className="text-xs mt-1" style={{ color: 'oklch(0.65 0.05 280)' }}>
                             {Object.entries(log.details).map(([key, value]) => (
                               <span key={key} className="mr-3">
                                 {key}: {key === 'signature'
@@ -552,14 +676,17 @@ const LogsStatus = () => {
                       </>
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
                     {log.userId ? `${log.userId.firstName} ${log.userId.lastName}` : 'N/A'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex space-x-2">
                       <button 
                         onClick={() => handleViewDetails(log)}
-                        className="text-blue-600 hover:text-blue-900"
+                        className="disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{ color: 'oklch(0.45 0.15 290)' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.50 0.18 260)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.45 0.15 290)'; }}
                         title="View Details"
                       >
                         <i className="fas fa-eye"></i>
@@ -567,7 +694,10 @@ const LogsStatus = () => {
                       {log.level === 'error' && log.type === 'webhook' && (
                         <button 
                           onClick={() => handleReprocess(log._id)}
-                          className="text-orange-600 hover:text-orange-900"
+                          className="disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{ color: 'oklch(0.85 0.18 130)' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.90 0.18 130)'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.85 0.18 130)'; }}
                           title="Reprocess Webhook"
                         >
                           <i className="fas fa-redo"></i>
@@ -576,7 +706,10 @@ const LogsStatus = () => {
                       {log.type === 'provisioning' && log.status === 'failed' && (
                         <button 
                           onClick={() => handleReprovision(log._id)}
-                          className="text-green-600 hover:text-green-900"
+                          className="disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{ color: 'oklch(0.70 0.15 150)' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.75 0.15 150)'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.70 0.15 150)'; }}
                           title="Reprovision"
                         >
                           <i className="fas fa-sync"></i>
@@ -591,44 +724,90 @@ const LogsStatus = () => {
         </div>
 
         {/* Pagination */}
-        <div className="px-6 py-4 flex items-center justify-between border-t border-gray-200 sm:px-6">
+        <div className="px-6 py-4 flex items-center justify-between border-t sm:px-6" style={{ borderColor: 'oklch(0.25 0.05 285)' }}>
           <div className="flex-1 flex justify-between sm:hidden">
             <button
               onClick={() => handlePageChange(pagination.page - 1)}
               disabled={pagination.page === 1}
-              className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: 'oklch(0.18 0.05 285)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                color: 'oklch(0.98 0.01 280)'
+              }}
+              onMouseEnter={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                }
+              }}
             >
               Previous
             </button>
             <button
               onClick={() => handlePageChange(pagination.page + 1)}
               disabled={pagination.page === pagination.pages}
-              className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="ml-3 relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: 'oklch(0.18 0.05 285)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                color: 'oklch(0.98 0.01 280)'
+              }}
+              onMouseEnter={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                }
+              }}
             >
               Next
             </button>
           </div>
           <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
             <div className="flex items-center space-x-4">
-              <div className="text-sm text-gray-700">
-                <label htmlFor="page-size" className="mr-2 text-sm font-medium text-gray-700">
+              <div className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
+                <label htmlFor="page-size" className="mr-2 text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
                   Show
                 </label>
                 <select
                   id="page-size"
                   value={pagination.limit}
                   onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-                  className="border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                  className="rounded-md shadow-sm focus:ring focus:ring-opacity-50"
+                  style={{
+                    backgroundColor: 'oklch(0.12 0.02 280)',
+                    borderColor: 'oklch(0.25 0.05 285)',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    color: 'oklch(0.98 0.01 280)',
+                    '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                    e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                 >
                   <option value="10">10</option>
                   <option value="20">20</option>
                   <option value="50">50</option>
                 </select>
-                <span className="ml-2 text-sm font-medium text-gray-700">
+                <span className="ml-2 text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
                   per page
                 </span>
               </div>
-              <div className="text-sm text-gray-700">
+              <div className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Showing {((pagination.page - 1) * pagination.limit) + 1} to {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} results
               </div>
             </div>
@@ -636,7 +815,24 @@ const LogsStatus = () => {
               <button
                 onClick={() => handlePageChange(pagination.page - 1)}
                 disabled={pagination.page === 1}
-                className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="relative inline-flex items-center px-2 py-2 border text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor: 'oklch(0.18 0.05 285)',
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  color: 'oklch(0.65 0.05 280)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                    e.currentTarget.style.color = 'oklch(0.98 0.01 280)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                    e.currentTarget.style.color = 'oklch(0.65 0.05 280)';
+                  }
+                }}
               >
                 <span className="sr-only">Previous</span>
                 <i className="fas fa-chevron-left"></i>
@@ -649,13 +845,40 @@ const LogsStatus = () => {
                     key={index}
                     onClick={() => typeof page === 'number' ? handlePageChange(page) : null}
                     disabled={page === '...'}
-                    className={`relative inline-flex items-center px-3 py-2 border text-sm font-medium ${
+                    className="relative inline-flex items-center px-3 py-2 border text-sm font-medium"
+                    style={
                       page === pagination.page
-                        ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                        ? {
+                            zIndex: 10,
+                            backgroundColor: 'oklch(0.45 0.15 290 / 0.2)',
+                            borderColor: 'oklch(0.45 0.15 290)',
+                            color: 'oklch(0.45 0.15 290)'
+                          }
                         : page === '...'
-                        ? 'border-gray-300 bg-white text-gray-500 cursor-default'
-                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                    }`}
+                        ? {
+                            borderColor: 'oklch(0.25 0.05 285)',
+                            backgroundColor: 'oklch(0.18 0.05 285)',
+                            color: 'oklch(0.65 0.05 280)',
+                            cursor: 'default'
+                          }
+                        : {
+                            backgroundColor: 'oklch(0.18 0.05 285)',
+                            borderColor: 'oklch(0.25 0.05 285)',
+                            color: 'oklch(0.65 0.05 280)'
+                          }
+                    }
+                    onMouseEnter={(e) => {
+                      if (page !== '...' && page !== pagination.page) {
+                        e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                        e.currentTarget.style.color = 'oklch(0.98 0.01 280)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (page !== '...' && page !== pagination.page) {
+                        e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                        e.currentTarget.style.color = 'oklch(0.65 0.05 280)';
+                      }
+                    }}
                   >
                     {page}
                   </button>
@@ -665,7 +888,24 @@ const LogsStatus = () => {
               <button
                 onClick={() => handlePageChange(pagination.page + 1)}
                 disabled={pagination.page === pagination.pages}
-                className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="relative inline-flex items-center px-2 py-2 border text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor: 'oklch(0.18 0.05 285)',
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  color: 'oklch(0.65 0.05 280)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                    e.currentTarget.style.color = 'oklch(0.98 0.01 280)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                    e.currentTarget.style.color = 'oklch(0.65 0.05 280)';
+                  }
+                }}
               >
                 <span className="sr-only">Next</span>
                 <i className="fas fa-chevron-right"></i>

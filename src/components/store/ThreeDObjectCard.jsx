@@ -93,7 +93,8 @@ const ThreeDObjectCard = ({
 
   return (
     <div 
-      className="bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl relative group"
+      className="rounded-xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl relative group"
+      style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}
       onClick={handleCardClick}
     >
       {/* Item Type Badge */}
@@ -104,7 +105,7 @@ const ThreeDObjectCard = ({
 
 
       {/* Image Container */}
-      <div className={`h-48 bg-gray-100 overflow-hidden ${is3DObject ? '[perspective:1000px] [transform-style:preserve-3d]' : ''}`}>
+      <div className={`h-48 overflow-hidden ${is3DObject ? '[perspective:1000px] [transform-style:preserve-3d]' : ''}`} style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}>
         <img 
           src={item.image} 
           alt={item.title} 
@@ -116,7 +117,10 @@ const ThreeDObjectCard = ({
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
             <button
               onClick={handlePreviewClick}
-              className="opacity-0 group-hover:opacity-100 bg-white/90 hover:bg-white text-gray-800 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 flex items-center"
+              className="opacity-0 group-hover:opacity-100 hover:bg-white px-4 py-2 rounded-lg font-medium transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 flex items-center"
+              style={{ backgroundColor: 'oklch(0.98 0.01 280 / 0.9)', color: 'oklch(0.12 0.02 280)' }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.98 0.01 280)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.98 0.01 280 / 0.9)'; }}
             >
               <i className="fas fa-cube mr-2"></i>
               3D Preview
@@ -129,7 +133,7 @@ const ThreeDObjectCard = ({
       <div className="p-4">
         {/* Title and Price */}
         <div className="flex justify-between items-start mb-2">
-          <h3 className="font-semibold text-gray-900 line-clamp-1">{item.title}</h3>
+          <h3 className="font-semibold line-clamp-1" style={{ color: 'oklch(0.98 0.01 280)' }}>{item.title}</h3>
           {!showPurchaseInfo && (
             <>
               <div className={`bg-[#42677D] text-white text-sm px-2 py-1 rounded${currency === 'SOL' ? ' hidden' : ''}`}>
@@ -143,7 +147,7 @@ const ThreeDObjectCard = ({
         </div>
 
         {/* Description */}
-        <p className="text-gray-500 text-sm mb-3 line-clamp-2">{item.description}</p>
+        <p className="text-sm mb-3 line-clamp-2" style={{ color: 'oklch(0.65 0.05 280)' }}>{item.description}</p>
 
         {/* Rating and File Size */}
         <div className="flex justify-between items-center mb-3">
@@ -152,9 +156,9 @@ const ThreeDObjectCard = ({
               <i key={i} className="fas fa-star"></i>
             ))}
             {item.rating && item.rating % 1 !== 0 && <i className="fas fa-star-half-alt"></i>}
-            <span className="text-gray-500 ml-1">({item.reviewCount || 0})</span>
+            <span className="ml-1" style={{ color: 'oklch(0.65 0.05 280)' }}>({item.reviewCount || 0})</span>
           </div>
-          <div className="text-xs text-gray-400">
+          <div className="text-xs" style={{ color: 'oklch(0.50 0.05 280)' }}>
             <i className="fas fa-download mr-1"></i>
             {item.fileSize || 'N/A'}
           </div>

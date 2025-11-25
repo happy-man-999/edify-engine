@@ -38,10 +38,10 @@ const MyPurchasesSection = ({ onItemSelect, onBrowseStore }) => {
   if (!isAuthenticated) {
     return (
       <div className="text-center py-12">
-        <div className="text-gray-500 text-lg mb-4">
+        <div className="text-lg mb-4" style={{ color: 'oklch(0.65 0.05 280)' }}>
           <i className="fas fa-sign-in-alt text-4xl mb-4"></i>
-          <h3 className="text-xl font-semibold mb-2">Sign in to view your purchases</h3>
-          <p>Please sign in to access your purchase history and downloads.</p>
+          <h3 className="text-xl font-semibold mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Sign in to view your purchases</h3>
+          <p style={{ color: 'oklch(0.65 0.05 280)' }}>Please sign in to access your purchase history and downloads.</p>
         </div>
         <button 
           onClick={() => window.location.href = '/signin'}
@@ -81,10 +81,10 @@ const MyPurchasesSection = ({ onItemSelect, onBrowseStore }) => {
   if (purchases.length === 0) {
     return (
       <div className="text-center py-12">
-        <div className="text-gray-500 text-lg mb-4">
+        <div className="text-lg mb-4" style={{ color: 'oklch(0.65 0.05 280)' }}>
           <i className="fas fa-shopping-bag text-4xl mb-4"></i>
-          <h3 className="text-xl font-semibold mb-2">No purchases yet</h3>
-          <p>Start exploring our store to find amazing items!</p>
+          <h3 className="text-xl font-semibold mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>No purchases yet</h3>
+          <p style={{ color: 'oklch(0.65 0.05 280)' }}>Start exploring our store to find amazing items!</p>
         </div>
         <button 
           onClick={onBrowseStore}
@@ -100,8 +100,8 @@ const MyPurchasesSection = ({ onItemSelect, onBrowseStore }) => {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">My Purchases</h2>
-        <span className="text-sm text-gray-600">
+        <h2 className="text-2xl font-bold" style={{ color: 'oklch(0.98 0.01 280)' }}>My Purchases</h2>
+        <span className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>
           {purchases.length} item{purchases.length !== 1 ? 's' : ''} purchased
         </span>
       </div>

@@ -74,10 +74,11 @@ const AppsSection = ({ currency, onAddToCart, onItemSelect }) => {
       {displayApps.map((item, i) => (
         <div 
           key={item.id || i} 
-          className="bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-lg"
+          className="rounded-xl overflow-hidden shadow-sm cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-lg"
+          style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}
           onClick={() => onItemSelect(item)}
         >
-          <div className="h-40 bg-gray-100 flex items-center justify-center [perspective:1000px] [transform-style:preserve-3d]">
+          <div className="h-40 flex items-center justify-center [perspective:1000px] [transform-style:preserve-3d]" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}>
             <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
           </div>
           <div className="p-4">
@@ -90,12 +91,12 @@ const AppsSection = ({ currency, onAddToCart, onItemSelect }) => {
                 {showPrice(item.priceUSD) ? `${showPrice(item.priceUSD).toFixed(4)} SOL` : '...'}
               </div>
             </div>
-            <p className="text-gray-500 text-xs mb-3">{item.description}</p>
+            <p className="text-xs mb-3" style={{ color: 'oklch(0.65 0.05 280)' }}>{item.description}</p>
             <div className="flex justify-between items-center">
               <div className="flex items-center text-yellow-400 text-xs">
                 {Array.from({length: Math.floor(item.rating)}, (_, i) => <i key={i} className="fas fa-star"></i>)}
                 {item.rating % 1 !== 0 && <i className="fas fa-star-half-alt"></i>}
-                <span className="text-gray-500 ml-1">({item.reviewCount})</span>
+                <span className="ml-1" style={{ color: 'oklch(0.65 0.05 280)' }}>({item.reviewCount})</span>
               </div>
               <button 
                 className="text-[#42677D] hover:text-[#355263] text-xs font-medium flex items-center" 

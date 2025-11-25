@@ -271,9 +271,9 @@ const WorldsSection = () => {
     <section className="mb-12">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Your Worlds</h2>
+          <h2 className="text-2xl font-bold" style={{ color: 'oklch(0.98 0.01 280)' }}>Your Worlds</h2>
           {!loading && !error && (
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-sm mt-1" style={{ color: 'oklch(0.65 0.05 280)' }}>
               {userDroplets.length} of {dropletLimit === null ? 'Unlimited' : dropletLimit} worlds created
               {remainingWorlds > 0 && remainingWorlds !== Infinity && ` • ${remainingWorlds} remaining`}
             </p>
@@ -283,7 +283,10 @@ const WorldsSection = () => {
           <button
             onClick={refreshUserDroplets}
             disabled={loading}
-            className="text-[#5E8EA9] hover:text-[#42677D] disabled:text-gray-400 disabled:cursor-not-allowed transition-colors duration-300"
+            className="transition-colors duration-300 disabled:cursor-not-allowed"
+            style={{ color: loading ? 'oklch(0.50 0.05 280)' : 'oklch(0.50 0.18 260)' }}
+            onMouseEnter={(e) => { if (!loading) e.currentTarget.style.color = 'oklch(0.45 0.15 290)'; }}
+            onMouseLeave={(e) => { if (!loading) e.currentTarget.style.color = 'oklch(0.50 0.18 260)'; }}
             title="Refresh worlds"
           >
             <i className={`fas fa-sync-alt ${loading ? 'animate-spin' : ''}`}></i>
@@ -304,12 +307,12 @@ const WorldsSection = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
             <div key={i} className="professional-card animate-pulse">
-              <div className="h-4 bg-gray-200 rounded mb-4"></div>
-              <div className="h-3 bg-gray-200 rounded mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded mb-4"></div>
-              <div className="h-3 bg-gray-200 rounded mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded mb-4"></div>
-              <div className="h-8 bg-gray-200 rounded"></div>
+              <div className="h-4 rounded mb-4" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}></div>
+              <div className="h-3 rounded mb-2" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}></div>
+              <div className="h-3 rounded mb-4" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}></div>
+              <div className="h-3 rounded mb-2" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}></div>
+              <div className="h-3 rounded mb-4" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}></div>
+              <div className="h-8 rounded" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}></div>
             </div>
           ))}
         </div>
@@ -366,16 +369,19 @@ const WorldsSection = () => {
             // Create New World Button or Sign In Button
             <div 
               onClick={user ? handleCreateWorld : () => navigate('/auth')} 
-              className="professional-card border-2 border-dashed border-gray-300 hover:border-[#42677D] transition-all duration-300 flex flex-col items-center justify-center p-8 relative overflow-hidden cursor-pointer"
+              className="professional-card border-2 border-dashed transition-all duration-300 flex flex-col items-center justify-center p-8 relative overflow-hidden cursor-pointer"
+              style={{ borderColor: 'oklch(0.25 0.05 285)' }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)'; }}
             >
               <div className="absolute inset-0 bg-[#42677D]/5 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
               <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 relative z-10 bg-[#42677D]/10">
                 <i className={`fas ${user ? 'fa-plus' : 'fa-sign-in-alt'} text-[#42677D]`}></i>
               </div>
-              <h3 className="font-semibold mb-1 relative z-10 text-gray-900">
+              <h3 className="font-semibold mb-1 relative z-10" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 {user ? 'Create New World' : 'Sign In'}
               </h3>
-              <p className="text-sm text-center relative z-10 text-gray-500">
+              <p className="text-sm text-center relative z-10" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 {user ? 'Start building your next virtual experience' : 'Sign in to create your virtual worlds'}
               </p>
             </div>
@@ -386,11 +392,11 @@ const WorldsSection = () => {
       {/* Empty state when no worlds exist */}
       {!loading && !error && userDroplets.length === 0 && (
         <div className="text-center py-12">
-          <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <i className="fas fa-globe text-3xl text-gray-400"></i>
+          <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}>
+            <i className="fas fa-globe text-3xl" style={{ color: 'oklch(0.50 0.05 280)' }}></i>
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">No worlds yet</h3>
-          <p className="text-gray-600 mb-6">Create your first world to get started</p>
+          <h3 className="text-xl font-semibold mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>No worlds yet</h3>
+          <p className="mb-6" style={{ color: 'oklch(0.65 0.05 280)' }}>Create your first world to get started</p>
           {hasReachedWorldLimit ? (
             <button
               onClick={user ? handleCreateWorld : () => navigate('/signin')}
@@ -407,7 +413,7 @@ const WorldsSection = () => {
             </button>
           )}
           {hasReachedWorldLimit && (
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm mt-2" style={{ color: 'oklch(0.65 0.05 280)' }}>
               {user 
                 ? 'You have reached the maximum number of worlds. Upgrade your plan to create more worlds.'
                 : 'Sign in to start building your virtual worlds.'

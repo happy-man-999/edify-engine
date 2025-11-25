@@ -95,15 +95,15 @@ const DropletManagement = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'active':
-        return 'bg-green-100 text-green-800';
+        return { backgroundColor: 'oklch(0.70 0.15 150 / 0.2)', color: 'oklch(0.70 0.15 150)' };
       case 'new':
-        return 'bg-yellow-100 text-yellow-800';
+        return { backgroundColor: 'oklch(0.85 0.18 130 / 0.2)', color: 'oklch(0.85 0.18 130)' };
       case 'off':
-        return 'bg-gray-100 text-gray-800';
+        return { backgroundColor: 'oklch(0.50 0.05 280 / 0.2)', color: 'oklch(0.50 0.05 280)' };
       case 'archive':
-        return 'bg-red-100 text-red-800';
+        return { backgroundColor: 'oklch(0.55 0.22 25 / 0.2)', color: 'oklch(0.55 0.22 25)' };
       default:
-        return 'bg-gray-100 text-gray-800';
+        return { backgroundColor: 'oklch(0.50 0.05 280 / 0.2)', color: 'oklch(0.50 0.05 280)' };
     }
   };
 
@@ -371,13 +371,23 @@ const DropletManagement = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900">Droplet Management</h2>
-          <p className="text-sm text-gray-600">Manage all provisioned droplets and their status</p>
+          <h2 className="text-xl font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>Droplet Management</h2>
+          <p className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>Manage all provisioned droplets and their status</p>
         </div>
         <div className="flex space-x-3">
           <button 
             onClick={() => setIsCreateDropletModalOpen(true)}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            className="px-4 py-2 rounded-lg transition-colors"
+            style={{
+              backgroundColor: 'oklch(0.70 0.15 150)',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'oklch(0.75 0.15 150)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'oklch(0.70 0.15 150)';
+            }}
           >
             <i className="fas fa-plus mr-2"></i>
             Create Droplet
@@ -388,7 +398,21 @@ const DropletManagement = () => {
               loadDropletStats();
             }}
             disabled={loading || statsLoading}
-            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              backgroundColor: 'oklch(0.50 0.05 280)',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              if (!e.currentTarget.disabled) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.50 0.05 280 / 0.8)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!e.currentTarget.disabled) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.50 0.05 280)';
+              }
+            }}
           >
             <i className="fas fa-sync mr-2"></i>
             Refresh
@@ -396,7 +420,21 @@ const DropletManagement = () => {
           <button 
             onClick={exportToCSV}
             disabled={loading || droplets.length === 0}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              backgroundColor: 'oklch(0.45 0.15 290)',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              if (!e.currentTarget.disabled) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!e.currentTarget.disabled) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
+              }
+            }}
           >
             <i className="fas fa-download mr-2"></i>
             Export CSV
@@ -406,80 +444,80 @@ const DropletManagement = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="rounded-lg shadow p-6" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                <i className="fas fa-server text-green-600"></i>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'oklch(0.70 0.15 150 / 0.2)' }}>
+                <i className="fas fa-server" style={{ color: 'oklch(0.70 0.15 150)' }}></i>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Total Droplets</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Total Droplets</p>
+              <p className="text-2xl font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 {statsLoading ? <LoadingSpinner size="sm" /> : stats.totalDroplets}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="rounded-lg shadow p-6" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                <i className="fas fa-check text-green-600"></i>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'oklch(0.70 0.15 150 / 0.2)' }}>
+                <i className="fas fa-check" style={{ color: 'oklch(0.70 0.15 150)' }}></i>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Active</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Active</p>
+              <p className="text-2xl font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 {statsLoading ? <LoadingSpinner size="sm" /> : stats.activeDroplets}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="rounded-lg shadow p-6" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
-                <i className="fas fa-clock text-yellow-600"></i>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'oklch(0.85 0.18 130 / 0.2)' }}>
+                <i className="fas fa-clock" style={{ color: 'oklch(0.85 0.18 130)' }}></i>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">New</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>New</p>
+              <p className="text-2xl font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 {statsLoading ? <LoadingSpinner size="sm" /> : stats.newDroplets}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="rounded-lg shadow p-6" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                <i className="fas fa-exclamation-triangle text-red-600"></i>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'oklch(0.55 0.22 25 / 0.2)' }}>
+                <i className="fas fa-exclamation-triangle" style={{ color: 'oklch(0.55 0.22 25)' }}></i>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Off</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Off</p>
+              <p className="text-2xl font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 {statsLoading ? <LoadingSpinner size="sm" /> : stats.offDroplets}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="rounded-lg shadow p-6" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <i className="fas fa-dollar-sign text-blue-600"></i>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.2)' }}>
+                <i className="fas fa-dollar-sign" style={{ color: 'oklch(0.45 0.15 290)' }}></i>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Monthly Cost</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Monthly Cost</p>
+              <p className="text-2xl font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 {statsLoading ? <LoadingSpinner size="sm" /> : `$${stats.totalMonthlyCost}`}
               </p>
             </div>
@@ -488,11 +526,19 @@ const DropletManagement = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div 
+        className="rounded-lg shadow p-6"
+        style={{
+          backgroundColor: 'oklch(0.18 0.05 285)',
+          borderColor: 'oklch(0.25 0.05 285)',
+          borderWidth: '1px',
+          borderStyle: 'solid'
+        }}
+      >
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Search */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
               Search Droplets
             </label>
             <div className="relative">
@@ -501,7 +547,23 @@ const DropletManagement = () => {
                 placeholder="Search by name, IP, or user..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 pr-10 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               />
               {searchTerm !== debouncedSearchTerm && (
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -513,13 +575,29 @@ const DropletManagement = () => {
 
           {/* Status Filter */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
               Status
             </label>
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+              style={{
+                backgroundColor: 'oklch(0.12 0.02 280)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'oklch(0.98 0.01 280)',
+                '--tw-ring-color': 'oklch(0.45 0.15 290)'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
               <option value="all">All Status</option>
               <option value="active">Active</option>
@@ -531,13 +609,29 @@ const DropletManagement = () => {
 
           {/* Project Filter */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
               Project
             </label>
             <select
               value={filterProject}
               onChange={(e) => setFilterProject(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+              style={{
+                backgroundColor: 'oklch(0.12 0.02 280)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'oklch(0.98 0.01 280)',
+                '--tw-ring-color': 'oklch(0.45 0.15 290)'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
               <option value="all">All Projects</option>
               <option value="Edify Engine">Edify Engine</option>
@@ -548,7 +642,20 @@ const DropletManagement = () => {
           <div className="flex items-end">
             <button 
               onClick={handleOpenFilterModal}
-              className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+              className="w-full px-4 py-2 rounded-md transition-colors"
+              style={{
+                backgroundColor: 'oklch(0.18 0.05 285)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'oklch(0.98 0.01 280)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+              }}
             >
               <i className="fas fa-filter mr-2"></i>
               Advanced Filters
@@ -558,9 +665,17 @@ const DropletManagement = () => {
       </div>
 
       {/* Droplets Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-medium text-gray-900">
+      <div 
+        className="rounded-lg shadow overflow-hidden"
+        style={{
+          backgroundColor: 'oklch(0.18 0.05 285)',
+          borderColor: 'oklch(0.25 0.05 285)',
+          borderWidth: '1px',
+          borderStyle: 'solid'
+        }}
+      >
+        <div className="px-6 py-4 border-b" style={{ borderColor: 'oklch(0.25 0.05 285)' }}>
+          <h3 className="text-lg font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
             Droplets ({loading ? '...' : pagination.total})
           </h3>
         </div>
@@ -568,94 +683,109 @@ const DropletManagement = () => {
         {loading ? (
           <div className="p-6 text-center">
             <div className="inline-flex items-center">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-              <span className="ml-2 text-gray-600">Loading droplets...</span>
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2" style={{ borderColor: 'oklch(0.45 0.15 290)' }}></div>
+              <span className="ml-2" style={{ color: 'oklch(0.65 0.05 280)' }}>Loading droplets...</span>
             </div>
           </div>
         ) : error ? (
           <div className="px-6 py-4 text-center">
-            <div className="text-red-600 bg-red-50 p-4 rounded-lg">
+            <div className="p-4 rounded-lg" style={{ color: 'oklch(0.55 0.22 25)', backgroundColor: 'oklch(0.55 0.22 25 / 0.1)' }}>
               <i className="fas fa-exclamation-triangle mr-2"></i>
               {error}
             </div>
           </div>
         ) : droplets.length === 0 ? (
-          <div className="px-6 py-8 text-center">
-            <div className="text-gray-500">
-              <i className="fas fa-server text-4xl mb-4"></i>
-              <p className="text-lg font-medium">No droplets found</p>
-              <p className="text-sm">Try adjusting your filters or create a new droplet.</p>
-            </div>
+          <div className="px-6 py-8 text-center" style={{ color: 'oklch(0.65 0.05 280)' }}>
+            <i className="fas fa-server text-4xl mb-4"></i>
+            <p className="text-lg font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>No droplets found</p>
+            <p className="text-sm">Try adjusting your filters or create a new droplet.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <table className="min-w-full" style={{ borderCollapse: 'separate', borderSpacing: 0 }}>
+              <thead style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
+                <tr style={{ borderBottom: '1px solid oklch(0.25 0.05 285)' }}>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     Droplet Info
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     Created At
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     Linked User
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     Cost
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody>
                 {droplets.map((droplet) => (
-                  <tr key={droplet.id} className="hover:bg-gray-50">
+                  <tr 
+                    key={droplet.id}
+                    style={{
+                      backgroundColor: 'oklch(0.18 0.05 285)',
+                      borderBottom: '1px solid oklch(0.25 0.05 285)'
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)'; }}
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <button
                           onClick={() => handleDropletClick(droplet.name)}
-                          className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200 flex items-center group"
+                          className="text-sm font-medium hover:underline transition-colors duration-200 flex items-center group"
+                          style={{ color: 'oklch(0.45 0.15 290)' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.50 0.18 260)'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.45 0.15 290)'; }}
                           title="Open droplet website"
                         >
                           {droplet.name}
                           <i className="fas fa-external-link-alt ml-1 text-xs opacity-60 group-hover:opacity-100 transition-opacity duration-200"></i>
                         </button>
-                        <div className="text-sm text-gray-500">{droplet.ipAddress || 'No IP'}</div>
-                        <div className="text-xs text-gray-400">{droplet.sizeSlug} • {droplet.regionSlug}</div>
+                        <div className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>{droplet.ipAddress || 'No IP'}</div>
+                        <div className="text-xs" style={{ color: 'oklch(0.50 0.05 280)' }}>{droplet.sizeSlug} • {droplet.regionSlug}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
                       {formatDate(droplet.createdAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{droplet.user}</div>
-                      <div className="text-xs text-gray-500">Transaction: {shortAddress(droplet.transaction) || 'N/A'}</div>
+                      <div className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>{droplet.user}</div>
+                      <div className="text-xs" style={{ color: 'oklch(0.65 0.05 280)' }}>Transaction: {shortAddress(droplet.transaction) || 'N/A'}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(droplet.status)}`}>
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" style={getStatusColor(droplet.status)}>
                         {droplet.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
                       ${droplet.priceMonthly ? droplet.priceMonthly.toFixed(2) : '0.00'}/month
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
                         <button 
                           onClick={() => handleAction('view', droplet.id)}
-                          className="text-blue-600 hover:text-blue-900"
+                          className="disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{ color: 'oklch(0.45 0.15 290)' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.50 0.18 260)'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.45 0.15 290)'; }}
                           title="View Details"
                         >
                           <i className="fas fa-eye"></i>
                         </button>
                         <button 
                           onClick={() => handleAction('sync', droplet.id)}
-                          className="text-green-600 hover:text-green-900"
+                          className="disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{ color: 'oklch(0.70 0.15 150)' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.75 0.15 150)'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.70 0.15 150)'; }}
                           title="Sync Status"
                         >
                           <i className="fas fa-sync"></i>
@@ -664,14 +794,20 @@ const DropletManagement = () => {
                           <>
                             <button 
                               onClick={() => handleAction('restart', droplet.id)}
-                              className="text-yellow-600 hover:text-yellow-900"
+                              className="disabled:opacity-50 disabled:cursor-not-allowed"
+                              style={{ color: 'oklch(0.85 0.18 130)' }}
+                              onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.90 0.18 130)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.85 0.18 130)'; }}
                               title="Restart"
                             >
                               <i className="fas fa-redo"></i>
                             </button>
                             <button 
                               onClick={() => handleAction('terminate', droplet.id)}
-                              className="text-red-600 hover:text-red-900"
+                              className="disabled:opacity-50 disabled:cursor-not-allowed"
+                              style={{ color: 'oklch(0.55 0.22 25)' }}
+                              onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.60 0.22 25)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.55 0.22 25)'; }}
                               title="Terminate"
                             >
                               <i className="fas fa-stop"></i>
@@ -681,7 +817,10 @@ const DropletManagement = () => {
                         {droplet.status === 'off' && (
                           <button 
                             onClick={() => handleAction('reprovision', droplet.id)}
-                            className="text-green-600 hover:text-green-900"
+                            className="disabled:opacity-50 disabled:cursor-not-allowed"
+                            style={{ color: 'oklch(0.70 0.15 150)' }}
+                            onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.75 0.15 150)'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.70 0.15 150)'; }}
                             title="Reprovision"
                           >
                             <i className="fas fa-play"></i>
@@ -689,7 +828,10 @@ const DropletManagement = () => {
                         )}
                         <button 
                           onClick={() => handleAction('delete', droplet.id)}
-                          className="text-red-600 hover:text-red-900"
+                          className="disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{ color: 'oklch(0.55 0.22 25)' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.60 0.22 25)'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.55 0.22 25)'; }}
                           title="Delete"
                         >
                           <i className="fas fa-trash"></i>
@@ -704,44 +846,90 @@ const DropletManagement = () => {
         )}
 
         {/* Pagination */}
-        <div className="px-6 py-4 flex items-center justify-between border-t border-gray-200 sm:px-6">
+        <div className="px-6 py-4 flex items-center justify-between border-t sm:px-6" style={{ borderColor: 'oklch(0.25 0.05 285)' }}>
           <div className="flex-1 flex justify-between sm:hidden">
             <button
               onClick={() => handlePageChange(pagination.page - 1)}
               disabled={pagination.page === 1}
-              className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: 'oklch(0.18 0.05 285)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                color: 'oklch(0.98 0.01 280)'
+              }}
+              onMouseEnter={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                }
+              }}
             >
               Previous
             </button>
             <button
               onClick={() => handlePageChange(pagination.page + 1)}
               disabled={pagination.page === pagination.pages}
-              className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="ml-3 relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: 'oklch(0.18 0.05 285)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                color: 'oklch(0.98 0.01 280)'
+              }}
+              onMouseEnter={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                }
+              }}
             >
               Next
             </button>
           </div>
           <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
             <div className="flex items-center space-x-4">
-              <div className="text-sm text-gray-700">
-                <label htmlFor="page-size" className="mr-2 text-sm font-medium text-gray-700">
+              <div className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
+                <label htmlFor="page-size" className="mr-2 text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
                   Show
                 </label>
                 <select
                   id="page-size"
                   value={pagination.limit}
                   onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-                  className="border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                  className="rounded-md shadow-sm focus:ring focus:ring-opacity-50"
+                  style={{
+                    backgroundColor: 'oklch(0.12 0.02 280)',
+                    borderColor: 'oklch(0.25 0.05 285)',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    color: 'oklch(0.98 0.01 280)',
+                    '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                    e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                 >
                   <option value="10">10</option>
                   <option value="20">20</option>
                   <option value="50">50</option>
                 </select>
-                <span className="ml-2 text-sm font-medium text-gray-700">
+                <span className="ml-2 text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
                   per page
                 </span>
               </div>
-              <div className="text-sm text-gray-700">
+              <div className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Showing {((pagination.page - 1) * pagination.limit) + 1} to {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} results
               </div>
             </div>
@@ -749,7 +937,24 @@ const DropletManagement = () => {
               <button
                 onClick={() => handlePageChange(pagination.page - 1)}
                 disabled={pagination.page === 1}
-                className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="relative inline-flex items-center px-2 py-2 border text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor: 'oklch(0.18 0.05 285)',
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  color: 'oklch(0.65 0.05 280)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                    e.currentTarget.style.color = 'oklch(0.98 0.01 280)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                    e.currentTarget.style.color = 'oklch(0.65 0.05 280)';
+                  }
+                }}
               >
                 <span className="sr-only">Previous</span>
                 <i className="fas fa-chevron-left"></i>
@@ -762,13 +967,40 @@ const DropletManagement = () => {
                     key={index}
                     onClick={() => typeof page === 'number' ? handlePageChange(page) : null}
                     disabled={page === '...'}
-                    className={`relative inline-flex items-center px-3 py-2 border text-sm font-medium ${
+                    className="relative inline-flex items-center px-3 py-2 border text-sm font-medium"
+                    style={
                       page === pagination.page
-                        ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                        ? {
+                            zIndex: 10,
+                            backgroundColor: 'oklch(0.45 0.15 290 / 0.2)',
+                            borderColor: 'oklch(0.45 0.15 290)',
+                            color: 'oklch(0.45 0.15 290)'
+                          }
                         : page === '...'
-                        ? 'border-gray-300 bg-white text-gray-500 cursor-default'
-                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                    }`}
+                        ? {
+                            borderColor: 'oklch(0.25 0.05 285)',
+                            backgroundColor: 'oklch(0.18 0.05 285)',
+                            color: 'oklch(0.65 0.05 280)',
+                            cursor: 'default'
+                          }
+                        : {
+                            backgroundColor: 'oklch(0.18 0.05 285)',
+                            borderColor: 'oklch(0.25 0.05 285)',
+                            color: 'oklch(0.65 0.05 280)'
+                          }
+                    }
+                    onMouseEnter={(e) => {
+                      if (page !== '...' && page !== pagination.page) {
+                        e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                        e.currentTarget.style.color = 'oklch(0.98 0.01 280)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (page !== '...' && page !== pagination.page) {
+                        e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                        e.currentTarget.style.color = 'oklch(0.65 0.05 280)';
+                      }
+                    }}
                   >
                     {page}
                   </button>
@@ -778,7 +1010,24 @@ const DropletManagement = () => {
               <button
                 onClick={() => handlePageChange(pagination.page + 1)}
                 disabled={pagination.page === pagination.pages}
-                className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="relative inline-flex items-center px-2 py-2 border text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor: 'oklch(0.18 0.05 285)',
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  color: 'oklch(0.65 0.05 280)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                    e.currentTarget.style.color = 'oklch(0.98 0.01 280)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                    e.currentTarget.style.color = 'oklch(0.65 0.05 280)';
+                  }
+                }}
               >
                 <span className="sr-only">Next</span>
                 <i className="fas fa-chevron-right"></i>

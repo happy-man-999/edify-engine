@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import Navbar from './components/navbar';
-import Footer from './components/Footer';
+import LandingFooter from './components/landing/LandingFooter';
 import StoreFooter from './components/store/StoreFooter';
 import ErrorModal from './components/ErrorModal';
 import Notification from './components/Notification';
@@ -167,11 +167,18 @@ function App() {
                 </Routes>
 
                 <Routes>
-                  <Route path="/home" element={<Footer />} />
-                  <Route path="/store" element={<Footer />} />
-                  <Route path="/contribute" element={<Footer />} />
-                  <Route path="/contact" element={<Footer />} />
-                  <Route path="/pricing" element={<Footer />} />
+                  <Route path="/home" element={<LandingFooter />} />
+                  <Route path="/store" element={<LandingFooter />} />
+                  <Route path="/contribute" element={<LandingFooter />} />
+                  <Route path="/contact" element={<LandingFooter />} />
+                  <Route path="/signup" element={<LandingFooter />} />
+                  <Route path="/signin" element={<LandingFooter />} />
+                  <Route path="/signup-success" element={<LandingFooter />} />
+                  <Route path="/discounted-plan" element={<LandingFooter />} />
+                  <Route path="/auth-callback" element={<LandingFooter />} />
+                  <Route path="/admin" element={<LandingFooter />} />
+                  <Route path="/cart" element={<LandingFooter />} />
+                  <Route path="/checkout" element={<LandingFooter />} />
                 </Routes>
                 <LoadingSpinner />
                 {notification && <Notification message={notification} onClose={() => dispatch(clearNotification())} />}

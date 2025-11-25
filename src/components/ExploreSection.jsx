@@ -43,7 +43,7 @@ const ExploreSection = ({ showHeader = true }) => (
   <section className="mb-12">
     {showHeader && (
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Explore</h2>
+        <h2 className="text-2xl font-bold" style={{ color: 'oklch(0.98 0.01 280)' }}>Explore</h2>
         <button className="text-[#5E8EA9] hover:text-[#42677D] flex items-center transition-colors duration-300">
           <span>View All</span>
           <i className="fas fa-chevron-right ml-2"></i>
@@ -57,8 +57,8 @@ const ExploreSection = ({ showHeader = true }) => (
             <img src={w.img} alt={w.title} className="w-full h-full object-cover" />
           </div>
           <div className="p-4">
-            <h3 className="font-semibold mb-1 text-gray-900">{w.title}</h3>
-            <p className="text-gray-600 text-sm">{w.desc}</p>
+            <h3 className="font-semibold mb-1" style={{ color: 'oklch(0.98 0.01 280)' }}>{w.title}</h3>
+            <p className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>{w.desc}</p>
           </div>
         </div>
       ))}

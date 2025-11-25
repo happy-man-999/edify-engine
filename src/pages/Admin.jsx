@@ -106,7 +106,20 @@ const Admin = () => {
               </span>
               <button
                 onClick={() => navigate('/home')}
-                className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-md transition shadow-sm font-medium"
+                className="px-4 py-2 rounded-md transition shadow-sm font-medium"
+                style={{
+                  backgroundColor: 'oklch(0.18 0.05 285)',
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  color: 'oklch(0.98 0.01 280)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                }}
               >
                 <i className="fas fa-arrow-left mr-2"></i>
                 Back to Site
@@ -116,7 +129,13 @@ const Admin = () => {
         </section>
 
         {/* Navigation Tabs */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 mb-8">
+        <div 
+          className="rounded-2xl shadow-sm border mb-8"
+          style={{
+            backgroundColor: 'oklch(0.18 0.05 285)',
+            borderColor: 'oklch(0.25 0.05 285)'
+          }}
+        >
           <nav className="flex flex-wrap justify-center p-4">
             {tabs.map((tab) => (
               <button

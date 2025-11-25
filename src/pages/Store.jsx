@@ -208,7 +208,7 @@ const Store = () => {
   else tabContent = <div className="text-center py-16" style={{ color: 'oklch(0.65 0.05 280)' }}>Coming soon...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen" style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
       {/* Page-specific Schema */}
       <script type="application/ld+json">
       {JSON.stringify({

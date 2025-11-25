@@ -247,21 +247,45 @@ const UserManagement = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900">User Management</h2>
-          <p className="text-sm text-gray-600">Manage all registered users and their accounts</p>
+          <h2 className="text-xl font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>User Management</h2>
+          <p className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>Manage all registered users and their accounts</p>
         </div>
         <div className="flex space-x-3">
           <button 
             onClick={() => fetchUsersWithParams()}
             disabled={loading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              backgroundColor: 'oklch(0.45 0.15 290)',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              if (!e.currentTarget.disabled) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!e.currentTarget.disabled) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
+              }
+            }}
           >
             <i className={`fas fa-sync-alt mr-2 ${loading ? 'animate-spin' : ''}`}></i>
             Refresh
           </button>
           <button 
             onClick={handleAddUser}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            className="px-4 py-2 rounded-lg transition-colors"
+            style={{
+              backgroundColor: 'oklch(0.70 0.15 150)',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'oklch(0.75 0.15 150)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'oklch(0.70 0.15 150)';
+            }}
           >
             <i className="fas fa-plus mr-2"></i>
             Add User
@@ -270,11 +294,19 @@ const UserManagement = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div 
+        className="rounded-lg shadow p-6"
+        style={{
+          backgroundColor: 'oklch(0.18 0.05 285)',
+          borderColor: 'oklch(0.25 0.05 285)',
+          borderWidth: '1px',
+          borderStyle: 'solid'
+        }}
+      >
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Search */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
               Search Users
             </label>
             <div className="relative">
@@ -283,7 +315,23 @@ const UserManagement = () => {
                 placeholder="Search by name or email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 pr-10 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               />
               {searchTerm !== debouncedSearchTerm && (
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -295,13 +343,29 @@ const UserManagement = () => {
 
           {/* Role Filter */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
               Role
             </label>
             <select
               value={filterRole}
               onChange={(e) => setFilterRole(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+              style={{
+                backgroundColor: 'oklch(0.12 0.02 280)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'oklch(0.98 0.01 280)',
+                '--tw-ring-color': 'oklch(0.45 0.15 290)'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
               <option value="all">All Roles</option>
               <option value="lead">Lead</option>
@@ -313,13 +377,29 @@ const UserManagement = () => {
 
           {/* Status Filter */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
               Status
             </label>
             <select
               value={filters.status}
               onChange={(e) => dispatch(setFilters({ status: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+              style={{
+                backgroundColor: 'oklch(0.12 0.02 280)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'oklch(0.98 0.01 280)',
+                '--tw-ring-color': 'oklch(0.45 0.15 290)'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
               <option value="all">All</option>
               <option value="verified">Verified</option>
@@ -330,13 +410,29 @@ const UserManagement = () => {
 
           {/* Sort */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
               Sort By
             </label>
             <select
               value={`${sort.field}-${sort.order}`}
               onChange={(e) => handleSortChange(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+              style={{
+                backgroundColor: 'oklch(0.12 0.02 280)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'oklch(0.98 0.01 280)',
+                '--tw-ring-color': 'oklch(0.45 0.15 290)'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
               <option value="createdAt-desc">Sign-up Date (Newest)</option>
               <option value="createdAt-asc">Sign-up Date (Oldest)</option>
@@ -354,9 +450,17 @@ const UserManagement = () => {
       </div>
 
       {/* Users Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden relative">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-medium text-gray-900">
+      <div 
+        className="rounded-lg shadow overflow-hidden relative"
+        style={{
+          backgroundColor: 'oklch(0.18 0.05 285)',
+          borderColor: 'oklch(0.25 0.05 285)',
+          borderWidth: '1px',
+          borderStyle: 'solid'
+        }}
+      >
+        <div className="px-6 py-4 border-b" style={{ borderColor: 'oklch(0.25 0.05 285)' }}>
+          <h3 className="text-lg font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
             Users ({pagination.total || users.length})
           </h3>
         </div>
@@ -364,43 +468,51 @@ const UserManagement = () => {
         {loading ? (
           <div className="p-6 text-center">
             <div className="inline-flex items-center">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-              <span className="ml-2 text-gray-600">Loading users...</span>
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2" style={{ borderColor: 'oklch(0.45 0.15 290)' }}></div>
+              <span className="ml-2" style={{ color: 'oklch(0.65 0.05 280)' }}>Loading users...</span>
             </div>
           </div>
         ) : users.length === 0 ? (
-          <div className="p-6 text-center text-gray-500">
+          <div className="p-6 text-center" style={{ color: 'oklch(0.65 0.05 280)' }}>
             <i className="fas fa-users text-4xl mb-4"></i>
             <p>No users found</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <table className="min-w-full" style={{ borderCollapse: 'separate', borderSpacing: 0 }}>
+              <thead style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
+                <tr style={{ borderBottom: '1px solid oklch(0.25 0.05 285)' }}>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     User
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     Sign-up Date
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     Role
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     Email Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     Last Login
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody>
                 {users.map((user) => (
-                  <tr key={user._id} className="hover:bg-gray-50">
+                  <tr 
+                    key={user._id}
+                    style={{ 
+                      backgroundColor: 'oklch(0.18 0.05 285)',
+                      borderBottom: '1px solid oklch(0.25 0.05 285)'
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)'; }}
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10">
@@ -411,44 +523,47 @@ const UserManagement = () => {
                               className="h-10 w-10 rounded-full object-cover"
                             />
                           ) : (
-                            <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
-                              <span className="text-sm font-medium text-gray-700">
+                            <div className="h-10 w-10 rounded-full flex items-center justify-center" style={{ backgroundColor: 'oklch(0.25 0.05 285)' }}>
+                              <span className="text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
                                 {user.firstName?.charAt(0).toUpperCase() || user.email.charAt(0).toUpperCase()}
                               </span>
                             </div>
                           )}
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
                             {user.firstName} {user.lastName}
                             {user.role === 'admin' && (
-                              <span className="ml-2 px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">
+                              <span className="ml-2 px-2 py-1 text-xs rounded-full" style={{ backgroundColor: 'oklch(0.55 0.22 25 / 0.2)', color: 'oklch(0.55 0.22 25)' }}>
                                 Admin
                               </span>
                             )}
                           </div>
-                          <div className="text-sm text-gray-500">{user.email}</div>
+                          <div className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>{user.email}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
                       {formatDate(user.createdAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
+                      <div className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
                         {/* Display role */}
                         <div className="flex flex-wrap gap-1 mb-2">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            user.role === 'admin'
-                              ? 'bg-red-100 text-red-800'
-                              : user.role === 'lead'
-                              ? 'bg-yellow-100 text-yellow-800'
-                              : 'bg-blue-100 text-blue-800'
-                          }`}>
+                          <span 
+                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                            style={
+                              user.role === 'admin'
+                                ? { backgroundColor: 'oklch(0.55 0.22 25 / 0.2)', color: 'oklch(0.55 0.22 25)' }
+                                : user.role === 'lead'
+                                ? { backgroundColor: 'oklch(0.85 0.18 130 / 0.2)', color: 'oklch(0.85 0.18 130)' }
+                                : { backgroundColor: 'oklch(0.45 0.15 290 / 0.2)', color: 'oklch(0.45 0.15 290)' }
+                            }
+                          >
                             {user.role}
                           </span>
                           {user.isContributor && (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" style={{ backgroundColor: 'oklch(0.50 0.18 260 / 0.2)', color: 'oklch(0.50 0.18 260)' }}>
                               Contributor
                             </span>
                           )}
@@ -459,7 +574,10 @@ const UserManagement = () => {
                             <button
                               onClick={() => handleRoleUpdate(user._id, 'admin')}
                               disabled={currentUser?._id === user._id}
-                              className="text-xs text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="text-xs disabled:opacity-50 disabled:cursor-not-allowed"
+                              style={{ color: 'oklch(0.65 0.05 280)' }}
+                              onMouseEnter={(e) => { if (!e.currentTarget.disabled) e.currentTarget.style.color = 'oklch(0.98 0.01 280)'; }}
+                              onMouseLeave={(e) => { if (!e.currentTarget.disabled) e.currentTarget.style.color = 'oklch(0.65 0.05 280)'; }}
                             >
                               Make Admin
                             </button>
@@ -467,7 +585,10 @@ const UserManagement = () => {
                           {user.role === 'admin' && currentUser?._id !== user._id && (
                             <button
                               onClick={() => handleRoleUpdate(user._id, 'user')}
-                              className="text-xs text-red-500 hover:text-red-700"
+                              className="text-xs"
+                              style={{ color: 'oklch(0.55 0.22 25)' }}
+                              onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.60 0.22 25)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.55 0.22 25)'; }}
                             >
                               Remove Admin
                             </button>
@@ -475,7 +596,10 @@ const UserManagement = () => {
                           {!user.isContributor && (
                             <button
                               onClick={() => handleContributorToggle(user._id, true)}
-                              className="text-xs text-purple-500 hover:text-purple-700"
+                              className="text-xs"
+                              style={{ color: 'oklch(0.50 0.18 260)' }}
+                              onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.55 0.18 260)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.50 0.18 260)'; }}
                             >
                               +Contributor
                             </button>
@@ -483,7 +607,10 @@ const UserManagement = () => {
                           {user.isContributor && (
                             <button
                               onClick={() => handleContributorToggle(user._id, false)}
-                              className="text-xs text-red-500 hover:text-red-700"
+                              className="text-xs"
+                              style={{ color: 'oklch(0.55 0.22 25)' }}
+                              onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.60 0.22 25)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.55 0.22 25)'; }}
                             >
                               -Contributor
                             </button>
@@ -492,29 +619,38 @@ const UserManagement = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        user.isEmailVerified 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}>
+                      <span 
+                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                        style={
+                          user.isEmailVerified 
+                            ? { backgroundColor: 'oklch(0.70 0.15 150 / 0.2)', color: 'oklch(0.70 0.15 150)' }
+                            : { backgroundColor: 'oklch(0.85 0.18 130 / 0.2)', color: 'oklch(0.85 0.18 130)' }
+                        }
+                      >
                         {user.isEmailVerified ? 'Verified' : 'Unverified'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
                       {user.lastLogin ? formatDate(user.lastLogin) : 'Never'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
                         <button 
                           onClick={() => handleViewUserDetails(user)}
-                          className="text-blue-600 hover:text-blue-900"
+                          className="disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{ color: 'oklch(0.45 0.15 290)' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.50 0.18 260)'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.45 0.15 290)'; }}
                           title="View Details"
                         >
                           <i className="fas fa-eye"></i>
                         </button>
                         <button 
                           onClick={() => handleEditUser(user)}
-                          className="text-green-600 hover:text-green-900"
+                          className="disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{ color: 'oklch(0.70 0.15 150)' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.75 0.15 150)'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.70 0.15 150)'; }}
                           title="Edit User"
                         >
                           <i className="fas fa-edit"></i>
@@ -522,7 +658,10 @@ const UserManagement = () => {
                         <button 
                           onClick={() => handleDeleteUser(user._id)}
                           disabled={currentUser?._id === user._id}
-                          className="text-red-600 hover:text-red-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{ color: 'oklch(0.55 0.22 25)' }}
+                          onMouseEnter={(e) => { if (!e.currentTarget.disabled) e.currentTarget.style.color = 'oklch(0.60 0.22 25)'; }}
+                          onMouseLeave={(e) => { if (!e.currentTarget.disabled) e.currentTarget.style.color = 'oklch(0.55 0.22 25)'; }}
                           title={currentUser?._id === user._id ? 'Cannot delete own account' : 'Delete User'}
                         >
                           <i className="fas fa-trash"></i>
@@ -536,44 +675,90 @@ const UserManagement = () => {
           </div>
         )}
 
-        <div className="px-6 py-4 flex items-center justify-between border-t border-gray-200 sm:px-6">
+        <div className="px-6 py-4 flex items-center justify-between border-t sm:px-6" style={{ borderColor: 'oklch(0.25 0.05 285)' }}>
           <div className="flex-1 flex justify-between sm:hidden">
             <button
               onClick={() => handlePageChange(pagination.page - 1)}
               disabled={pagination.page === 1}
-              className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: 'oklch(0.18 0.05 285)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                color: 'oklch(0.98 0.01 280)'
+              }}
+              onMouseEnter={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                }
+              }}
             >
               Previous
             </button>
             <button
               onClick={() => handlePageChange(pagination.page + 1)}
               disabled={pagination.page === pagination.pages}
-              className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="ml-3 relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: 'oklch(0.18 0.05 285)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                color: 'oklch(0.98 0.01 280)'
+              }}
+              onMouseEnter={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                }
+              }}
             >
               Next
             </button>
           </div>
           <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
             <div className="flex items-center space-x-4">
-              <div className="text-sm text-gray-700">
-                <label htmlFor="page-size" className="mr-2 text-sm font-medium text-gray-700">
+              <div className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
+                <label htmlFor="page-size" className="mr-2 text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
                   Show
                 </label>
                 <select
                   id="page-size"
                   value={pagination.limit}
                   onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-                  className="border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                  className="rounded-md shadow-sm focus:ring focus:ring-opacity-50"
+                  style={{
+                    backgroundColor: 'oklch(0.12 0.02 280)',
+                    borderColor: 'oklch(0.25 0.05 285)',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    color: 'oklch(0.98 0.01 280)',
+                    '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                    e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                 >
                   <option value="10">10</option>
                   <option value="20">20</option>
                   <option value="50">50</option>
                 </select>
-                <span className="ml-2 text-sm font-medium text-gray-700">
+                <span className="ml-2 text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
                   per page
                 </span>
               </div>
-              <div className="text-sm text-gray-700">
+              <div className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Showing {((pagination.page - 1) * pagination.limit) + 1} to {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} results
               </div>
             </div>
@@ -581,7 +766,24 @@ const UserManagement = () => {
               <button
                 onClick={() => handlePageChange(pagination.page - 1)}
                 disabled={pagination.page === 1}
-                className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="relative inline-flex items-center px-2 py-2 border text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor: 'oklch(0.18 0.05 285)',
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  color: 'oklch(0.65 0.05 280)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                    e.currentTarget.style.color = 'oklch(0.98 0.01 280)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                    e.currentTarget.style.color = 'oklch(0.65 0.05 280)';
+                  }
+                }}
               >
                 <span className="sr-only">Previous</span>
                 <i className="fas fa-chevron-left"></i>
@@ -594,13 +796,40 @@ const UserManagement = () => {
                     key={index}
                     onClick={() => typeof page === 'number' ? handlePageChange(page) : null}
                     disabled={page === '...'}
-                    className={`relative inline-flex items-center px-3 py-2 border text-sm font-medium ${
+                    className="relative inline-flex items-center px-3 py-2 border text-sm font-medium"
+                    style={
                       page === pagination.page
-                        ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                        ? {
+                            zIndex: 10,
+                            backgroundColor: 'oklch(0.45 0.15 290 / 0.2)',
+                            borderColor: 'oklch(0.45 0.15 290)',
+                            color: 'oklch(0.45 0.15 290)'
+                          }
                         : page === '...'
-                        ? 'border-gray-300 bg-white text-gray-500 cursor-default'
-                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                    }`}
+                        ? {
+                            borderColor: 'oklch(0.25 0.05 285)',
+                            backgroundColor: 'oklch(0.18 0.05 285)',
+                            color: 'oklch(0.65 0.05 280)',
+                            cursor: 'default'
+                          }
+                        : {
+                            backgroundColor: 'oklch(0.18 0.05 285)',
+                            borderColor: 'oklch(0.25 0.05 285)',
+                            color: 'oklch(0.65 0.05 280)'
+                          }
+                    }
+                    onMouseEnter={(e) => {
+                      if (page !== '...' && page !== pagination.page) {
+                        e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                        e.currentTarget.style.color = 'oklch(0.98 0.01 280)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (page !== '...' && page !== pagination.page) {
+                        e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                        e.currentTarget.style.color = 'oklch(0.65 0.05 280)';
+                      }
+                    }}
                   >
                     {page}
                   </button>
@@ -610,7 +839,24 @@ const UserManagement = () => {
               <button
                 onClick={() => handlePageChange(pagination.page + 1)}
                 disabled={pagination.page === pagination.pages}
-                className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="relative inline-flex items-center px-2 py-2 border text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor: 'oklch(0.18 0.05 285)',
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  color: 'oklch(0.65 0.05 280)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                    e.currentTarget.style.color = 'oklch(0.98 0.01 280)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                    e.currentTarget.style.color = 'oklch(0.65 0.05 280)';
+                  }
+                }}
               >
                 <span className="sr-only">Next</span>
                 <i className="fas fa-chevron-right"></i>

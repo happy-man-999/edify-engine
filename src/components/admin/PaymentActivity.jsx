@@ -145,10 +145,10 @@ const PaymentActivity = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'success': return 'bg-green-100 text-green-800';
-      case 'failed': return 'bg-red-100 text-red-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'success': return { backgroundColor: 'oklch(0.70 0.15 150 / 0.2)', color: 'oklch(0.70 0.15 150)' };
+      case 'failed': return { backgroundColor: 'oklch(0.55 0.22 25 / 0.2)', color: 'oklch(0.55 0.22 25)' };
+      case 'pending': return { backgroundColor: 'oklch(0.85 0.18 130 / 0.2)', color: 'oklch(0.85 0.18 130)' };
+      default: return { backgroundColor: 'oklch(0.50 0.05 280 / 0.2)', color: 'oklch(0.50 0.05 280)' };
     }
   };
 
@@ -307,14 +307,28 @@ const PaymentActivity = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900">Payment Activity</h2>
-          <p className="text-sm text-gray-600">Monitor all payment transactions and revenue</p>
+          <h2 className="text-xl font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>Payment Activity</h2>
+          <p className="text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>Monitor all payment transactions and revenue</p>
         </div>
         <div className="flex space-x-3">
           <button 
             onClick={handleExportCSV}
             disabled={transactions.length === 0}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              backgroundColor: 'oklch(0.45 0.15 290)',
+              color: 'oklch(0.98 0.01 280)'
+            }}
+            onMouseEnter={(e) => {
+              if (!e.currentTarget.disabled) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!e.currentTarget.disabled) {
+                e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
+              }
+            }}
           >
             <i className="fas fa-download mr-2"></i>
             Export CSV
@@ -324,90 +338,130 @@ const PaymentActivity = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="rounded-lg shadow p-6" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                <i className="fas fa-dollar-sign text-green-600"></i>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'oklch(0.70 0.15 150 / 0.2)' }}>
+                <i className="fas fa-dollar-sign" style={{ color: 'oklch(0.70 0.15 150)' }}></i>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Total Revenue</p>
-              <p className="text-2xl font-semibold text-gray-900">${stats.totalUSD}</p>
+              <p className="text-sm font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Total Revenue</p>
+              <p className="text-2xl font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>${stats.totalUSD}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="rounded-lg shadow p-6" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                <i className="fas fa-coins text-purple-600"></i>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'oklch(0.50 0.18 260 / 0.2)' }}>
+                <i className="fas fa-coins" style={{ color: 'oklch(0.50 0.18 260)' }}></i>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Total SOL</p>
-              <p className="text-2xl font-semibold text-gray-900">{stats.totalSOL} SOL</p>
+              <p className="text-sm font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Total SOL</p>
+              <p className="text-2xl font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>{stats.totalSOL} SOL</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="rounded-lg shadow p-6" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <i className="fas fa-check text-blue-600"></i>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.2)' }}>
+                <i className="fas fa-check" style={{ color: 'oklch(0.45 0.15 290)' }}></i>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Successful</p>
-              <p className="text-2xl font-semibold text-gray-900">{stats.successful}</p>
+              <p className="text-sm font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Successful</p>
+              <p className="text-2xl font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>{stats.successful}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="rounded-lg shadow p-6" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                <i className="fas fa-times text-red-600"></i>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'oklch(0.55 0.22 25 / 0.2)' }}>
+                <i className="fas fa-times" style={{ color: 'oklch(0.55 0.22 25)' }}></i>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Failed</p>
-              <p className="text-2xl font-semibold text-gray-900">{stats.failed}</p>
+              <p className="text-sm font-medium" style={{ color: 'oklch(0.65 0.05 280)' }}>Failed</p>
+              <p className="text-2xl font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>{stats.failed}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div 
+        className="rounded-lg shadow p-6"
+        style={{
+          backgroundColor: 'oklch(0.18 0.05 285)',
+          borderColor: 'oklch(0.25 0.05 285)',
+          borderWidth: '1px',
+          borderStyle: 'solid'
+        }}
+      >
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Search</label>
             <div className="relative">
               <input
                 type="text"
                 placeholder="Search transactions..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 pr-10 rounded-md focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'oklch(0.12 0.02 280)',
+                  borderColor: 'oklch(0.25 0.05 285)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  color: 'oklch(0.98 0.01 280)',
+                  '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               />
               {searchTerm !== debouncedSearchTerm && (
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2" style={{ borderColor: 'oklch(0.45 0.15 290)' }}></div>
                 </div>
               )}
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Payment Method</label>
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Payment Method</label>
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+              style={{
+                backgroundColor: 'oklch(0.12 0.02 280)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'oklch(0.98 0.01 280)',
+                '--tw-ring-color': 'oklch(0.45 0.15 290)'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
               <option value="all">All Methods</option>
               <option value="stripe">Stripe</option>
@@ -416,11 +470,27 @@ const PaymentActivity = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+            <label className="block text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Status</label>
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2"
+              style={{
+                backgroundColor: 'oklch(0.12 0.02 280)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'oklch(0.98 0.01 280)',
+                '--tw-ring-color': 'oklch(0.45 0.15 290)'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
               <option value="all">All Status</option>
               <option value="success">Success</option>
@@ -432,7 +502,20 @@ const PaymentActivity = () => {
           <div className="flex items-end">
             <button 
               onClick={openFilterModal}
-              className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+              className="w-full px-4 py-2 rounded-md transition-colors"
+              style={{
+                backgroundColor: 'oklch(0.18 0.05 285)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'oklch(0.98 0.01 280)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+              }}
             >
               <i className="fas fa-filter mr-2"></i>
               Advanced Filters
@@ -442,9 +525,17 @@ const PaymentActivity = () => {
       </div>
 
       {/* Transactions Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-medium text-gray-900">
+      <div 
+        className="rounded-lg shadow overflow-hidden"
+        style={{
+          backgroundColor: 'oklch(0.18 0.05 285)',
+          borderColor: 'oklch(0.25 0.05 285)',
+          borderWidth: '1px',
+          borderStyle: 'solid'
+        }}
+      >
+        <div className="px-6 py-4 border-b" style={{ borderColor: 'oklch(0.25 0.05 285)' }}>
+          <h3 className="text-lg font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
             Transactions ({pagination.total})
           </h3>
         </div>
@@ -452,64 +543,78 @@ const PaymentActivity = () => {
         {loading ? (
           <div className="p-6 text-center">
             <div className="inline-flex items-center">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-              <span className="ml-2 text-gray-600">Loading transactions...</span>
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2" style={{ borderColor: 'oklch(0.45 0.15 290)' }}></div>
+              <span className="ml-2" style={{ color: 'oklch(0.65 0.05 280)' }}>Loading transactions...</span>
             </div>
           </div>
         ) : transactions.length === 0 ? (
-          <div className="p-6 text-center text-gray-500">
+          <div className="p-6 text-center" style={{ color: 'oklch(0.65 0.05 280)' }}>
             <i className="fas fa-inbox text-4xl mb-4"></i>
             <p>No transactions found</p>
           </div>
         ) : (
           <>
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Method</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <table className="min-w-full" style={{ borderCollapse: 'separate', borderSpacing: 0 }}>
+                <thead style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
+                  <tr style={{ borderBottom: '1px solid oklch(0.25 0.05 285)' }}>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>Transaction</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>User</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>Amount</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>Payment Method</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>Date</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>Actions</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody>
                   {transactions.map((transaction) => (
-                    <tr key={transaction.id} className="hover:bg-gray-50">
+                    <tr 
+                      key={transaction.id}
+                      style={{
+                        backgroundColor: 'oklch(0.18 0.05 285)',
+                        borderBottom: '1px solid oklch(0.25 0.05 285)'
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)'; }}
+                    >
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{shortAddress(transaction.id)}</div>
+                        <div className="text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>{shortAddress(transaction.id)}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{transaction.user}</div>
+                        <div className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>{transaction.user}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
                         {formatAmount(transaction.amount, transaction.currency)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          transaction.paymentMethod === 'Stripe' 
-                            ? 'bg-blue-100 text-blue-800' 
-                            : 'bg-purple-100 text-purple-800'
-                        }`}>
+                        <span 
+                          className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                          style={
+                            transaction.paymentMethod === 'Stripe' 
+                              ? { backgroundColor: 'oklch(0.45 0.15 290 / 0.2)', color: 'oklch(0.45 0.15 290)' }
+                              : { backgroundColor: 'oklch(0.50 0.18 260 / 0.2)', color: 'oklch(0.50 0.18 260)' }
+                          }
+                        >
                           {transaction.paymentMethod}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(transaction.status)}`}>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" style={getStatusColor(transaction.status)}>
                           {transaction.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
                         {formatDate(transaction.date)}
                       </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex space-x-2">
                       <button 
                         onClick={() => openTransactionDetails(transaction)}
-                        className="text-blue-600 hover:text-blue-900"
+                        className="disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{ color: 'oklch(0.45 0.15 290)' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.50 0.18 260)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.45 0.15 290)'; }}
                         title="View Details"
                       >
                         <i className="fas fa-eye"></i>
@@ -519,7 +624,10 @@ const PaymentActivity = () => {
                           href={`https://solscan.io/tx/${transaction.txHash}/?cluster=devnet`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-green-600 hover:text-green-900"
+                          className="disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{ color: 'oklch(0.70 0.15 150)' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.color = 'oklch(0.75 0.15 150)'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.color = 'oklch(0.70 0.15 150)'; }}
                           title="View on Solscan"
                         >
                           <i className="fas fa-external-link-alt"></i>
@@ -534,28 +642,44 @@ const PaymentActivity = () => {
             </div>
 
             {/* Pagination */}
-            <div className="px-6 py-4 border-t border-gray-200">
+            <div className="px-6 py-4 border-t" style={{ borderColor: 'oklch(0.25 0.05 285)' }}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <div className="text-sm text-gray-700">
-                    <label htmlFor="page-size" className="mr-2 text-sm font-medium text-gray-700">
+                  <div className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
+                    <label htmlFor="page-size" className="mr-2 text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
                       Show
                     </label>
                     <select
                       id="page-size"
                       value={pageSize}
                       onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-                      className="border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                      className="rounded-md shadow-sm focus:ring focus:ring-opacity-50"
+                      style={{
+                        backgroundColor: 'oklch(0.12 0.02 280)',
+                        borderColor: 'oklch(0.25 0.05 285)',
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                        color: 'oklch(0.98 0.01 280)',
+                        '--tw-ring-color': 'oklch(0.45 0.15 290)'
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = 'oklch(0.45 0.15 290)';
+                        e.currentTarget.style.boxShadow = '0 0 0 2px oklch(0.45 0.15 290 / 0.2)';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = 'oklch(0.25 0.05 285)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
                     >
                       <option value="10">10</option>
                       <option value="20">20</option>
                       <option value="50">50</option>
                     </select>
-                    <span className="ml-2 text-sm font-medium text-gray-700">
+                    <span className="ml-2 text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
                       per page
                     </span>
                   </div>
-                  <div className="text-sm text-gray-700">
+                  <div className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
                     Showing {((pagination.page - 1) * pagination.limit) + 1} to {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} results
                   </div>
                 </div>
@@ -563,7 +687,24 @@ const PaymentActivity = () => {
                   <button
                     onClick={() => handlePageChange(pagination.page - 1)}
                     disabled={pagination.page === 1}
-                    className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="relative inline-flex items-center px-2 py-2 border text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{
+                      backgroundColor: 'oklch(0.18 0.05 285)',
+                      borderColor: 'oklch(0.25 0.05 285)',
+                      color: 'oklch(0.65 0.05 280)'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!e.currentTarget.disabled) {
+                        e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                        e.currentTarget.style.color = 'oklch(0.98 0.01 280)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!e.currentTarget.disabled) {
+                        e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                        e.currentTarget.style.color = 'oklch(0.65 0.05 280)';
+                      }
+                    }}
                   >
                     <span className="sr-only">Previous</span>
                     <i className="fas fa-chevron-left"></i>
@@ -576,13 +717,40 @@ const PaymentActivity = () => {
                         key={index}
                         onClick={() => typeof page === 'number' ? handlePageChange(page) : null}
                         disabled={page === '...'}
-                        className={`relative inline-flex items-center px-3 py-2 border text-sm font-medium ${
+                        className="relative inline-flex items-center px-3 py-2 border text-sm font-medium"
+                        style={
                           page === pagination.page
-                            ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                            ? {
+                                zIndex: 10,
+                                backgroundColor: 'oklch(0.45 0.15 290 / 0.2)',
+                                borderColor: 'oklch(0.45 0.15 290)',
+                                color: 'oklch(0.45 0.15 290)'
+                              }
                             : page === '...'
-                            ? 'border-gray-300 bg-white text-gray-500 cursor-default'
-                            : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                        }`}
+                            ? {
+                                borderColor: 'oklch(0.25 0.05 285)',
+                                backgroundColor: 'oklch(0.18 0.05 285)',
+                                color: 'oklch(0.65 0.05 280)',
+                                cursor: 'default'
+                              }
+                            : {
+                                backgroundColor: 'oklch(0.18 0.05 285)',
+                                borderColor: 'oklch(0.25 0.05 285)',
+                                color: 'oklch(0.65 0.05 280)'
+                              }
+                        }
+                        onMouseEnter={(e) => {
+                          if (page !== '...' && page !== pagination.page) {
+                            e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                            e.currentTarget.style.color = 'oklch(0.98 0.01 280)';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (page !== '...' && page !== pagination.page) {
+                            e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                            e.currentTarget.style.color = 'oklch(0.65 0.05 280)';
+                          }
+                        }}
                       >
                         {page}
                       </button>
@@ -592,7 +760,24 @@ const PaymentActivity = () => {
                   <button
                     onClick={() => handlePageChange(pagination.page + 1)}
                     disabled={pagination.page === pagination.pages}
-                    className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="relative inline-flex items-center px-2 py-2 border text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{
+                      backgroundColor: 'oklch(0.18 0.05 285)',
+                      borderColor: 'oklch(0.25 0.05 285)',
+                      color: 'oklch(0.65 0.05 280)'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!e.currentTarget.disabled) {
+                        e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                        e.currentTarget.style.color = 'oklch(0.98 0.01 280)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!e.currentTarget.disabled) {
+                        e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                        e.currentTarget.style.color = 'oklch(0.65 0.05 280)';
+                      }
+                    }}
                   >
                     <span className="sr-only">Next</span>
                     <i className="fas fa-chevron-right"></i>

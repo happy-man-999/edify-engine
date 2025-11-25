@@ -46,7 +46,8 @@ const ItemCard = ({
 
   return (
     <div 
-      className="bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl relative group"
+      className="rounded-xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl relative group"
+      style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}
       onClick={handleCardClick}
     >
       {/* Item Type Badge */}
@@ -69,7 +70,7 @@ const ItemCard = ({
       )}
 
       {/* Image Container */}
-      <div className="h-48 bg-gray-100 overflow-hidden">
+      <div className="h-48 overflow-hidden" style={{ backgroundColor: 'oklch(0.18 0.05 285)' }}>
         <img 
           src={item.image} 
           alt={item.title} 
@@ -81,7 +82,7 @@ const ItemCard = ({
       <div className="p-4">
         {/* Title and Price */}
         <div className="flex justify-between items-start mb-2">
-          <h3 className="font-semibold text-gray-900 line-clamp-1">{item.title}</h3>
+          <h3 className="font-semibold line-clamp-1" style={{ color: 'oklch(0.98 0.01 280)' }}>{item.title}</h3>
           <div className={`bg-[#42677D] text-white text-sm px-2 py-1 rounded${currency === 'SOL' ? ' hidden' : ''}`}>
             ${item.priceUSD}
           </div>
@@ -91,7 +92,7 @@ const ItemCard = ({
         </div>
 
         {/* Description */}
-        <p className="text-gray-500 text-sm mb-3 line-clamp-2">{item.description}</p>
+        <p className="text-sm mb-3 line-clamp-2" style={{ color: 'oklch(0.65 0.05 280)' }}>{item.description}</p>
 
         {/* Rating and File Size */}
         <div className="flex justify-between items-center mb-3">
@@ -100,9 +101,9 @@ const ItemCard = ({
               <i key={i} className="fas fa-star"></i>
             ))}
             {item.rating && item.rating % 1 !== 0 && <i className="fas fa-star-half-alt"></i>}
-            <span className="text-gray-500 ml-1">({item.reviewCount || 0})</span>
+            <span className="ml-1" style={{ color: 'oklch(0.65 0.05 280)' }}>({item.reviewCount || 0})</span>
           </div>
-          <div className="text-xs text-gray-400">
+          <div className="text-xs" style={{ color: 'oklch(0.50 0.05 280)' }}>
             <i className="fas fa-download mr-1"></i>
             {item.fileSize || 'N/A'}
           </div>
@@ -110,14 +111,14 @@ const ItemCard = ({
 
         {/* Purchase Info for My Purchases */}
         {showPurchaseInfo && (
-          <div className="space-y-2 text-sm mb-3 pt-3 border-t border-gray-100">
+          <div className="space-y-2 text-sm mb-3 pt-3 border-t" style={{ borderColor: 'oklch(0.25 0.05 285)' }}>
             <div className="flex justify-between items-center">
-              <span className="text-gray-500">Purchased:</span>
-              <span className="font-medium">{formatDate(purchaseDate)}</span>
+              <span style={{ color: 'oklch(0.65 0.05 280)' }}>Purchased:</span>
+              <span className="font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>{formatDate(purchaseDate)}</span>
             </div>
             
             <div className="flex justify-between items-center">
-              <span className="text-gray-500">Payment:</span>
+              <span style={{ color: 'oklch(0.65 0.05 280)' }}>Payment:</span>
               <span className="font-medium">
                 {paymentMethod === 'solana' ? 'Solana' : 'Stripe'}
               </span>
@@ -135,7 +136,10 @@ const ItemCard = ({
                   e.stopPropagation();
                   if (onItemSelect) onItemSelect(item);
                 }}
-                className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-3 rounded-lg text-sm font-medium transition-colors duration-200"
+                className="flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors duration-200"
+                style={{ backgroundColor: 'oklch(0.18 0.05 285)', color: 'oklch(0.98 0.01 280)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)'; }}
               >
                 View Details
               </button>

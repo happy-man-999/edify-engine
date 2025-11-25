@@ -153,21 +153,21 @@ const DemoEmailsManagement = () => {
     <div className="space-y-6">
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
-          <div className="text-sm text-blue-600 font-medium mb-1">Total Emails</div>
-          <div className="text-2xl font-bold text-blue-900">{stats.total}</div>
+        <div className="rounded-lg p-4" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
+          <div className="text-sm font-medium mb-1" style={{ color: 'oklch(0.45 0.15 290)' }}>Total Emails</div>
+          <div className="text-2xl font-bold" style={{ color: 'oklch(0.98 0.01 280)' }}>{stats.total}</div>
         </div>
-        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4 border border-green-200">
-          <div className="text-sm text-green-600 font-medium mb-1">Today</div>
-          <div className="text-2xl font-bold text-green-900">{stats.today}</div>
+        <div className="rounded-lg p-4" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
+          <div className="text-sm font-medium mb-1" style={{ color: 'oklch(0.70 0.15 150)' }}>Today</div>
+          <div className="text-2xl font-bold" style={{ color: 'oklch(0.98 0.01 280)' }}>{stats.today}</div>
         </div>
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
-          <div className="text-sm text-purple-600 font-medium mb-1">This Week</div>
-          <div className="text-2xl font-bold text-purple-900">{stats.thisWeek}</div>
+        <div className="rounded-lg p-4" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
+          <div className="text-sm font-medium mb-1" style={{ color: 'oklch(0.50 0.18 260)' }}>This Week</div>
+          <div className="text-2xl font-bold" style={{ color: 'oklch(0.98 0.01 280)' }}>{stats.thisWeek}</div>
         </div>
-        <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-4 border border-orange-200">
-          <div className="text-sm text-orange-600 font-medium mb-1">This Month</div>
-          <div className="text-2xl font-bold text-orange-900">{stats.thisMonth}</div>
+        <div className="rounded-lg p-4" style={{ backgroundColor: 'oklch(0.18 0.05 285)', borderColor: 'oklch(0.25 0.05 285)', borderWidth: '1px', borderStyle: 'solid' }}>
+          <div className="text-sm font-medium mb-1" style={{ color: 'oklch(0.85 0.18 130)' }}>This Month</div>
+          <div className="text-2xl font-bold" style={{ color: 'oklch(0.98 0.01 280)' }}>{stats.thisMonth}</div>
         </div>
       </div>
 
@@ -196,7 +196,17 @@ const DemoEmailsManagement = () => {
         </div>
         <button
           onClick={handleExport}
-          className="px-4 py-2 bg-[#42677D] text-white rounded-lg hover:bg-[#5E8EA9] transition-colors flex items-center gap-2"
+          className="px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+          style={{
+            backgroundColor: 'oklch(0.45 0.15 290)',
+            color: 'oklch(0.98 0.01 280)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
+          }}
         >
           <i className="fas fa-download"></i>
           Export CSV
@@ -220,50 +230,68 @@ const DemoEmailsManagement = () => {
       ) : (
         <>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <table 
+              className="min-w-full rounded-lg"
+              style={{
+                backgroundColor: 'oklch(0.18 0.05 285)',
+                borderColor: 'oklch(0.25 0.05 285)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderCollapse: 'separate',
+                borderSpacing: 0
+              }}
+            >
+              <thead style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
+                <tr style={{ borderBottom: '1px solid oklch(0.25 0.05 285)' }}>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     Email
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     Source
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     IP Address
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     User Agent
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     Referer
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'oklch(0.65 0.05 280)' }}>
                     Created At
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody>
                 {demoEmails.map((email) => (
-                  <tr key={email._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <tr 
+                    key={email._id}
+                    style={{
+                      backgroundColor: 'oklch(0.18 0.05 285)',
+                      borderBottom: '1px solid oklch(0.25 0.05 285)'
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)'; }}
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>
                       {email.email}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <span className="px-2 py-1 text-xs font-medium rounded-full" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.2)', color: 'oklch(0.45 0.15 290)' }}>
                         {email.source || 'N/A'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>
                       {email.ipAddress || 'N/A'}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" title={email.userAgent || 'N/A'}>
+                    <td className="px-6 py-4 text-sm max-w-xs truncate" style={{ color: 'oklch(0.65 0.05 280)' }} title={email.userAgent || 'N/A'}>
                       {email.userAgent || 'N/A'}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" title={email.referer || 'N/A'}>
+                    <td className="px-6 py-4 text-sm max-w-xs truncate" style={{ color: 'oklch(0.65 0.05 280)' }} title={email.referer || 'N/A'}>
                       {email.referer || 'N/A'}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>
                       {formatDate(email.createdAt)}
                     </td>
                   </tr>
@@ -275,7 +303,7 @@ const DemoEmailsManagement = () => {
           {/* Pagination */}
           {pagination.pages > 1 && (
             <div className="flex items-center justify-between mt-4">
-              <div className="text-sm text-gray-700">
+              <div className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
                 Showing {((pagination.page - 1) * pagination.limit) + 1} to{' '}
                 {Math.min(pagination.page * pagination.limit, pagination.total)} of{' '}
                 {pagination.total} results
@@ -284,17 +312,47 @@ const DemoEmailsManagement = () => {
                 <button
                   onClick={() => handlePageChange(pagination.page - 1)}
                   disabled={pagination.page === 1}
-                  className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                  className="px-4 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{
+                    backgroundColor: 'oklch(0.18 0.05 285)',
+                    borderColor: 'oklch(0.25 0.05 285)',
+                    color: 'oklch(0.98 0.01 280)'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!e.currentTarget.disabled) {
+                      e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!e.currentTarget.disabled) {
+                      e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                    }
+                  }}
                 >
                   Previous
                 </button>
-                <span className="px-4 py-2 text-gray-700">
+                <span className="px-4 py-2" style={{ color: 'oklch(0.98 0.01 280)' }}>
                   Page {pagination.page} of {pagination.pages}
                 </span>
                 <button
                   onClick={() => handlePageChange(pagination.page + 1)}
                   disabled={pagination.page === pagination.pages}
-                  className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                  className="px-4 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{
+                    backgroundColor: 'oklch(0.18 0.05 285)',
+                    borderColor: 'oklch(0.25 0.05 285)',
+                    color: 'oklch(0.98 0.01 280)'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!e.currentTarget.disabled) {
+                      e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285 / 0.8)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!e.currentTarget.disabled) {
+                      e.currentTarget.style.backgroundColor = 'oklch(0.18 0.05 285)';
+                    }
+                  }}
                 >
                   Next
                 </button>
