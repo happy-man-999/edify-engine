@@ -31,26 +31,40 @@ import UpgradePlanModal from "./UpgradePlanModal";
  */
 const WorldActiveInfo = ({ onClose, onDontShowAgain }) => {
   return (
-    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 relative">
+    <div className="rounded-lg p-4 mb-6 relative" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.1)', borderColor: 'oklch(0.45 0.15 290 / 0.3)', borderWidth: '1px', borderStyle: 'solid' }}>
       <div className="flex items-start">
         <div className="flex-shrink-0">
-          <i className="fas fa-info-circle text-blue-400 text-lg"></i>
+          <i className="fas fa-info-circle text-lg" style={{ color: 'oklch(0.45 0.15 290)' }}></i>
         </div>
         <div className="ml-3 flex-1">
-          <p className="text-sm text-blue-800">
+          <p className="text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
             Your world is live - finalizing SSL for secure access. Check back in a couple minutes.
           </p>
         </div>
         <div className="flex items-center space-x-2 ml-4">
           <button
             onClick={onDontShowAgain}
-            className="text-xs text-blue-600 hover:text-blue-800 underline"
+            className="text-xs underline transition-colors"
+            style={{ color: 'oklch(0.45 0.15 290)' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = 'oklch(0.50 0.18 260)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'oklch(0.45 0.15 290)';
+            }}
           >
             Don't show again
           </button>
           <button
             onClick={onClose}
-            className="text-blue-400 hover:text-blue-600 transition-colors"
+            className="transition-colors"
+            style={{ color: 'oklch(0.50 0.05 280)' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = 'oklch(0.65 0.05 280)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'oklch(0.50 0.05 280)';
+            }}
           >
             <i className="fas fa-times"></i>
           </button>

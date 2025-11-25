@@ -51,7 +51,7 @@ const ItemCard = ({
       onClick={handleCardClick}
     >
       {/* Item Type Badge */}
-      <div className="absolute top-3 left-3 bg-[#42677D] text-white text-xs font-bold px-2 py-1 rounded-full z-10">
+      <div className="absolute top-3 left-3 text-xs font-bold px-2 py-1 rounded-full z-10" style={{ backgroundColor: 'oklch(0.45 0.15 290)', color: 'oklch(0.98 0.01 280)' }}>
         <i className={`fas ${getItemIcon(item.type)} mr-1`}></i>
         {getItemTypeLabel(item.type)}
       </div>
@@ -61,7 +61,14 @@ const ItemCard = ({
         <div className="absolute top-3 right-3 z-10">
           <button
             onClick={handleDownloadClick}
-            className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full transition-colors duration-200"
+            className="p-2 rounded-full transition-colors duration-200"
+            style={{ backgroundColor: 'oklch(0.50 0.18 260)', color: 'oklch(0.98 0.01 280)' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'oklch(0.55 0.18 260)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
+            }}
             title="Download"
           >
             <i className="fas fa-download text-sm"></i>
@@ -83,10 +90,10 @@ const ItemCard = ({
         {/* Title and Price */}
         <div className="flex justify-between items-start mb-2">
           <h3 className="font-semibold line-clamp-1" style={{ color: 'oklch(0.98 0.01 280)' }}>{item.title}</h3>
-          <div className={`bg-[#42677D] text-white text-sm px-2 py-1 rounded${currency === 'SOL' ? ' hidden' : ''}`}>
+          <div className={`text-sm px-2 py-1 rounded${currency === 'SOL' ? ' hidden' : ''}`} style={{ backgroundColor: 'oklch(0.45 0.15 290)', color: 'oklch(0.98 0.01 280)' }}>
             ${item.priceUSD}
           </div>
-          <div className={`bg-[#0EA47A] text-white text-sm px-2 py-1 rounded${currency === 'SOL' ? '' : ' hidden'}`}>
+          <div className={`text-sm px-2 py-1 rounded${currency === 'SOL' ? '' : ' hidden'}`} style={{ backgroundColor: 'oklch(0.50 0.18 260)', color: 'oklch(0.98 0.01 280)' }}>
             {currency === 'SOL' ? `${(item.priceUSD * 0.01).toFixed(4)} SOL` : '...'}
           </div>
         </div>
@@ -96,7 +103,7 @@ const ItemCard = ({
 
         {/* Rating and File Size */}
         <div className="flex justify-between items-center mb-3">
-          <div className="flex items-center text-yellow-400 text-sm">
+          <div className="flex items-center text-sm" style={{ color: 'oklch(0.60 0.15 320)' }}>
             {Array.from({length: Math.floor(item.rating || 0)}, (_, i) => (
               <i key={i} className="fas fa-star"></i>
             ))}
@@ -145,7 +152,17 @@ const ItemCard = ({
               </button>
               <button
                 onClick={handleDownloadClick}
-                className="flex-1 bg-[#42677D] hover:bg-[#355263] text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors duration-200"
+                className="flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors duration-200"
+                style={{
+                  background: 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))',
+                  color: 'oklch(0.98 0.01 280)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.50 0.18 260), oklch(0.55 0.18 260))';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.45 0.15 290), oklch(0.50 0.18 260))';
+                }}
               >
                 Download
               </button>
@@ -153,7 +170,21 @@ const ItemCard = ({
           ) : (
             // Store buttons
             <button 
-              className="flex-1 text-[#42677D] hover:text-[#355263] text-sm font-medium py-2 px-3 border border-[#42677D] rounded-lg hover:bg-[#42677D] hover:text-white transition-all duration-200" 
+              className="flex-1 text-sm font-medium py-2 px-3 rounded-lg transition-all duration-200" 
+              style={{
+                borderColor: 'oklch(0.45 0.15 290)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                color: 'oklch(0.45 0.15 290)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
+                e.currentTarget.style.color = 'oklch(0.98 0.01 280)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = 'oklch(0.45 0.15 290)';
+              }}
               onClick={handleAddToCartClick}
             >
               <i className="fas fa-cart-plus mr-1"></i> Add to Cart
