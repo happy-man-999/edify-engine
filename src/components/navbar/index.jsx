@@ -82,9 +82,7 @@ const Navbar = () => (
   >
     <div className="w-full flex items-center space-x-4">
       <a href="/" className="flex items-center">
-        <video autoPlay loop muted playsInline className="logo-video mr-2" width={32} height={32}>
-          <source src="https://labor-group.com/wp-content/uploads/2025/04/EE_Logo_Color_512x512_02-1.mp4" type="video/mp4" />
-        </video>
+        <img src="/EE_Logo_Color_Dark_128_01.gif" alt="Edify Engine Logo" className="logo-video mr-2" width={32} height={32} />
       </a>
       <div className="hidden md:flex space-x-6">
         <NavbarTabs />
