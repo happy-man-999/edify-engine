@@ -37,7 +37,7 @@ const LandingNavbar = () => {
       }}
     >
       <div className="max-w-7xl mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between relative">
           <Link 
             to="/"
             className="text-2xl font-bold gradient-text font-['Orbitron'] hover:opacity-80 transition-opacity"
@@ -45,7 +45,8 @@ const LandingNavbar = () => {
             Edify Engine
           </Link>
 
-          <div className="hidden md:flex items-center gap-6">
+          {/* Center-aligned navigation items */}
+          <div className="hidden md:flex items-center gap-6 absolute left-1/2 transform -translate-x-1/2">
             {navItems.map((item) => (
               item.href.startsWith('#') ? (
                 <button
@@ -72,47 +73,29 @@ const LandingNavbar = () => {
                 </Link>
               )
             ))}
+          </div>
+
+          {/* Right-aligned action buttons */}
+          <div className="hidden md:flex items-center gap-6">
             {isAuthenticated ? (
               <Link
                 to="/home"
-                className="inline-flex items-center justify-center px-6 py-2 rounded-md font-semibold transition-all duration-300 transform hover:scale-105"
-                style={{
-                  border: '2px solid oklch(0.50 0.18 260)',
-                  color: 'oklch(0.50 0.18 260)',
-                  boxShadow: '0 0 20px oklch(0.45 0.15 290 / 0.2)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290 / 0.1)';
-                  e.currentTarget.style.borderColor = 'oklch(0.50 0.18 260)';
-                  e.currentTarget.style.boxShadow = '0 0 20px oklch(0.45 0.15 290 / 0.3)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.borderColor = 'oklch(0.50 0.18 260)';
-                  e.currentTarget.style.boxShadow = '0 0 20px oklch(0.45 0.15 290 / 0.2)';
-                }}
+                className="text-sm font-medium transition-colors text-gray-300"
+                style={{ '--hover-color': 'oklch(0.85 0.18 130)' }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.85 0.18 130)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'rgb(209, 213, 219)'}
+                onClick={() => setMobileMenuOpen(false)}
               >
                 Dashboard
               </Link>
             ) : (
               <Link
                 to="/signin"
-                className="inline-flex items-center justify-center px-6 py-2 rounded-md font-semibold transition-all duration-300 transform hover:scale-105"
-                style={{
-                  border: '2px solid oklch(0.50 0.18 260)',
-                  color: 'oklch(0.50 0.18 260)',
-                  boxShadow: '0 0 20px oklch(0.45 0.15 290 / 0.2)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290 / 0.1)';
-                  e.currentTarget.style.borderColor = 'oklch(0.50 0.18 260)';
-                  e.currentTarget.style.boxShadow = '0 0 20px oklch(0.45 0.15 290 / 0.3)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.borderColor = 'oklch(0.50 0.18 260)';
-                  e.currentTarget.style.boxShadow = '0 0 20px oklch(0.45 0.15 290 / 0.2)';
-                }}
+                className="text-sm font-medium transition-colors text-gray-300"
+                style={{ '--hover-color': 'oklch(0.85 0.18 130)' }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.85 0.18 130)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'rgb(209, 213, 219)'}
+                onClick={() => setMobileMenuOpen(false)}
               >
                 Sign in
               </Link>
@@ -204,19 +187,9 @@ const LandingNavbar = () => {
             ) : (
               <Link
                 to="/signin"
-                className="inline-flex items-center justify-center px-6 py-3 rounded-md font-semibold transition-all duration-300 w-full"
-                style={{
-                  border: '2px solid oklch(0.50 0.18 260)',
-                  color: 'oklch(0.50 0.18 260)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290 / 0.1)';
-                  e.currentTarget.style.borderColor = 'oklch(0.50 0.18 260)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.borderColor = 'oklch(0.50 0.18 260)';
-                }}
+                className="text-left text-lg font-medium transition-colors text-gray-300"
+                onMouseEnter={(e) => e.currentTarget.style.color = 'oklch(0.85 0.18 130)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'rgb(209, 213, 219)'}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Sign in
