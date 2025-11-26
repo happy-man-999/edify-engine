@@ -32,8 +32,12 @@ const StatCounter = ({ end, duration = 2, prefix = '', suffix = '', label }) => 
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5 }}
       className="text-center"
+      style={{ overflow: 'visible', minWidth: 0 }}
     >
-      <div className="text-5xl md:text-6xl font-bold gradient-text mb-2">
+      <div 
+        className="text-5xl md:text-6xl font-bold gradient-text mb-2 font-['Orbitron'] whitespace-nowrap"
+        style={{ overflow: 'visible', display: 'inline-block' }}
+      >
         {prefix}{count}{suffix}
       </div>
       <div className="text-gray-400 text-sm uppercase tracking-wider font-semibold">
