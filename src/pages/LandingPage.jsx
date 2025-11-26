@@ -13,7 +13,7 @@ import GlobalStyles from '../components/GlobalStyles';
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
+    <div className="min-h-screen w-full overflow-x-hidden" style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
       <GlobalStyles />
       <LandingNavbar />
       <HeroSection />

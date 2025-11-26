@@ -40,8 +40,15 @@ const LandingNavbar = () => {
         <div className="flex items-center justify-between relative">
           <Link 
             to="/"
-            className="text-2xl font-bold gradient-text font-['Orbitron'] hover:opacity-80 transition-opacity"
+            className="flex items-center text-2xl font-bold gradient-text font-['Orbitron'] hover:opacity-80 transition-opacity"
           >
+            <img 
+              src="/EE_Logo_Color_Dark_128_01.gif" 
+              alt="Edify Engine Logo" 
+              className="mr-2" 
+              width={32} 
+              height={32} 
+            />
             Edify Engine
           </Link>
 

@@ -180,9 +180,11 @@ const GlobalStyles = () => (
       z-index: 9999;
     }
 
-    /* Ensure body doesn't have horizontal scroll */
-    body {
+    /* Ensure body and html don't have horizontal scroll */
+    html, body {
       overflow-x: hidden;
+      width: 100%;
+      max-width: 100%;
     }
   `}</style>
 );
