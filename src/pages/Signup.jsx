@@ -430,7 +430,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen pt-24" style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
       <GlobalStyles />
       
       {/* Page-specific Schema */}
