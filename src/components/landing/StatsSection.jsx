@@ -4,8 +4,8 @@ import StatCounter from './StatCounter';
 
 const StatsSection = () => {
   return (
-    <section className="py-24 px-4 relative" style={{ backgroundColor: 'oklch(0.12 0.02 280)' }}>
-      <div className="max-w-7xl mx-auto">
+    <section className="py-24 px-4 relative" style={{ backgroundColor: 'oklch(0.12 0.02 280)', overflow: 'visible' }}>
+      <div className="max-w-7xl mx-auto" style={{ overflow: 'visible' }}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -21,11 +21,19 @@ const StatsSection = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
-          <StatCounter end={50000} suffix="+" label="Worlds Created" />
-          <StatCounter end={2500} suffix="+" label="Active Creators" />
-          <StatCounter end={98} suffix="%" label="Satisfaction Rate" />
-          <StatCounter end={150000} suffix="+" label="Monthly Visitors" />
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12" style={{ overflow: 'visible' }}>
+          <div className="min-w-0 overflow-visible">
+            <StatCounter end={50000} suffix="+" label="Worlds Created" />
+          </div>
+          <div className="min-w-0 overflow-visible">
+            <StatCounter end={2500} suffix="+" label="Active Creators" />
+          </div>
+          <div className="min-w-0 overflow-visible">
+            <StatCounter end={98} suffix="%" label="Satisfaction Rate" />
+          </div>
+          <div className="min-w-0 overflow-visible">
+            <StatCounter end={150000} suffix="+" label="Monthly Visitors" />
+          </div>
         </div>
       </div>
     </section>
