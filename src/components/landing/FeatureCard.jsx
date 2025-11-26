@@ -1,8 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const FeatureCard = ({ icon: Icon, title, description, details, delay = 0 }) => {
+  const navigate = useNavigate();
+
+  const handleLearnMore = () => {
+    navigate('/features');
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -46,6 +53,7 @@ const FeatureCard = ({ icon: Icon, title, description, details, delay = 0 }) => 
           <p className="text-gray-400 mb-4">{details}</p>
           <button 
             className="w-full flex items-center justify-center gap-2 text-gray-300 transition-colors rounded-md py-2"
+            onClick={handleLearnMore}
             onMouseEnter={(e) => {
               e.currentTarget.style.color = 'white';
               e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290 / 0.1)';
