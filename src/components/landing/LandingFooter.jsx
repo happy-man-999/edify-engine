@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Twitter, Github, Linkedin, Youtube } from 'lucide-react';
+import { Twitter, Instagram, Linkedin, Youtube } from 'lucide-react';
 import Separator from './Separator';
 
 const LandingFooter = () => {
@@ -42,9 +42,12 @@ const LandingFooter = () => {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
           <div className="lg:col-span-2">
-            <h3 className="text-2xl font-bold gradient-text font-['Orbitron'] mb-4">
-              Edify Engine
-            </h3>
+            <div className="flex items-center mb-4">
+              <img src="/EE_Logo_Color_Dark_128_01.gif" alt="Edify Engine Logo" className="logo-video mr-2" width={32} height={32} />
+              <h3 className="text-2xl font-bold gradient-text font-['Orbitron']">
+                Edify Engine
+              </h3>
+            </div>
             <p className="text-gray-300 mb-6 max-w-sm">
               Empowering creators to build immersive 3D experiences without code. 
               Join thousands building the future of virtual worlds.
@@ -70,7 +73,7 @@ const LandingFooter = () => {
                 <Twitter className="w-4 h-4" />
               </a>
               <a
-                href="https://github.com/edifyengine"
+                href="https://instagram.com/edifyengine"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-lg border flex items-center justify-center text-gray-300 transition-colors"
@@ -86,7 +89,7 @@ const LandingFooter = () => {
                   e.currentTarget.style.backgroundColor = 'transparent';
                 }}
               >
-                <Github className="w-4 h-4" />
+                <Instagram className="w-4 h-4" />
               </a>
               <a
                 href="https://linkedin.com/company/edifyengine"
