@@ -40,9 +40,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center mb-4">
-              <video autoPlay loop muted playsInline className="logo-video mr-2" width={32} height={32}>
-                <source src="https://labor-group.com/wp-content/uploads/2025/04/EE_Logo_Color_512x512_02-1.mp4" type="video/mp4" />
-              </video>
+              <img src="/EE_Logo_Color_Dark_128_01.gif" alt="Edify Engine Logo" className="logo-video mr-2" width={32} height={32} />
               <span className="text-xl font-bold" style={{ color: 'oklch(0.98 0.01 280)' }}>Edify Engine</span>
             </div>
             <p style={{ color: 'oklch(0.65 0.05 280)' }}>
