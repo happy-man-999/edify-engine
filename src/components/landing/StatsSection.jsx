@@ -17,22 +17,22 @@ const StatsSection = () => {
             Trusted by Creators Worldwide
           </h2>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Join thousands building the future of immersive experiences
+            From first-time builders to professional studios, Edify makes world creation effortless
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12" style={{ overflow: 'visible' }}>
           <div className="min-w-0 overflow-visible">
-            <StatCounter end={50000} suffix="+" label="Worlds Created" />
+            <StatCounter end={25} suffix="GB" label="Dedicated Disk Space" />
           </div>
           <div className="min-w-0 overflow-visible">
-            <StatCounter end={2500} suffix="+" label="Active Creators" />
+            <StatCounter end={60} suffix="" label="Seconds World Generation" />
           </div>
           <div className="min-w-0 overflow-visible">
-            <StatCounter end={98} suffix="%" label="Satisfaction Rate" />
+            <StatCounter end={99.9} suffix="%" label="Uptime Infrastructure" />
           </div>
           <div className="min-w-0 overflow-visible">
-            <StatCounter end={150000} suffix="+" label="Monthly Visitors" />
+            <StatCounter end={100} suffix="%" label="Ownership" />
           </div>
         </div>
       </div>
