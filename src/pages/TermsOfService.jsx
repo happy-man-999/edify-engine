@@ -279,6 +279,35 @@ const TermsOfService = () => {
                       <li>Frame, scrape, or reproduce Edify content</li>
                       <li>Remove copyright or ownership notices</li>
                     </ul>
+                    <div className="mt-4">
+                      <h3 className="text-xl font-semibold mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>12.1 Open Source Components (Hyperfy / AGPL-3.0)</h3>
+                      <p className="text-gray-300 mb-4 leading-relaxed">
+                        The Services incorporate certain open-source software components, including portions of the Hyperfy V2 project, which are licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
+                      </p>
+                      <p className="text-gray-300 mb-4 leading-relaxed">
+                        Edify Engine acknowledges and complies with the terms of the AGPL-3.0, including but not limited to:
+                      </p>
+                      <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4 mb-4">
+                        <li>retaining all copyright and license notices associated with Hyperfy,</li>
+                        <li>making available the source code for any modifications to AGPL-licensed components that are accessed over a network, as required by the license, and</li>
+                        <li>providing Users with access to the relevant source code upon request.</li>
+                      </ul>
+                      <p className="text-gray-300 mb-2 leading-relaxed">
+                        A copy of the AGPL-3.0 license is available at:
+                      </p>
+                      <p className="text-gray-300 mb-2 leading-relaxed">
+                        <a href="https://www.gnu.org/licenses/agpl-3.0.en.html" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: 'oklch(0.50 0.18 260)' }}>https://www.gnu.org/licenses/agpl-3.0.en.html</a>
+                      </p>
+                      <p className="text-gray-300 mb-2 leading-relaxed">
+                        The original Hyperfy source code is available at:
+                      </p>
+                      <p className="text-gray-300 mb-4 leading-relaxed">
+                        <a href="https://github.com/hyperfy-xyz/hyperfy" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: 'oklch(0.50 0.18 260)' }}>https://github.com/hyperfy-xyz/hyperfy</a>
+                      </p>
+                      <p className="text-gray-300 leading-relaxed">
+                        Nothing in these Terms restricts or modifies your rights under the AGPL-3.0 license for those specific components. All other proprietary code, systems, and assets within Edify Engine remain exclusively owned by Edify Engine LLC and are not subject to open-source licensing obligations.
+                      </p>
+                    </div>
                   </div>
 
                   {/* Section 13 */}

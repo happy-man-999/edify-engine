@@ -161,14 +161,15 @@ const FeaturesPage = () => {
   ];
 
   const comparisons = [
-    { feature: 'Visual World Builder', edify: true, unity: false, unreal: false },
-    { feature: 'No Coding Required', edify: true, unity: false, unreal: false },
-    { feature: 'Built-in Hosting', edify: true, unity: false, unreal: false },
-    { feature: 'One-Click Deploy', edify: true, unity: false, unreal: false },
-    { feature: 'Asset Library', edify: true, unity: 'partial', unreal: 'partial' },
-    { feature: 'Multiplayer Built-in', edify: true, unity: 'addon', unreal: 'addon' },
-    { feature: 'Cross-Platform', edify: true, unity: true, unreal: true },
-    { feature: 'Visual Scripting', edify: true, unity: 'addon', unreal: true },
+    { feature: 'Visual World Builder', edify: true, unity: 'addon', metaHorizon: 'limited', roblox: 'partial' },
+    { feature: 'No Coding Required', edify: 'optional', unity: 'addon', metaHorizon: true, roblox: false },
+    { feature: 'Built-in Hosting', edify: true, unity: 'addon', metaHorizon: true, roblox: true },
+    { feature: 'One-Click Deploy', edify: true, unity: 'addon', metaHorizon: true, roblox: true },
+    { feature: 'Asset Library', edify: true, unity: 'partial', metaHorizon: 'limited', roblox: true },
+    { feature: 'Multiplayer Built-in', edify: true, unity: 'addon', metaHorizon: true, roblox: true },
+    { feature: 'Cross-Platform', edify: true, unity: true, metaHorizon: false, roblox: true },
+    { feature: 'Visual Scripting', edify: true, unity: 'addon', metaHorizon: true, roblox: false },
+    { feature: 'Ownership', edify: 'full', unity: 'addon', metaHorizon: false, roblox: false },
   ];
 
   return (
@@ -435,7 +436,8 @@ const FeaturesPage = () => {
                         <span className="gradient-text">Edify Engine</span>
                       </th>
                       <th className="text-center p-6 font-semibold text-gray-300">Unity</th>
-                      <th className="text-center p-6 font-semibold text-gray-300">Unreal</th>
+                      <th className="text-center p-6 font-semibold text-gray-300">Meta Horizon</th>
+                      <th className="text-center p-6 font-semibold text-gray-300">Roblox</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -449,6 +451,10 @@ const FeaturesPage = () => {
                         <td className="text-center p-6">
                           {row.edify === true ? (
                             <CheckCircle2 className="w-6 h-6 inline-block" style={{ color: 'oklch(0.85 0.18 130)' }} />
+                          ) : row.edify === 'optional' ? (
+                            <span className="text-gray-300 text-sm">Optional</span>
+                          ) : row.edify === 'full' ? (
+                            <span className="text-gray-300 text-sm">Full ownership</span>
                           ) : row.edify === 'partial' ? (
                             <span className="text-gray-300 text-sm">Partial</span>
                           ) : (
@@ -456,7 +462,9 @@ const FeaturesPage = () => {
                           )}
                         </td>
                         <td className="text-center p-6 text-gray-300">
-                          {row.unity === true ? (
+                          {row.feature === 'Ownership' && row.unity === 'addon' ? (
+                            <span className="text-sm">Add-on (depends on hosting)</span>
+                          ) : row.unity === true ? (
                             <CheckCircle2 className="w-6 h-6 inline-block" />
                           ) : row.unity === 'addon' ? (
                             <span className="text-sm">Add-on</span>
@@ -464,19 +472,34 @@ const FeaturesPage = () => {
                             <span className="text-sm">Limited</span>
                           ) : row.unity === 'partial' ? (
                             <span className="text-sm">Partial</span>
+                          ) : row.unity === false ? (
+                            <span className="text-red-400 text-sm">✗</span>
                           ) : (
                             <span className="text-sm">—</span>
                           )}
                         </td>
                         <td className="text-center p-6 text-gray-300">
-                          {row.unreal === true ? (
+                          {row.feature === 'Ownership' && row.metaHorizon === false ? (
+                            <span className="text-sm">Meta owns ecosystem</span>
+                          ) : row.metaHorizon === true ? (
                             <CheckCircle2 className="w-6 h-6 inline-block" />
-                          ) : row.unreal === 'addon' ? (
-                            <span className="text-sm">Add-on</span>
-                          ) : row.unreal === 'limited' ? (
+                          ) : row.metaHorizon === 'limited' ? (
                             <span className="text-sm">Limited</span>
-                          ) : row.unreal === 'partial' ? (
+                          ) : row.metaHorizon === false ? (
+                            <span className="text-red-400 text-sm">✗</span>
+                          ) : (
+                            <span className="text-sm">—</span>
+                          )}
+                        </td>
+                        <td className="text-center p-6 text-gray-300">
+                          {row.feature === 'Ownership' && row.roblox === false ? (
+                            <span className="text-sm">Roblox owns ecosystem</span>
+                          ) : row.roblox === true ? (
+                            <CheckCircle2 className="w-6 h-6 inline-block" />
+                          ) : row.roblox === 'partial' ? (
                             <span className="text-sm">Partial</span>
+                          ) : row.roblox === false ? (
+                            <span className="text-red-400 text-sm">✗</span>
                           ) : (
                             <span className="text-sm">—</span>
                           )}
