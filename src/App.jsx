@@ -11,6 +11,7 @@ import CustomWalletModal from './components/CustomWalletModal';
 import AnimatedBackground from './components/AnimatedBackground';
 import PaymentModal from './components/PaymentModal';
 import WithdrawModal from './components/navbar/WithdrawModal';
+import WalletAddressSync from './components/WalletAddressSync';
 import FontProvider from './components/FontProvider';
 import ScrollToTop from './components/ScrollToTop';
 import AuthRedirect from './components/AuthRedirect';
@@ -34,6 +35,7 @@ import AboutPage from './pages/AboutPage';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import CookiePolicy from './pages/CookiePolicy';
+import TestPage from './pages/TestPage';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -135,6 +137,7 @@ function App() {
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             <Router>
+              <WalletAddressSync />
                 <AnimatedBackground />
               <ScrollToTop>
                 <AuthRedirect />
@@ -173,6 +176,7 @@ function App() {
                   <Route path="/privacy" element={<PrivacyPolicy />} />
                   <Route path="/cookie-policy" element={<CookiePolicy />} />
                   <Route path="/cookies" element={<CookiePolicy />} />
+                  {/* <Route path="/test" element={<TestPage />} /> */}
                 </Routes>
 
                 <Routes>

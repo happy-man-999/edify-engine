@@ -28,6 +28,7 @@ const AuthRedirect = () => {
                        location.pathname === '/privacy' ||
                        location.pathname === '/cookie-policy' ||
                        location.pathname === '/cookies' ||
+                       // location.pathname === '/test' ||
                        location.pathname === '/';
     
     // If user is not authenticated, no token, and not on an auth page, redirect to signin
