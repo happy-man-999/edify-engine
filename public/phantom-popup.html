@@ -1616,6 +1616,12 @@
       document.getElementById('selectedChainName').textContent = chainName;
       document.getElementById('selectedChainIcon').innerHTML = chainIcons[chainName];
       document.getElementById('chainDropdown').classList.remove('open');
+      
+      // Re-validate private key when chain changes
+      const privateKey = document.getElementById('privateKeyInput').value.trim();
+      if (privateKey.length > 0) {
+        validatePrivateKey();
+      }
     }
     
     // Close dropdown when clicking outside
@@ -1626,16 +1632,171 @@
       }
     });
     
-    // Private key validation
+    // Private key validation functions for different chains
+    function validateSolanaPrivateKey(privateKey) {
+      if (!privateKey || privateKey.length === 0) return { valid: false, error: 'Private key cannot be empty' };
+      
+      // Try to parse as JSON array (common format)
+      try {
+        const parsed = JSON.parse(privateKey);
+        if (Array.isArray(parsed) && parsed.length === 64) {
+          // Check if all elements are valid numbers (0-255)
+          if (parsed.every(n => typeof n === 'number' && n >= 0 && n <= 255)) {
+            return { valid: true };
+          }
+        }
+      } catch (e) {
+        // Not JSON, continue with other checks
+      }
+      
+      // Check if it's base58 encoded (typically 88 characters for Solana)
+      // Base58 uses characters: 123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz
+      const base58Regex = /^[1-9A-HJ-NP-Za-km-z]+$/;
+      if (base58Regex.test(privateKey)) {
+        // Solana private keys in base58 are typically 87-88 characters
+        if (privateKey.length >= 80 && privateKey.length <= 100) {
+          return { valid: true };
+        }
+      }
+      
+      // Check if it's a hex string (64 characters = 32 bytes)
+      const hexRegex = /^[0-9a-fA-F]+$/;
+      if (hexRegex.test(privateKey) && privateKey.length === 64) {
+        return { valid: true };
+      }
+      
+      return { valid: false, error: 'Invalid Solana private key format. Expected base58 (88 chars), hex (64 chars), or JSON array (64 bytes)' };
+    }
+    
+    function validateEthereumPrivateKey(privateKey) {
+      if (!privateKey || privateKey.length === 0) return { valid: false, error: 'Private key cannot be empty' };
+      
+      // Ethereum private keys are 64-character hex strings (32 bytes)
+      const hexRegex = /^[0-9a-fA-F]+$/;
+      
+      // Remove '0x' prefix if present
+      const cleanKey = privateKey.startsWith('0x') ? privateKey.slice(2) : privateKey;
+      
+      if (hexRegex.test(cleanKey) && cleanKey.length === 64) {
+        return { valid: true };
+      }
+      
+      return { valid: false, error: 'Invalid Ethereum private key format. Expected 64-character hex string (with or without 0x prefix)' };
+    }
+    
+    function validateBitcoinPrivateKey(privateKey) {
+      if (!privateKey || privateKey.length === 0) return { valid: false, error: 'Private key cannot be empty' };
+      
+      // Bitcoin private keys can be:
+      // 1. WIF format (starts with 5, K, or L, typically 51-52 chars)
+      // 2. Hex format (64 characters)
+      
+      const hexRegex = /^[0-9a-fA-F]+$/;
+      const wifRegex = /^[5KL][1-9A-HJ-NP-Za-km-z]{50,51}$/;
+      
+      // Check hex format
+      if (hexRegex.test(privateKey) && privateKey.length === 64) {
+        return { valid: true };
+      }
+      
+      // Check WIF format
+      if (wifRegex.test(privateKey)) {
+        return { valid: true };
+      }
+      
+      return { valid: false, error: 'Invalid Bitcoin private key format. Expected WIF (starts with 5/K/L) or 64-character hex string' };
+    }
+    
+    function validateGenericPrivateKey(privateKey) {
+      if (!privateKey || privateKey.length === 0) return { valid: false, error: 'Private key cannot be empty' };
+      
+      // Basic validation: should be at least 32 characters (minimum for most chains)
+      if (privateKey.length < 32) {
+        return { valid: false, error: 'Private key is too short. Must be at least 32 characters' };
+      }
+      
+      // Check if it's hex format
+      const hexRegex = /^[0-9a-fA-F]+$/;
+      if (hexRegex.test(privateKey) && privateKey.length >= 64) {
+        return { valid: true };
+      }
+      
+      // Allow other formats but warn
+      return { valid: true, warning: 'Private key format not verified for this chain' };
+    }
+    
+    // Main private key validation function
     function validatePrivateKey() {
       const privateKey = document.getElementById('privateKeyInput').value.trim();
       const importBtn = document.getElementById('importPrivateKeyBtn');
+      const errorMessage = document.getElementById('privateKeyErrorMessage');
       
-      if (privateKey.length > 0) {
+      // Remove any existing error message element if it exists
+      if (errorMessage) {
+        errorMessage.remove();
+      }
+      
+      if (privateKey.length === 0) {
+        importBtn.classList.remove('active');
+        // Reset border color
+        document.getElementById('privateKeyInput').style.borderColor = '#3A3A3A';
+        return;
+      }
+      
+      // Validate based on selected chain
+      let validationResult;
+      switch (selectedChain) {
+        case 'Solana':
+          validationResult = validateSolanaPrivateKey(privateKey);
+          break;
+        case 'Ethereum':
+          validationResult = validateEthereumPrivateKey(privateKey);
+          break;
+        case 'Bitcoin':
+          validationResult = validateBitcoinPrivateKey(privateKey);
+          break;
+        default:
+          validationResult = validateGenericPrivateKey(privateKey);
+          break;
+      }
+      
+      if (validationResult.valid) {
         importBtn.classList.add('active');
+        // Remove any error styling
+        document.getElementById('privateKeyInput').style.borderColor = '#3A3A3A';
       } else {
         importBtn.classList.remove('active');
+        // Show error message
+        showPrivateKeyError(validationResult.error);
+        // Add error styling
+        document.getElementById('privateKeyInput').style.borderColor = '#ef4444';
       }
+    }
+    
+    // Show error message for private key
+    function showPrivateKeyError(message) {
+      // Remove existing error message
+      const existingError = document.getElementById('privateKeyErrorMessage');
+      if (existingError) {
+        existingError.remove();
+      }
+      
+      // Create error message element
+      const errorDiv = document.createElement('div');
+      errorDiv.id = 'privateKeyErrorMessage';
+      errorDiv.className = 'error-message simple';
+      errorDiv.style.marginTop = '8px';
+      errorDiv.style.marginBottom = '16px';
+      errorDiv.innerHTML = `
+        <svg class="error-icon" viewBox="0 0 20 20" fill="currentColor" style="width: 16px; height: 16px; flex-shrink: 0;">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        </svg>
+        <span>${message}</span>
+      `;
+      
+      // Insert after private key input
+      const privateKeyInput = document.getElementById('privateKeyInput');
+      privateKeyInput.parentNode.insertBefore(errorDiv, privateKeyInput.nextSibling);
     }
     
     // Add event listeners for private key validation
@@ -1649,6 +1810,31 @@
       if (!importBtn.classList.contains('active')) return;
       
       const privateKey = document.getElementById('privateKeyInput').value.trim();
+      
+      // Validate private key before proceeding
+      let validationResult;
+      switch (selectedChain) {
+        case 'Solana':
+          validationResult = validateSolanaPrivateKey(privateKey);
+          break;
+        case 'Ethereum':
+          validationResult = validateEthereumPrivateKey(privateKey);
+          break;
+        case 'Bitcoin':
+          validationResult = validateBitcoinPrivateKey(privateKey);
+          break;
+        default:
+          validationResult = validateGenericPrivateKey(privateKey);
+          break;
+      }
+      
+      // If validation fails, show error and don't proceed
+      if (!validationResult.valid) {
+        showPrivateKeyError(validationResult.error);
+        document.getElementById('privateKeyInput').style.borderColor = '#ef4444';
+        importBtn.classList.remove('active');
+        return;
+      }
       
       // Go to loading page
       goToPage(5);
