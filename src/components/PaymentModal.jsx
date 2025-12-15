@@ -3,6 +3,8 @@ import { usePayment } from '../hooks/usePayment';
 import { useCurrency } from '../hooks/useCurrency';
 import { useWalletWithRedirects } from '../hooks/useWalletWithRedirects';
 import { usePaymentModal } from '../hooks/usePaymentModal';
+import { useAuth } from '../hooks/useAuth';
+import { useProceedCheck } from '../hooks/useProceedCheck';
 
 const PaymentModal = ({ 
   open, 
@@ -13,15 +15,20 @@ const PaymentModal = ({
   itemId = null,
   subscriptionMode = false,
   metadata = {},
-  solanaOnly = false // New prop: if true, only show Solana payment option
+  solanaOnly: propSolanaOnly = false // New prop: if true, only show Solana payment option
 }) => {
   const [selectedMethod, setSelectedMethod] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
   
   const { processPayment, isProcessing, stripeInitialized, settingsLoading } = usePayment();
-  const { connected: solanaConnected } = useWalletWithRedirects();
+  const { connected: solanaConnected, wallet } = useWalletWithRedirects();
   const { convertUsdToSol, loading: solPriceLoading } = useCurrency();
   const { resolvePayment, rejectPayment } = usePaymentModal();
+  const { user, isAuthenticated } = useAuth();
+  const { hasProceedWithoutCredentials } = useProceedCheck();
+
+  // If user has proceed without credentials, force solanaOnly
+  const solanaOnly = propSolanaOnly || hasProceedWithoutCredentials;
 
   const displayAmount = amount;
 
