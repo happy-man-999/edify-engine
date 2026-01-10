@@ -10,7 +10,8 @@ const SettingsConfigs = () => {
     solanaWalletAddress: '11111111111111111111111111111111',
     stripePublicKey: '',
     stripeSecretKey: '',
-    requiredWithdrawAmount: 0.33333
+    requiredWithdrawAmount: 0.33333,
+    useEntry: true
   });
 
   const [loading, setLoading] = useState(true);
@@ -648,6 +649,40 @@ const SettingsConfigs = () => {
               <p className="text-xs mt-1" style={{ color: 'oklch(0.65 0.05 280)' }}>
                 Syncs the Demo environment with the latest Hyperfy build and reloads the service
               </p>
+            </div>
+
+            <div className="pt-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-sm font-medium" style={{ color: 'oklch(0.98 0.01 280)' }}>Entri Integration</h4>
+                  <p className="text-xs" style={{ color: 'oklch(0.65 0.05 280)' }}>Enable Entri domain purchase and configuration</p>
+                </div>
+                <button
+                  onClick={() => handleSettingChange('useEntry', !settings.useEntry)}
+                  className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                  style={{
+                    backgroundColor: settings.useEntry ? 'oklch(0.45 0.15 290)' : 'oklch(0.25 0.05 285)'
+                  }}
+                >
+                  <span
+                    className="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+                    style={{
+                      transform: settings.useEntry ? 'translateX(1.5rem)' : 'translateX(0.25rem)'
+                    }}
+                  />
+                </button>
+              </div>
+              {!settings.useEntry && (
+                <div className="mt-2 p-3 rounded-lg" style={{ backgroundColor: 'oklch(0.85 0.18 130 / 0.1)', borderColor: 'oklch(0.85 0.18 130 / 0.3)', borderWidth: '1px', borderStyle: 'solid' }}>
+                  <div className="flex items-start">
+                    <i className="fas fa-info-circle mt-0.5 mr-2" style={{ color: 'oklch(0.85 0.18 130)' }}></i>
+                    <div className="text-xs" style={{ color: 'oklch(0.85 0.18 130)' }}>
+                      <p className="font-medium">Entri Integration Disabled</p>
+                      <p>Users will see static DNS configuration instructions instead of Entri integration when configuring domains.</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
