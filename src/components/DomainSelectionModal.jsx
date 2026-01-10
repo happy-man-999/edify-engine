@@ -13,6 +13,8 @@ const DomainSelectionModal = ({ open, onClose }) => {
   const [domainAvailable, setDomainAvailable] = useState(null);
   const [isLoadingEntri, setIsLoadingEntri] = useState(false);
   const [isPurchasingDomain, setIsPurchasingDomain] = useState(false);
+  const [useEntry, setUseEntry] = useState(true);
+  const [dropletIP, setDropletIP] = useState(null);
   const dispatch = useDispatch();
   const { showError } = useErrorModal();
   const { dropletId } = useSelector(state => state.ui.domainModal);
@@ -21,6 +23,28 @@ const DomainSelectionModal = ({ open, onClose }) => {
   
   // Custom domain webhook for real-time updates
   const { lastEvent, isConnected } = useWebhook(user?.id, open);
+
+  // Fetch settings and droplet IP when modal opens
+  useEffect(() => {
+    if (open) {
+      fetchSettings();
+      fetchDropletIP();
+    }
+  }, [open]);
+
+  const fetchSettings = async () => {
+    try {
+      const response = await fetch('/api/admin/payment-settings');
+      if (response.ok) {
+        const data = await response.json();
+        setUseEntry(data.settings?.useEntry !== false); // Default to true if not set
+      }
+    } catch (error) {
+      console.error('Error fetching settings:', error);
+      // Default to true on error
+      setUseEntry(true);
+    }
+  };
 
   // Handle webhook events
   useEffect(() => {
@@ -91,6 +115,7 @@ const DomainSelectionModal = ({ open, onClose }) => {
       
       if (response.ok) {
         const data = await response.json();
+        setDropletIP(data.ipAddress);
         return data.ipAddress;
       } else {
         const errorData = await response.json();
@@ -154,8 +179,13 @@ const DomainSelectionModal = ({ open, onClose }) => {
 
   const handleEntriSetup = async () => {
     setIsLoadingEntri(true);
-    const dropletIP = await fetchDropletIP();
-    proceedWithEntri(customDomain.trim(), dropletIP);
+    const ip = dropletIP || await fetchDropletIP();
+    if (ip) {
+      proceedWithEntri(customDomain.trim(), ip);
+    } else {
+      showError('Failed to get droplet IP address');
+      setIsLoadingEntri(false);
+    }
   };
 
   const handlePurchaseDomain = async () => {
@@ -163,8 +193,8 @@ const DomainSelectionModal = ({ open, onClose }) => {
     
     try {
       // Get droplet IP
-      const dropletIP = await fetchDropletIP();
-      if (!dropletIP) {
+      const ip = dropletIP || await fetchDropletIP();
+      if (!ip) {
         throw new Error('Failed to get droplet IP address');
       }
 
@@ -175,7 +205,7 @@ const DomainSelectionModal = ({ open, onClose }) => {
       const exitCallbackUrl = `${baseUrl}?purchaseCancelled=true`;
 
       // Use the purchaseDomain function from useEntri hook
-      await purchaseDomain(dropletIP, successCallbackUrl, exitCallbackUrl);
+      await purchaseDomain(ip, successCallbackUrl, exitCallbackUrl);
       
     } catch (error) {
       console.error('Error purchasing domain:', error);
@@ -271,50 +301,54 @@ const DomainSelectionModal = ({ open, onClose }) => {
         {/* Content - Scrollable */}
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
           <div className="space-y-4 mb-6">
-            {/* Domain Purchase Section */}
-            <div className="mb-6 p-4 rounded-lg" style={{ background: 'linear-gradient(to right, oklch(0.50 0.18 260 / 0.1), oklch(0.45 0.15 290 / 0.1))', borderColor: 'oklch(0.50 0.18 260 / 0.3)', borderWidth: '1px', borderStyle: 'solid' }}>
-              <p className="text-sm mb-3" style={{ color: 'oklch(0.98 0.01 280)' }}>
-                Don't have a custom domain yet? You can purchase one directly here and we'll automatically configure it for your world.
-              </p>
-              <button
-                onClick={handlePurchaseDomain}
-                disabled={isPurchasingDomain}
-                className="w-full px-4 py-2 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center font-medium"
-                style={{
-                  background: 'linear-gradient(to right, oklch(0.50 0.18 260), oklch(0.45 0.15 290))',
-                  color: 'oklch(0.98 0.01 280)'
-                }}
-                onMouseEnter={(e) => {
-                  if (!e.currentTarget.disabled) {
-                    e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.55 0.18 260), oklch(0.50 0.18 260))';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!e.currentTarget.disabled) {
-                    e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.50 0.18 260), oklch(0.45 0.15 290))';
-                  }
-                }}
-              >
-                {isPurchasingDomain ? (
-                  <>
-                    <i className="fas fa-spinner fa-spin mr-2"></i>
-                    Opening purchase flow...
-                  </>
-                ) : (
-                  <>
-                    <i className="fas fa-shopping-cart mr-2"></i>
-                    Buy a Domain
-                  </>
-                )}
-              </button>
-            </div>
+            {/* Domain Purchase Section - Only show when useEntry is true */}
+            {useEntry && (
+              <>
+                <div className="mb-6 p-4 rounded-lg" style={{ background: 'linear-gradient(to right, oklch(0.50 0.18 260 / 0.1), oklch(0.45 0.15 290 / 0.1))', borderColor: 'oklch(0.50 0.18 260 / 0.3)', borderWidth: '1px', borderStyle: 'solid' }}>
+                  <p className="text-sm mb-3" style={{ color: 'oklch(0.98 0.01 280)' }}>
+                    Don't have a custom domain yet? You can purchase one directly here and we'll automatically configure it for your world.
+                  </p>
+                  <button
+                    onClick={handlePurchaseDomain}
+                    disabled={isPurchasingDomain}
+                    className="w-full px-4 py-2 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center font-medium"
+                    style={{
+                      background: 'linear-gradient(to right, oklch(0.50 0.18 260), oklch(0.45 0.15 290))',
+                      color: 'oklch(0.98 0.01 280)'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!e.currentTarget.disabled) {
+                        e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.55 0.18 260), oklch(0.50 0.18 260))';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!e.currentTarget.disabled) {
+                        e.currentTarget.style.background = 'linear-gradient(to right, oklch(0.50 0.18 260), oklch(0.45 0.15 290))';
+                      }
+                    }}
+                  >
+                    {isPurchasingDomain ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin mr-2"></i>
+                        Opening purchase flow...
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-shopping-cart mr-2"></i>
+                        Buy a Domain
+                      </>
+                    )}
+                  </button>
+                </div>
 
-            {/* Divider */}
-            <div className="mb-6 flex items-center">
-              <div className="flex-1" style={{ borderTopColor: 'oklch(0.25 0.05 285)', borderTopWidth: '1px', borderTopStyle: 'solid' }}></div>
-              <span className="px-3 text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>OR</span>
-              <div className="flex-1" style={{ borderTopColor: 'oklch(0.25 0.05 285)', borderTopWidth: '1px', borderTopStyle: 'solid' }}></div>
-            </div>
+                {/* Divider */}
+                <div className="mb-6 flex items-center">
+                  <div className="flex-1" style={{ borderTopColor: 'oklch(0.25 0.05 285)', borderTopWidth: '1px', borderTopStyle: 'solid' }}></div>
+                  <span className="px-3 text-sm" style={{ color: 'oklch(0.65 0.05 280)' }}>OR</span>
+                  <div className="flex-1" style={{ borderTopColor: 'oklch(0.25 0.05 285)', borderTopWidth: '1px', borderTopStyle: 'solid' }}></div>
+                </div>
+              </>
+            )}
 
             {/* Custom Domain Input */}
             <div className="mb-6">
@@ -384,36 +418,116 @@ const DomainSelectionModal = ({ open, onClose }) => {
                 </div>
               )}
 
-              {/* Entri Integration Button */}
+              {/* Entri Integration Button or DNS Instructions */}
               {domainAvailable === false && (
-                <div className="mt-4 p-4 rounded-lg" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.1)', borderColor: 'oklch(0.45 0.15 290 / 0.3)', borderWidth: '1px', borderStyle: 'solid' }}>
-                  <p className="text-sm mb-3" style={{ color: 'oklch(0.45 0.15 290)' }}>
-                    We need to finish configuring your domain. You can click button to automatically set up your DNS records. If you've already updated your domain settings, please give it some time - changes may take a little while to show up.
-                  </p>
-                  
-                  <button
-                    onClick={handleEntriSetup}
-                    disabled={isLoadingEntri}
-                    className="w-full px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                    style={{
-                      backgroundColor: 'oklch(0.45 0.15 290)',
-                      color: 'oklch(0.98 0.01 280)'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!e.currentTarget.disabled) {
-                        e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!e.currentTarget.disabled) {
-                        e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
-                      }
-                    }}
-                  >
-                    <i className="fas fa-cog mr-2"></i>
-                    Connect Domain
-                  </button>
-                </div>
+                <>
+                  {useEntry ? (
+                    <div className="mt-4 p-4 rounded-lg" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.1)', borderColor: 'oklch(0.45 0.15 290 / 0.3)', borderWidth: '1px', borderStyle: 'solid' }}>
+                      <p className="text-sm mb-3" style={{ color: 'oklch(0.45 0.15 290)' }}>
+                        We need to finish configuring your domain. You can click button to automatically set up your DNS records. If you've already updated your domain settings, please give it some time - changes may take a little while to show up.
+                      </p>
+                      
+                      <button
+                        onClick={handleEntriSetup}
+                        disabled={isLoadingEntri}
+                        className="w-full px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                        style={{
+                          backgroundColor: 'oklch(0.45 0.15 290)',
+                          color: 'oklch(0.98 0.01 280)'
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!e.currentTarget.disabled) {
+                            e.currentTarget.style.backgroundColor = 'oklch(0.50 0.18 260)';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!e.currentTarget.disabled) {
+                            e.currentTarget.style.backgroundColor = 'oklch(0.45 0.15 290)';
+                          }
+                        }}
+                      >
+                        <i className="fas fa-cog mr-2"></i>
+                        Connect Domain
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="mt-4 space-y-4">
+                      {/* Warning Banner */}
+                      <div className="p-4 rounded-lg" style={{ backgroundColor: 'oklch(0.85 0.18 130 / 0.1)', borderColor: 'oklch(0.85 0.18 130 / 0.3)', borderWidth: '1px', borderStyle: 'solid' }}>
+                        <p className="text-sm" style={{ color: 'oklch(0.85 0.18 130)' }}>
+                          <i className="fas fa-exclamation-triangle mr-2"></i>
+                          Your domain's IP address doesn't match our server, or DNS records are not yet configured. This is normal for newly created domains. You need to add DNS records to point your domain to our server.
+                        </p>
+                      </div>
+
+                      {/* World's IP Address */}
+                      {dropletIP && (
+                        <div>
+                          <p className="text-sm font-medium mb-2" style={{ color: 'oklch(0.98 0.01 280)' }}>Your World's IP Address:</p>
+                          <div className="p-3 rounded-lg" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.1)', borderColor: 'oklch(0.45 0.15 290 / 0.3)', borderWidth: '1px', borderStyle: 'solid' }}>
+                            <p className="font-mono text-lg font-semibold" style={{ color: 'oklch(0.45 0.15 290)' }}>{dropletIP}</p>
+                          </div>
+                          <p className="text-xs mt-1" style={{ color: 'oklch(0.45 0.15 290)' }}>This is the IP address of your specific world</p>
+                        </div>
+                      )}
+
+                      {/* Cloudflare DNS Setup */}
+                      <div className="p-4 rounded-lg" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.1)', borderColor: 'oklch(0.45 0.15 290 / 0.3)', borderWidth: '1px', borderStyle: 'solid' }}>
+                        <div className="flex items-center mb-3">
+                          <i className="fas fa-cloud text-xl mr-2" style={{ color: 'oklch(0.45 0.15 290)' }}></i>
+                          <h4 className="text-base font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>Cloudflare DNS Setup</h4>
+                        </div>
+                        <ol className="list-decimal list-inside space-y-2 text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
+                          <li>Log into your Cloudflare dashboard</li>
+                          <li>Select your domain</li>
+                          <li>Go to <strong>DNS</strong> → <strong>Records</strong></li>
+                          <li>Click <strong>Add record</strong></li>
+                          <li>Set <strong>Type</strong> to <span className="px-2 py-1 rounded" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.2)', color: 'oklch(0.45 0.15 290)' }}>A</span></li>
+                          <li>Set <strong>Name</strong> to <span className="px-2 py-1 rounded" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.2)', color: 'oklch(0.45 0.15 290)' }}>@</span> (or leave blank for root domain)</li>
+                          <li>Set <strong>IPv4 address</strong> to your world's IP: <span className="px-2 py-1 rounded font-mono" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.2)', color: 'oklch(0.45 0.15 290)' }}>{dropletIP || 'YOUR_IP'}</span></li>
+                          <li>Set <strong>Proxy status</strong> to <span className="px-2 py-1 rounded" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.2)', color: 'oklch(0.45 0.15 290)' }}>DNS only</span></li>
+                          <li>Click <strong>Save</strong></li>
+                        </ol>
+                      </div>
+
+                      {/* GoDaddy DNS Setup */}
+                      <div className="p-4 rounded-lg" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.1)', borderColor: 'oklch(0.45 0.15 290 / 0.3)', borderWidth: '1px', borderStyle: 'solid' }}>
+                        <div className="flex items-center mb-3">
+                          <i className="fas fa-globe text-xl mr-2" style={{ color: 'oklch(0.45 0.15 290)' }}></i>
+                          <h4 className="text-base font-semibold" style={{ color: 'oklch(0.98 0.01 280)' }}>GoDaddy DNS Setup</h4>
+                        </div>
+                        <ol className="list-decimal list-inside space-y-2 text-sm" style={{ color: 'oklch(0.98 0.01 280)' }}>
+                          <li>Log into your GoDaddy account</li>
+                          <li>Go to <strong>My Products</strong> → <strong>DNS</strong></li>
+                          <li>Find your domain and click <strong>DNS</strong></li>
+                          <li>Click <strong>Add</strong> under <strong>A Records</strong></li>
+                          <li>Set <strong>Type</strong> to <span className="px-2 py-1 rounded" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.2)', color: 'oklch(0.45 0.15 290)' }}>A</span></li>
+                          <li>Set <strong>Host</strong> to <span className="px-2 py-1 rounded" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.2)', color: 'oklch(0.45 0.15 290)' }}>@</span></li>
+                          <li>Set <strong>Points to</strong> to your world's IP: <span className="px-2 py-1 rounded font-mono" style={{ backgroundColor: 'oklch(0.45 0.15 290 / 0.2)', color: 'oklch(0.45 0.15 290)' }}>{dropletIP || 'YOUR_IP'}</span></li>
+                          <li>Set <strong>TTL</strong> to <span className="px-2 py-1 rounded" style={{ backgroundColor: 'oklch(0.85 0.18 130 / 0.2)', color: 'oklch(0.85 0.18 130)' }}>600</span> (10 minutes)</li>
+                          <li>Click <strong>Save</strong></li>
+                        </ol>
+                      </div>
+
+                      {/* Important Notes */}
+                      <div className="p-4 rounded-lg" style={{ backgroundColor: 'oklch(0.85 0.18 130 / 0.1)', borderColor: 'oklch(0.85 0.18 130 / 0.3)', borderWidth: '1px', borderStyle: 'solid' }}>
+                        <div className="flex items-start">
+                          <i className="fas fa-info-circle mt-0.5 mr-2" style={{ color: 'oklch(0.85 0.18 130)' }}></i>
+                          <div className="text-sm" style={{ color: 'oklch(0.85 0.18 130)' }}>
+                            <h4 className="font-semibold mb-2">Important Notes</h4>
+                            <ul className="list-disc list-inside space-y-1">
+                              <li>DNS changes can take 24-48 hours to propagate globally</li>
+                              <li>Make sure to set the record type to <strong>A</strong> (not CNAME)</li>
+                              <li>For subdomains, use the subdomain name instead of <strong>@</strong></li>
+                              <li>After adding records, wait a few minutes before checking again</li>
+                              <li>Use the IP address shown above: <span className="font-mono font-semibold" style={{ backgroundColor: 'oklch(0.85 0.18 130 / 0.2)' }}>{dropletIP || 'YOUR_IP'}</span></li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
                 
               <p className="text-xs mt-2" style={{ color: 'oklch(0.65 0.05 280)' }}>
