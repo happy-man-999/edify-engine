@@ -4,7 +4,6 @@ import { useCurrency } from '../hooks/useCurrency';
 import { useWalletWithRedirects } from '../hooks/useWalletWithRedirects';
 import { usePaymentModal } from '../hooks/usePaymentModal';
 import { useAuth } from '../hooks/useAuth';
-import { useProceedCheck } from '../hooks/useProceedCheck';
 
 const PaymentModal = ({ 
   open, 
@@ -25,10 +24,8 @@ const PaymentModal = ({
   const { convertUsdToSol, loading: solPriceLoading } = useCurrency();
   const { resolvePayment, rejectPayment } = usePaymentModal();
   const { user, isAuthenticated } = useAuth();
-  const { hasProceedWithoutCredentials } = useProceedCheck();
 
-  // If user has proceed without credentials, force solanaOnly
-  const solanaOnly = propSolanaOnly || hasProceedWithoutCredentials;
+  const solanaOnly = propSolanaOnly;
 
   const displayAmount = amount;
 

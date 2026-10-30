@@ -36,9 +36,6 @@ const initialState = {
     isOpen: false,
     domain: null,
   },
-  phantomModal: {
-    isOpen: false,
-  },
   currency: 'USD',
 };
 
@@ -137,16 +134,6 @@ const uiSlice = createSlice({
         domain: null,
       };
     },
-    openPhantomModal(state) {
-      state.phantomModal = {
-        isOpen: true,
-      };
-    },
-    closePhantomModal(state) {
-      state.phantomModal = {
-        isOpen: false,
-      };
-    },
     changeCurrency(state, action) {
       state.currency = action.payload;
     },
@@ -174,8 +161,6 @@ export const {
   hideDomainModal,
   openEditorModal,
   closeEditorModal,
-  openPhantomModal,
-  closePhantomModal,
   changeCurrency,
 } = uiSlice.actions;
 
