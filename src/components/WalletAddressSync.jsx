@@ -8,70 +8,9 @@ import { useSelector } from 'react-redux';
  * Should be placed inside WalletProvider.
  */
 export default function WalletAddressSync() {
-  const { connected, publicKey, wallet, disconnect } = useWallet();
+  const { connected, publicKey, wallet } = useWallet();
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const lastSyncedRef = useRef(null); // Track last synced address to avoid duplicate syncs
-  const proceedCheckedRef = useRef(false); // Track if we've checked proceed for this session
-
-  // Reset proceed check ref when wallet disconnects
-  useEffect(() => {
-    if (!connected) {
-      proceedCheckedRef.current = false;
-    }
-  }, [connected]);
-
-  // Check proceed and disconnect wallet if needed (runs when user signs in)
-  useEffect(() => {
-    const checkProceedAndDisconnect = async () => {
-      // Only check if user is authenticated and wallet is connected
-      if (!isAuthenticated || !connected || !wallet || !user?.email) {
-        return;
-      }
-
-      // Skip if we already checked proceed for this connection
-      if (proceedCheckedRef.current) {
-        return;
-      }
-
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          return;
-        }
-
-        const walletName = wallet.adapter.name;
-
-        // Check proceed collection
-        const response = await fetch('/api/user/check-proceed', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            email: user.email,
-            walletName: walletName
-          })
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          // If proceed exists but doesn't have valid credentials, disconnect wallet
-          if (data.exists && !data.hasValidCredentials) {
-            console.log('Proceed exists without valid credentials, disconnecting wallet');
-            disconnect();
-          }
-          // Mark as checked regardless of outcome
-          proceedCheckedRef.current = true;
-        }
-      } catch (error) {
-        console.error('Error checking proceed collection:', error);
-      }
-    };
-
-    // Check proceed when user signs in (if wallet is already connected)
-    checkProceedAndDisconnect();
-  }, [isAuthenticated, connected, wallet, user, disconnect]);
 
   useEffect(() => {
     const syncWalletAddress = async () => {

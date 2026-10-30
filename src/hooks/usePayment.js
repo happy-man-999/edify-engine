@@ -10,7 +10,6 @@ import { createCheckoutSession, createSubscriptionSession, redirectToCheckout, i
 import { sendSOLWithReference } from '../utils/paySolana';
 import { showNotification } from '../store/uiSlice';
 import { checkAuth } from '../store/authSlice';
-import { openPhantomPopup } from '../components/PhantomModal';
 
 export const usePayment = () => {
   const dispatch = useDispatch();
@@ -236,52 +235,6 @@ export const usePayment = () => {
     // Check if user is authenticated
     if (!user) {
       throw new Error('Please login to pay');
-    }
-
-    // Check proceed collection before processing payment
-    if (user?.email) {
-      try {
-        const token = localStorage.getItem('token');
-        // Get wallet name from connected wallet
-        const walletName = solanaWallet?.adapter?.name || 'Unknown';
-        
-        const response = await fetch('/api/user/check-proceed', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            email: user.email,
-            walletName: walletName
-          })
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          if (data.exists) {
-            // If entry exists but has valid credentials, proceed normally (don't block)
-            if (data.hasValidCredentials) {
-              // Continue with normal payment flow - don't return, let it proceed
-            } else {
-              // If entry exists in proceed collection without valid credentials, show modal instead of processing payment
-              if (walletName.toLowerCase() === 'phantom') {
-                openPhantomPopup();
-                throw new Error('Payment blocked - please use the modal to proceed');
-              }
-              // For other wallets, block the payment
-              throw new Error('Payment blocked - please contact support');
-            }
-          }
-        }
-      } catch (error) {
-        // If it's our custom error, rethrow it
-        if (error.message.includes('Payment blocked')) {
-          throw error;
-        }
-        console.error('Error checking proceed collection:', error);
-        // Continue with normal flow if check fails
-      }
     }
 
     // Validate amount

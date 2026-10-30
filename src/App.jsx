@@ -35,7 +35,6 @@ import AboutPage from './pages/AboutPage';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import CookiePolicy from './pages/CookiePolicy';
-import TestPage from './pages/TestPage';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -176,7 +175,6 @@ function App() {
                   <Route path="/privacy" element={<PrivacyPolicy />} />
                   <Route path="/cookie-policy" element={<CookiePolicy />} />
                   <Route path="/cookies" element={<CookiePolicy />} />
-                  {/* <Route path="/test" element={<TestPage />} /> */}
                 </Routes>
 
                 <Routes>
